@@ -18,10 +18,6 @@ function App() {
 
   function canvasRender() {
 
-    console.log(wasm);
-
-    console.log("rendering");
-
     const myMemory = wasm.get_memory()
 
     setWasmByteMemoryArray(myMemory);
@@ -43,12 +39,12 @@ function App() {
     canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
     const outputPointer = wasm.get_output_buffer_pointer();
-    console.log(outputPointer);
+    
     const imageDataArray = myMemory.slice(
       outputPointer,
       outputPointer + canvasElement.width * canvasElement.height * 4
     );
-    console.log(imageDataArray);
+    
 
     // Set the values to the canvas image data
     canvasImageData.data.set(imageDataArray);
@@ -91,7 +87,7 @@ function App() {
 
     if (event.key === "ArrowDown") {
     setDownColor("error");}
-    if (loaded) {wasm.set_center(0,1); canvasRender();}
+    if (loaded) {wasm.set_center(0,1); canvasRender(); wasm.passBin("myWord");}
 
   });
 
@@ -100,7 +96,9 @@ function App() {
     console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
     if (event.key === "ArrowDown") {
-    setDownColor("primary");}
+    setDownColor("primary");
+    
+  }
 
 
   });

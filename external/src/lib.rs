@@ -27,6 +27,17 @@ pub fn main_js() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
+extern {
+    pub fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn pass_bin(bin: &str) {
+  alert(&format!("Bin loaded: {}", bin));
+
+}
+
+#[wasm_bindgen]
 pub fn get_some_image() {
 
   for y in 0..(SCREEN_HEIGHT) {
