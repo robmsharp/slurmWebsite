@@ -57,7 +57,9 @@ function App() {
   //This is for updating canvas after loaded
   useEffect(() => {
 
-    if (loaded === true) { canvasRender(); draw_loop();}
+    if (loaded === true) { //canvasRender(); draw_loop(); 
+      //wasm.startEmulator();
+    }
 
   }, [loaded]);
 
@@ -87,7 +89,7 @@ function App() {
 
     if (event.key === "ArrowDown") {
     setDownColor("error");}
-    if (loaded) {wasm.set_center(0,1); canvasRender(); wasm.passBin("myWord");}
+    if (loaded) {wasm.set_center(0,1); canvasRender(); }
 
   });
 
@@ -113,6 +115,42 @@ function App() {
   
   }
 
+  const selectRom = (event) => {
+    
+    const file = event.target.files[0];
+    console.log(file);
+
+    const reader = new FileReader();
+        reader.onload = file => {
+          console.log("here");
+          const arrayBuf = file.target.result;
+          const src = new Uint8Array(arrayBuf);
+          
+          wasm.loadRom(src);
+          wasm.tryStart();
+        }
+
+          reader.readAsArrayBuffer(file);  
+  }
+
+  const selectBin = (event) => {
+    
+    const file = event.target.files[0];
+    console.log(file);
+
+    const reader = new FileReader();
+        reader.onload = file => {
+          console.log("here");
+          const arrayBuf = file.target.result;
+          const src = new Uint8Array(arrayBuf);
+          
+          wasm.loadBin(src);
+          wasm.tryStart();
+        }
+
+          reader.readAsArrayBuffer(file);  
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -135,6 +173,18 @@ function App() {
             Fire Z
           </Button>
         </Stack>
+
+        <Stack direction="row" spacing={2}>
+        <Button variant="contained" component="label">
+        Select Bin
+        <input hidden accept="file_extension, .bin" multiple type="file" onChange={selectBin}/>
+      </Button>
+
+      <Button variant="contained" component="label">
+        Select Rom
+        <input hidden accept="file_extension, .bin" multiple type="file" onChange={selectRom}/>
+      </Button>
+      </Stack>
 
       </header>
     </div>

@@ -25,24 +25,33 @@ image = "0.23.14"
 num-complex = "0.4.0"
 # The `wasm-bindgen` crate provides the bare minimum functionality needed
 # to interact with JavaScript.
-wasm-bindgen = "0.2.45"
+wasm-bindgen = "0.2.78"
 console_error_panic_hook = "0.1.7"
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. However, it is slower than the default
 # allocator, so it's not enabled by default.
 wee_alloc = { version = "0.4.2", optional = true }
+js-sys = "0.3.37"
+
+[dependencies.slurm_emulator]
+path = '/Users/robertsharp/Desktop/2022/slurmredo/SLURM-main/slurmemu/'
 
 # The `web-sys` crate allows you to interact with the various browser APIs,
 # like the DOM.
 [dependencies.web-sys]
-version = "0.3.22"
-features = ["console", "Window", "Document","HtmlImageElement", "HtmlCanvasElement","CanvasRenderingContext2d", "Element"]
-
+version = "0.3.58"
+features = ["console", "Window", "Document",
+    
+  'Event',
+  'FileReader',
+  'File',
+  'FileList',
+  "HtmlImageElement", "HtmlCanvasElement","CanvasRenderingContext2d", "Element"]
 
 
 # These crates are used for running unit tests.
 [dev-dependencies]
 wasm-bindgen-test = "0.2.45"
 futures = "0.1.27"
-js-sys = "0.3.22"
+js-sys = "0.3.37"
 wasm-bindgen-futures = "0.3.22"

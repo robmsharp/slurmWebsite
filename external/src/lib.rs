@@ -1,6 +1,11 @@
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 use wasm_bindgen::JsCast;
+use web_sys::{Event, FileReader, File};
+use js_sys::Uint8Array;
+use std::path::Path;
+extern crate slurm_emulator;
+use slurm_emulator::slurm16_soc::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -31,9 +36,72 @@ extern {
     pub fn alert(s: &str);
 }
 
+
+
 #[wasm_bindgen]
-pub fn pass_bin(bin: &str) {
-  alert(&format!("Bin loaded: {}", bin));
+pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
+
+  let bin: Vec<u8> = inputbin.iter().cloned().collect();
+  let rom: Vec<u8> = inputrom.iter().cloned().collect();
+  
+  alert("Started emulator");
+  alert(&rom.len().to_string());
+  let mut soc = Slurm16SoC::new();
+
+  let mut rom_data : Vec<u16> = Vec::new();
+
+    for byte_pair in rom.chunks_exact(2) {
+        let short : u16 = u16::from_le_bytes([byte_pair[0], byte_pair[1]]);
+        //println!("{:x}", short);
+        rom_data.push(short);
+    }
+    soc.set_memory(&rom_data, 0, std::cmp::min(rom_data.len(), 256));  
+
+    
+    
+    let mut flash_data : Vec<u16> = Vec::new();
+
+    for byte_pair in bin.chunks_exact(2) {
+        let short : u16 = u16::from_le_bytes([byte_pair[0], byte_pair[1]]);
+        flash_data.push(short);
+    }
+    soc.set_flash(&flash_data);  
+
+  let scale = 1.0;
+
+  let width = ((VISIBLE_SCREEN_WIDTH as f32) * scale) as u32;
+  let height = ((VISIBLE_SCREEN_HEIGHT as f32) * scale) as u32;
+
+  let mut fb = [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT];
+  
+  let mut count = 0;
+
+  while (count<100) {
+    count+=1;
+    let mut audio : [i16; 2] = [0 ; 2];
+
+    let (vs_int, emit_audio) = soc.step(& mut fb, &mut audio);
+
+    for j in 0..VISIBLE_SCREEN_HEIGHT {
+      for i in 0..VISIBLE_SCREEN_WIDTH {
+          let x = i as u32;
+          let y = j as u32;
+          let color = fb[j][i];
+
+          let pixel_index: usize = (j * VISIBLE_SCREEN_WIDTH) + i; 
+          let data_index: usize = 4 * pixel_index;   
+
+          unsafe {
+            OUTPUT_BUFFER[data_index + 0] = color[0]; // Red
+            OUTPUT_BUFFER[data_index + 1] = color[1]; // Green
+            OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
+            OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
+        }
+  }}}
+
+  alert("Finished loading");  
+
+  
 
 }
 
