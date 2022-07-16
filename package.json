@@ -10,7 +10,9 @@
     "external": "file:external/pkg",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "wasm-instantiate-streaming": "^1.0.2",
+    "webassembly": "^0.11.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

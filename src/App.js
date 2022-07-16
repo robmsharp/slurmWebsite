@@ -126,6 +126,7 @@ function App() {
           const arrayBuf = file.target.result;
           const src = new Uint8Array(arrayBuf);
           
+          
           wasm.loadRom(src);
           wasm.tryStart();
         }

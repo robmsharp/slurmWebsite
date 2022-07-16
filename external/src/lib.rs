@@ -41,11 +41,15 @@ extern {
 #[wasm_bindgen]
 pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
 
-  let bin: Vec<u8> = inputbin.iter().cloned().collect();
-  let rom: Vec<u8> = inputrom.iter().cloned().collect();
+  let bin = inputbin.to_vec();
+  let rom = inputrom.to_vec();
   
   alert("Started emulator");
+  alert(&inputbin.len().to_string());
+  alert(&inputrom.len().to_string());
+  alert(&bin.len().to_string());
   alert(&rom.len().to_string());
+  
   let mut soc = Slurm16SoC::new();
 
   let mut rom_data : Vec<u16> = Vec::new();
