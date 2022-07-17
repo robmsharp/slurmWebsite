@@ -16,12 +16,13 @@ use slurm_emulator::slurm16_soc::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // Define the size of our "screen"
-const SCREEN_WIDTH: usize = 320;
-const SCREEN_HEIGHT: usize = 200;
-const OUTPUT_BUFFER_SIZE: usize = SCREEN_WIDTH * SCREEN_HEIGHT * 4;
+pub const NUM_OF_COLOR : usize = 3;
+pub const VISIBLE_SCREEN_WIDTH: usize = 640;
+pub const VISIBLE_SCREEN_HEIGHT: usize = 480;
+const OUTPUT_BUFFER_SIZE: usize = VISIBLE_SCREEN_WIDTH * VISIBLE_SCREEN_HEIGHT * 4;
 static mut OUTPUT_BUFFER: [u8; OUTPUT_BUFFER_SIZE] = [0; OUTPUT_BUFFER_SIZE];
-static mut center_x: usize = 100;
-static mut center_y: usize = 100;
+
+static mut fired: bool = false;
 
 // This is like the `main` function, except for JavaScript.
 #[wasm_bindgen(start)]
@@ -39,37 +40,43 @@ extern {
 
 
 #[wasm_bindgen]
-pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
+pub fn start_emulator(inputbin: &[u8], inputflash: &[u8]) {
 
-  let bin = inputbin.to_vec();
-  let rom = inputrom.to_vec();
-  
-  alert("Started emulator");
-  alert(&inputbin.len().to_string());
-  alert(&inputrom.len().to_string());
-  alert(&bin.len().to_string());
-  alert(&rom.len().to_string());
-  
+  let binLen=inputbin.len();
+  let flashLen=inputflash.len();
+
   let mut soc = Slurm16SoC::new();
 
-  let mut rom_data : Vec<u16> = Vec::new();
+  let mut flash_data : Vec<u16> = Vec::new();
 
-    for byte_pair in rom.chunks_exact(2) {
-        let short : u16 = u16::from_le_bytes([byte_pair[0], byte_pair[1]]);
-        //println!("{:x}", short);
-        rom_data.push(short);
-    }
-    soc.set_memory(&rom_data, 0, std::cmp::min(rom_data.len(), 256));  
+  let mut i = 0;
 
+  //minus 1 because looking 2 ahead
+  while i<flashLen-1 {
+    let short : u16 = u16::from_le_bytes([inputflash[i+0], inputflash[i+1]]);
+    flash_data.push(short);
+    i+=2;
+  }
+  
+  soc.set_flash(&flash_data);
+
+  alert("Started emulator");
+  /*alert(&inputbin.len().to_string());
+  alert(&inputrom.len().to_string());
+  alert(&rom_data.len().to_string());*/
+  
+  i=0;
     
-    
-    let mut flash_data : Vec<u16> = Vec::new();
+  let mut bin_data : Vec<u16> = Vec::new();
+  while i<binLen-1 {
+    let short : u16 = u16::from_le_bytes([inputbin[i+0], inputbin[i+1]]);
+    bin_data.push(short);
+    i+=2;
+  }
 
-    for byte_pair in bin.chunks_exact(2) {
-        let short : u16 = u16::from_le_bytes([byte_pair[0], byte_pair[1]]);
-        flash_data.push(short);
-    }
-    soc.set_flash(&flash_data);  
+  soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
+
+  alert("Finished loading"); 
 
   let scale = 1.0;
 
@@ -79,13 +86,23 @@ pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
   let mut fb = [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT];
   
   let mut count = 0;
+  let mut count2 = 0;
 
-  while (count<100) {
+  while (count2 < 300) {
+    unsafe {
+      fired=false;
+      }  
+    count2+=1;
+    count=0;  
+  while (count < 25125000 / 60) {
+  
     count+=1;
     let mut audio : [i16; 2] = [0 ; 2];
 
     let (vs_int, emit_audio) = soc.step(& mut fb, &mut audio);
-
+    unsafe {
+    if vs_int && !fired {
+      fired=true;
     for j in 0..VISIBLE_SCREEN_HEIGHT {
       for i in 0..VISIBLE_SCREEN_WIDTH {
           let x = i as u32;
@@ -101,9 +118,26 @@ pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
             OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
             OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
         }
-  }}}
+  }}
+  
+  let window = web_sys::window().unwrap();
+  let document = window.document().unwrap();
+  let canvas = document.get_element_by_id("canvas").unwrap().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+  let context = canvas.get_context("2d").unwrap().unwrap().dyn_into::<web_sys::CanvasRenderingContext2d>().unwrap();
+  context.move_to(300.0, 0.0); // top of triangle
+  context.begin_path();
+  context.line_to(0.0, 600.0); // bottom left of triangle
+  context.line_to(600.0, 600.0); // bottom right of triangle
+  context.line_to(300.0, 0.0); // back to top of triangle
+  context.close_path();
+  context.stroke();
+  context.fill();
+  
 
-  alert("Finished loading");  
+}}}}
+
+  
+  alert("Finished emulating"); 
 
   
 
@@ -111,7 +145,11 @@ pub fn start_emulator(inputbin: &[u8], inputrom: &[u8]) {
 
 #[wasm_bindgen]
 pub fn get_some_image() {
-
+  unsafe {
+  fired=false;
+  }  
+}  
+  /*
   for y in 0..(SCREEN_HEIGHT) {
     for x in 0..(SCREEN_WIDTH) {
 
@@ -149,7 +187,7 @@ pub fn get_some_image() {
       }
     }
   }  
-}
+}*/
 
 // Function to return a pointer to our buffer
 // in wasm memory
@@ -166,7 +204,7 @@ pub fn get_output_buffer_pointer() -> *const u8 {
 #[wasm_bindgen]
 pub fn set_center(u:i32, v: i32)  {
   
-  unsafe {
+  /*unsafe {
 
   let mut center_x_2 = center_x as i32;
   let mut center_y_2 = center_y as i32;
@@ -180,6 +218,6 @@ pub fn set_center(u:i32, v: i32)  {
   
     center_x = center_x_3;
     center_y = center_y_3;
-  }
+  }*/
 
 }

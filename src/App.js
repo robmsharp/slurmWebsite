@@ -23,7 +23,7 @@ function App() {
     setWasmByteMemoryArray(myMemory);
 
     //Put the image data on the buffer  
-    wasm.get_some_image();
+    //wasm.get_some_image();
 
     // Get our canvas element from our index.html
     const canvasElement = document.querySelector("canvas");
@@ -57,8 +57,8 @@ function App() {
   //This is for updating canvas after loaded
   useEffect(() => {
 
-    if (loaded === true) { //canvasRender(); draw_loop(); 
-      //wasm.startEmulator();
+    if (loaded === true) { draw_loop(); 
+      
     }
 
   }, [loaded]);
@@ -89,7 +89,7 @@ function App() {
 
     if (event.key === "ArrowDown") {
     setDownColor("error");}
-    if (loaded) {wasm.set_center(0,1); canvasRender(); }
+    if (loaded) {canvasRender(); }
 
   });
 
@@ -108,7 +108,7 @@ function App() {
   function draw_loop() {
 
     if (loaded) {
-      wasm.set_center(1, 0);
+      
       canvasRender();
     }
     window.requestAnimationFrame(draw_loop);
@@ -156,7 +156,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         {loaded === false && <p>Loading...</p>}
-        <canvas id="canvas" height="200" width="320" />
+        <canvas id="canvas" height="480" width="640" />
         <Stack direction="row" spacing={2}>
           <Button variant="contained" endIcon={<ArrowBackIcon />}>
             Left
@@ -177,13 +177,13 @@ function App() {
 
         <Stack direction="row" spacing={2}>
         <Button variant="contained" component="label">
-        Select Bin
-        <input hidden accept="file_extension, .bin" multiple type="file" onChange={selectBin}/>
+        Select Bootloader
+        <input id="bininput" hidden accept="file_extension, .bin" multiple type="file" onChange={selectBin}/>
       </Button>
 
       <Button variant="contained" component="label">
-        Select Rom
-        <input hidden accept="file_extension, .bin" multiple type="file" onChange={selectRom}/>
+        Select Game
+        <input id="rominput" hidden accept="file_extension, .bin" multiple type="file" onChange={selectRom}/>
       </Button>
       </Stack>
 
