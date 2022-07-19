@@ -24,6 +24,7 @@ function App() {
 
     //Put the image data on the buffer  
     //wasm.get_some_image();
+    wasm.emulateStep();
 
     // Get our canvas element from our index.html
     const canvasElement = document.querySelector("canvas");
@@ -110,6 +111,7 @@ function App() {
     if (loaded) {
       
       canvasRender();
+
     }
     window.requestAnimationFrame(draw_loop);
   

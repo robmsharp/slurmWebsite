@@ -23,7 +23,7 @@ pub const CYCLE_PER_DRAW_FRAME : usize = 5;
 const OUTPUT_BUFFER_SIZE: usize = VISIBLE_SCREEN_WIDTH * VISIBLE_SCREEN_HEIGHT * 4;
 static mut OUTPUT_BUFFER: [u8; OUTPUT_BUFFER_SIZE] = [0; OUTPUT_BUFFER_SIZE];
 
-static mut fired: bool = false;
+
 
 // This is like the `main` function, except for JavaScript.
 #[wasm_bindgen(start)]
@@ -42,6 +42,10 @@ extern {
 pub struct WasmEmulator {
     
     soc: Slurm16SoC,
+    steps: i32,
+    fired: bool,
+    scale: f32,
+    fb: [[[u8; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT], 
     
 }
 
@@ -50,6 +54,10 @@ impl Default for WasmEmulator {
         Self {
             
             soc: Slurm16SoC::new(),
+            steps: 0,
+            fired: false,
+            scale: 1.0,
+            fb: [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT],
         }
     }
 }
@@ -76,56 +84,47 @@ pub fn step_fast(&mut self) {
 
 pub fn step_forward(&mut self) {
 
-  let scale = 1.0;
+  self.steps+=1;
 
-  let width = ((VISIBLE_SCREEN_WIDTH as f32) * scale) as u32;
-  let height = ((VISIBLE_SCREEN_HEIGHT as f32) * scale) as u32;
-
-  let mut fb = [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT];
+  self.fired = false;
   
   let mut count = 0;
 
-    unsafe {
-      fired=false;
-      }  
-    
   while (count < 25125000 / 60) {
   
     count+=1;
     let mut audio : [i16; 2] = [0 ; 2];
 
-    let (vs_int, emit_audio) = self.soc.step(& mut fb, &mut audio);
-    unsafe {
-    if vs_int && !fired {
-      fired=true;
-    for j in 0..VISIBLE_SCREEN_HEIGHT {
-      for i in 0..VISIBLE_SCREEN_WIDTH {
-          let x = i as u32;
-          let y = j as u32;
-          let color = fb[j][i];
+    let (vs_int, emit_audio) = self.soc.step(& mut self.fb, &mut audio);
+    
+    if vs_int && !self.fired {
+      self.fired=true;
+      for j in 0..VISIBLE_SCREEN_HEIGHT {
+        for i in 0..VISIBLE_SCREEN_WIDTH {
+            let x = i as u32;
+            let y = j as u32;
+            let color = self.fb[j][i];
 
-          let pixel_index: usize = (j * VISIBLE_SCREEN_WIDTH) + i; 
-          let data_index: usize = 4 * pixel_index;   
+            let pixel_index: usize = (j * VISIBLE_SCREEN_WIDTH) + i; 
+            let data_index: usize = 4 * pixel_index;   
 
-          unsafe {
-            OUTPUT_BUFFER[data_index + 0] = color[0]; // Red
-            OUTPUT_BUFFER[data_index + 1] = color[1]; // Green
-            OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
-            OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
+            unsafe {
+              OUTPUT_BUFFER[data_index + 0] = color[0]; // Red
+              OUTPUT_BUFFER[data_index + 1] = color[1]; // Green
+              OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
+              OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
+          }
         }
       }
     }
-  }
 }}
-}
+
 
 
 pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
 
   let binLen=inputbin.len();
   let flashLen=inputflash.len();
-
-  let mut soc = Slurm16SoC::new();
 
   let mut flash_data : Vec<u16> = Vec::new();
 
@@ -138,12 +137,7 @@ pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
     i+=2;
   }
   
-  soc.set_flash(&flash_data);
-
-  alert("Started loading");
-  /*alert(&inputbin.len().to_string());
-  alert(&inputrom.len().to_string());
-  alert(&rom_data.len().to_string());*/
+  self.soc.set_flash(&flash_data);
   
   i=0;
     
@@ -154,7 +148,7 @@ pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
     i+=2;
   }
 
-  soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
+  self.soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
 
   alert("Finished loading");   
 
@@ -162,12 +156,7 @@ pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
 
 }
 
-#[wasm_bindgen]
-pub fn get_some_image() {
-  unsafe {
-  fired=false;
-  }  
-}  
+
   /*
   for y in 0..(SCREEN_HEIGHT) {
     for x in 0..(SCREEN_WIDTH) {
