@@ -19,6 +19,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 pub const NUM_OF_COLOR : usize = 3;
 pub const VISIBLE_SCREEN_WIDTH: usize = 640;
 pub const VISIBLE_SCREEN_HEIGHT: usize = 480;
+pub const CYCLE_PER_DRAW_FRAME : usize = 5;
 const OUTPUT_BUFFER_SIZE: usize = VISIBLE_SCREEN_WIDTH * VISIBLE_SCREEN_HEIGHT * 4;
 static mut OUTPUT_BUFFER: [u8; OUTPUT_BUFFER_SIZE] = [0; OUTPUT_BUFFER_SIZE];
 
@@ -37,10 +38,89 @@ extern {
     pub fn alert(s: &str);
 }
 
+#[wasm_bindgen]
+pub struct WasmEmulator {
+    
+    soc: Slurm16SoC,
+    
+}
 
+impl Default for WasmEmulator {
+    fn default() -> Self {
+        Self {
+            
+            soc: Slurm16SoC::new(),
+        }
+    }
+}
 
 #[wasm_bindgen]
-pub fn start_emulator(inputbin: &[u8], inputflash: &[u8]) {
+impl WasmEmulator {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmEmulator {
+        
+      alert("Creating emulator");
+      WasmEmulator::default()
+        
+    }
+
+pub fn step_fast(&mut self) {
+
+    let mut count2 = 0;
+
+    while (count2<300) {
+      self.step_forward();
+      count2+=1;
+    }
+}
+
+pub fn step_forward(&mut self) {
+
+  let scale = 1.0;
+
+  let width = ((VISIBLE_SCREEN_WIDTH as f32) * scale) as u32;
+  let height = ((VISIBLE_SCREEN_HEIGHT as f32) * scale) as u32;
+
+  let mut fb = [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT];
+  
+  let mut count = 0;
+
+    unsafe {
+      fired=false;
+      }  
+    
+  while (count < 25125000 / 60) {
+  
+    count+=1;
+    let mut audio : [i16; 2] = [0 ; 2];
+
+    let (vs_int, emit_audio) = self.soc.step(& mut fb, &mut audio);
+    unsafe {
+    if vs_int && !fired {
+      fired=true;
+    for j in 0..VISIBLE_SCREEN_HEIGHT {
+      for i in 0..VISIBLE_SCREEN_WIDTH {
+          let x = i as u32;
+          let y = j as u32;
+          let color = fb[j][i];
+
+          let pixel_index: usize = (j * VISIBLE_SCREEN_WIDTH) + i; 
+          let data_index: usize = 4 * pixel_index;   
+
+          unsafe {
+            OUTPUT_BUFFER[data_index + 0] = color[0]; // Red
+            OUTPUT_BUFFER[data_index + 1] = color[1]; // Green
+            OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
+            OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
+        }
+      }
+    }
+  }
+}}
+}
+
+
+pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
 
   let binLen=inputbin.len();
   let flashLen=inputflash.len();
@@ -60,7 +140,7 @@ pub fn start_emulator(inputbin: &[u8], inputflash: &[u8]) {
   
   soc.set_flash(&flash_data);
 
-  alert("Started emulator");
+  alert("Started loading");
   /*alert(&inputbin.len().to_string());
   alert(&inputrom.len().to_string());
   alert(&rom_data.len().to_string());*/
@@ -76,70 +156,9 @@ pub fn start_emulator(inputbin: &[u8], inputflash: &[u8]) {
 
   soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
 
-  alert("Finished loading"); 
+  alert("Finished loading");   
 
-  let scale = 1.0;
-
-  let width = ((VISIBLE_SCREEN_WIDTH as f32) * scale) as u32;
-  let height = ((VISIBLE_SCREEN_HEIGHT as f32) * scale) as u32;
-
-  let mut fb = [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT];
-  
-  let mut count = 0;
-  let mut count2 = 0;
-
-  while (count2 < 300) {
-    unsafe {
-      fired=false;
-      }  
-    count2+=1;
-    count=0;  
-  while (count < 25125000 / 60) {
-  
-    count+=1;
-    let mut audio : [i16; 2] = [0 ; 2];
-
-    let (vs_int, emit_audio) = soc.step(& mut fb, &mut audio);
-    unsafe {
-    if vs_int && !fired {
-      fired=true;
-    for j in 0..VISIBLE_SCREEN_HEIGHT {
-      for i in 0..VISIBLE_SCREEN_WIDTH {
-          let x = i as u32;
-          let y = j as u32;
-          let color = fb[j][i];
-
-          let pixel_index: usize = (j * VISIBLE_SCREEN_WIDTH) + i; 
-          let data_index: usize = 4 * pixel_index;   
-
-          unsafe {
-            OUTPUT_BUFFER[data_index + 0] = color[0]; // Red
-            OUTPUT_BUFFER[data_index + 1] = color[1]; // Green
-            OUTPUT_BUFFER[data_index + 2] = color[2]; // Blue
-            OUTPUT_BUFFER[data_index + 3] = 255; // Alpha (Always Opaque)
-        }
-  }}
-  
-  let window = web_sys::window().unwrap();
-  let document = window.document().unwrap();
-  let canvas = document.get_element_by_id("canvas").unwrap().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
-  let context = canvas.get_context("2d").unwrap().unwrap().dyn_into::<web_sys::CanvasRenderingContext2d>().unwrap();
-  context.move_to(300.0, 0.0); // top of triangle
-  context.begin_path();
-  context.line_to(0.0, 600.0); // bottom left of triangle
-  context.line_to(600.0, 600.0); // bottom right of triangle
-  context.line_to(300.0, 0.0); // back to top of triangle
-  context.close_path();
-  context.stroke();
-  context.fill();
-  
-
-}}}}
-
-  
-  alert("Finished emulating"); 
-
-  
+}
 
 }
 
