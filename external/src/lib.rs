@@ -24,6 +24,20 @@ const OUTPUT_BUFFER_SIZE: usize = VISIBLE_SCREEN_WIDTH * VISIBLE_SCREEN_HEIGHT *
 static mut OUTPUT_BUFFER: [u8; OUTPUT_BUFFER_SIZE] = [0; OUTPUT_BUFFER_SIZE];
 
 
+//Key enum
+#[wasm_bindgen]
+#[derive(PartialEq, Eq, Copy, Clone, Debug)]
+pub enum KeyEvent {
+A,
+B,
+UP,
+DOWN,
+LEFT,
+RIGHT,
+}
+
+
+
 
 // This is like the `main` function, except for JavaScript.
 #[wasm_bindgen(start)]
@@ -45,7 +59,8 @@ pub struct WasmEmulator {
     steps: i32,
     fired: bool,
     scale: f32,
-    fb: [[[u8; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT], 
+    fb: [[[u8; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT],
+    loaded: bool, 
     
 }
 
@@ -58,6 +73,7 @@ impl Default for WasmEmulator {
             fired: false,
             scale: 1.0,
             fb: [[[0; NUM_OF_COLOR]; VISIBLE_SCREEN_WIDTH]; VISIBLE_SCREEN_HEIGHT],
+            loaded: false,
         }
     }
 }
@@ -71,6 +87,36 @@ impl WasmEmulator {
       WasmEmulator::default()
         
     }
+
+  pub fn update_key(&mut self, press: bool, key: KeyEvent) {
+
+    if self.loaded {
+    
+    if press==false {
+      match key {
+        KeyEvent::A => self.soc.release_button(SlurmButton::A),
+        KeyEvent::B => self.soc.release_button(SlurmButton::B),
+        KeyEvent::UP => self.soc.release_button(SlurmButton::UP),
+        KeyEvent::DOWN => self.soc.release_button(SlurmButton::DOWN),
+        KeyEvent::LEFT => self.soc.release_button(SlurmButton::LEFT),
+        KeyEvent::RIGHT => self.soc.release_button(SlurmButton::RIGHT),
+          _ => {}
+      }
+    }
+    if press==true {
+      match key {
+        KeyEvent::A => self.soc.push_button(SlurmButton::A),
+        KeyEvent::B => self.soc.push_button(SlurmButton::B),
+        KeyEvent::UP => self.soc.push_button(SlurmButton::UP),
+        KeyEvent::DOWN => self.soc.push_button(SlurmButton::DOWN),
+        KeyEvent::LEFT => self.soc.push_button(SlurmButton::LEFT),
+        KeyEvent::RIGHT => self.soc.push_button(SlurmButton::RIGHT),
+          _ => {}
+      }
+    }
+  }
+}
+
 
 pub fn step_fast(&mut self) {
 
@@ -149,7 +195,7 @@ pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
   }
 
   self.soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
-
+  self.loaded=true;
   alert("Finished loading");   
 
 }

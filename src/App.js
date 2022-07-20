@@ -15,6 +15,11 @@ function App() {
   const [wasmByteMemoryArray, setWasmByteMemoryArray] = useState();
   const [loaded, setLoaded] = useState(false);
   const [downColor, setDownColor] = useState("primary");
+  const [upColor, setUpColor] = useState("primary");
+  const [leftColor, setLeftColor] = useState("primary");
+  const [rightColor, setRightColor] = useState("primary");
+  const [AColor, setAColor] = useState("primary");
+  const [BColor, setBColor] = useState("primary");
 
   function canvasRender() {
 
@@ -86,24 +91,79 @@ function App() {
 
   document.addEventListener('keydown', function (event) {
 
+    if (loaded) {
     console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
     if (event.key === "ArrowDown") {
-    setDownColor("error");}
-    if (loaded) {canvasRender(); }
+    setDownColor("error");
+    wasm.keyDown(wasm.KeyEvent.DOWN);
+  }
 
+  if (event.key === "ArrowUp") {
+    setUpColor("error");
+    wasm.keyDown(wasm.KeyEvent.UP);
+  }
+
+  if (event.key === "ArrowLeft") {
+    setLeftColor("error");
+    wasm.keyDown(wasm.KeyEvent.LEFT);
+  }
+
+  if (event.key === "ArrowRight") {
+    setRightColor("error");
+    wasm.keyDown(wasm.KeyEvent.RIGHT);
+  }
+
+  if (event.key === "a") {
+    setAColor("error");
+    wasm.keyDown(wasm.KeyEvent.A);
+  }
+
+  if (event.key === "b") {
+    setBColor("error");
+    wasm.keyDown(wasm.KeyEvent.B);
+  }
+}  
   });
 
   document.addEventListener('keyup', function (event) {
+
+    if (loaded) {
 
     console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
     if (event.key === "ArrowDown") {
     setDownColor("primary");
+    wasm.keyUp(wasm.KeyEvent.DOWN);
     
   }
 
+  if (event.key === "ArrowUp") {
+    setUpColor("primary");
+    wasm.keyUp(wasm.KeyEvent.UP);
+  }
 
+  if (event.key === "ArrowLeft") {
+    setLeftColor("primary");
+    wasm.keyUp(wasm.KeyEvent.LEFT);
+  }
+
+  if (event.key === "ArrowRight") {
+    setRightColor("primary");
+    wasm.keyUp(wasm.KeyEvent.RIGHT);
+  }
+
+  if (event.key === "a") {
+    setAColor("primary");
+    wasm.keyUp(wasm.KeyEvent.A);
+  }
+
+  if (event.key === "b") {
+    setBColor("primary");
+    wasm.keyUp(wasm.KeyEvent.B);
+  }
+
+}
   });
 
   function draw_loop() {
@@ -160,20 +220,23 @@ function App() {
         {loaded === false && <p>Loading...</p>}
         <canvas id="canvas" height="480" width="640" />
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" endIcon={<ArrowBackIcon />}>
+          <Button variant="contained" color={leftColor} endIcon={<ArrowBackIcon />}>
             Left
           </Button>
-          <Button variant="contained" endIcon={<ArrowForwardIcon />}>
+          <Button variant="contained" color={rightColor} endIcon={<ArrowForwardIcon />}>
             Right
           </Button>
-          <Button variant="contained" duration="longest" color={downColor} endIcon={<ArrowDownwardIcon />}>
+          <Button variant="contained" color={downColor} endIcon={<ArrowDownwardIcon />}>
             Down
           </Button>
-          <Button variant="contained" endIcon={<ArrowUpwardIcon />}>
+          <Button variant="contained" color={upColor} endIcon={<ArrowUpwardIcon />}>
             Up
           </Button>
-          <Button variant="contained">
-            Fire Z
+          <Button variant="contained" color={AColor}>
+            A
+          </Button>
+          <Button variant="contained" color={BColor}>
+            B
           </Button>
         </Stack>
 
