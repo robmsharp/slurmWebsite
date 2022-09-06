@@ -1,3 +1,4 @@
+import React from "react"; 
 import logo from './logo.svg';
 import './App.css';
 import {Route, Switch} from 'react-router-dom';
@@ -7,6 +8,7 @@ import MainHeader from './components/mainheader';
 import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
+import Emulate from './pages/emulate';
 import db from './firebaseConfig';
 import {useState, useEffect} from 'react';
 import icon_up1 from './icons/up1.png';
@@ -104,6 +106,7 @@ function App() {
           <Route path="/choosegametype" component={ChooseGameType} />
           <Route path="/desktop" component={Desktop} />
           <Route path="/contact" component={Contact} />
+          <Route path="/emulate" component={Emulate} />
         </Switch>
     
     

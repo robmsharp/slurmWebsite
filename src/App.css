@@ -1,11 +1,18 @@
+font-family: 'Orbitron', sans-serif;
+
 .App {
   text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
 .App-header {
@@ -21,10 +28,6 @@
 
 .App-link {
   color: #61dafb;
-}
-
-canvas {
-  margin: 20px;
 }
 
 @keyframes App-logo-spin {

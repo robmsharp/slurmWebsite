@@ -55,18 +55,18 @@ const handleDownload = (romRef) => {
   getDownloadURL(romRef)
   .then((url) => {
 
-  /*const xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
     xhr.onload = (event) => {
       const blob = xhr.response;
     };
     xhr.open('GET', url);
     xhr.send();}).catch((error) => {
-      console.log("Could not download")*/
+      console.log("Could not download")
 
-      saveAs(
+      /*saveAs(
         url
-      );  
+      );*/  
 
     });
 
