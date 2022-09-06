@@ -68,8 +68,12 @@ const Emulate = () => {
 
   function loadRom() {
 
-    localStorage.setItem('rom', 'bloodlust')
-    const rom = localStorage.getItem('rom')
+    //localStorage.setItem('rom', 'bloodlust')
+    const rom = localStorage.getItem('rom');
+
+    console.log("Rom loaded:");
+
+    console.log(rom);
 
     const romRef = ref(storage, 'roms/'+rom+'.bin');
 

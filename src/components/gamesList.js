@@ -17,6 +17,8 @@ import { getDownloadURL } from "firebase/storage";
 
 import { saveAs } from "file-saver";
 
+import { useHistory } from 'react-router-dom';
+
 
 /*
         action={
@@ -42,11 +44,25 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 const GamesList = (props)=> {
 
+  const history = useHistory();
+
   const [expanded, setExpanded] = React.useState([false, false]);
 
 const moreAction = () => {
   console.log("Clicked button!");
 }
+
+const handlePlay = (rom) => {
+
+  
+
+
+  localStorage.setItem('rom', rom);
+  const path = '/emulate';
+  history.push(path);
+
+
+} 
 
 const handleDownload = (romRef) => {
 
@@ -55,18 +71,18 @@ const handleDownload = (romRef) => {
   getDownloadURL(romRef)
   .then((url) => {
 
-  const xhr = new XMLHttpRequest();
+  /*const xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
     xhr.onload = (event) => {
       const blob = xhr.response;
     };
     xhr.open('GET', url);
     xhr.send();}).catch((error) => {
-      console.log("Could not download")
+      console.log("Could not download")*/
 
-      /*saveAs(
+      saveAs(
         url
-      );*/  
+      );  
 
     });
 
@@ -121,7 +137,7 @@ return (
       />
       <CardContent>
       <Box textAlign='center'>
-      <Button variant="contained"  >
+      <Button variant="contained" onClick={() => handlePlay(game.rom)} >
   Play {game.name}
 </Button>
 </Box>
