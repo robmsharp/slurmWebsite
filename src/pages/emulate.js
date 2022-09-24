@@ -16,6 +16,8 @@ import {db, storage} from '../firebaseConfig';
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
+import loadingImage from '../icons/loadingSmall.png';
+import icon_up1 from '../icons/up1.png';
 
 const Emulate = () => {
 
@@ -137,7 +139,10 @@ const Emulate = () => {
     );
 
     // Clear the canvas
-    canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    if (wasm.can_draw()) {
+      canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    
+    
 
     const outputPointer = wasm.get_output_buffer_pointer();
     
@@ -152,11 +157,16 @@ const Emulate = () => {
 
     // Place the new generated checkerboard onto the canvas
     canvasContext.putImageData(canvasImageData, 0, 0);
+    }
 
   };
 
   //This is for updating canvas after loaded
   useEffect(() => {
+
+    
+
+    
 
     if (loaded === true) { draw_loop(); 
       
@@ -174,6 +184,20 @@ const Emulate = () => {
 
 
   useEffect(() => {
+
+    //Render image to canvas while loading
+    
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var img = new Image();
+    img.src = loadingImage;
+    img.onload = function() {
+      ctx.drawImage(img, 175, 150);
+    }
 
     const loadWasm = async () => {
 
@@ -342,13 +366,18 @@ const Emulate = () => {
   }
 
   return (
+    <>
+    <img id="loadingImage" src={loadingImage} hidden></img>
+    <img id="icon_up1" src={icon_up1} hidden></img>
     <div className="App">
       <header className="App-header">
+      
         {loaded === false && <p>Loading...</p>}
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
         <Keyboard/>
       </header>
     </div>
+    </>
   );
 
 };

@@ -1,7 +1,9 @@
 import React from "react"; 
 import {Link, NavLink, useLocation} from 'react-router-dom';
-import {Typography, AppBar, Tab, Tabs
+import {Typography, AppBar, Tab, Tabs, Box
   } from '@mui/material/';
+
+import slurm16Icon from '../icons/slurm16small.png';  
 
 const MainHeader = () => {
 
@@ -13,7 +15,18 @@ const MainHeader = () => {
         
         <AppBar position="relative"> 
         
-        <Typography variant="h6" >Slurm16</Typography>
+        
+        <Box
+        component="img"
+        sx={{
+          height: 100,
+          width: 184,
+          maxHeight: { xs: 100, md: 50 },
+          maxWidth: { xs: 184, md: 92 },
+        }}
+        alt="Slurm16"
+        src={slurm16Icon}
+      />
         
         </AppBar>
         
