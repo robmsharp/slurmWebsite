@@ -194,12 +194,14 @@ const Emulate = () => {
 
   }, []);
 
-  document.addEventListener('keydown', function (event) {
+  const handleKeyPress = (event) => {
 
     console.log("Emulator key pressed");
 
+    event.preventDefault();
+
     if (loaded) {
-    console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
+    //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
     if (event.key === "ArrowDown") {
     setDownColor("error");
@@ -231,47 +233,65 @@ const Emulate = () => {
     wasm.keyDown(wasm.KeyEvent.B);
   }
 }  
-  });
 
-  document.addEventListener('keyup', function (event) {
+  }
+  
+  const handleKeyRelease = (event) => {
+
+    event.preventDefault();
 
     if (loaded) {
 
-    console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
-
-    if (event.key === "ArrowDown") {
-    setDownColor("primary");
-    wasm.keyUp(wasm.KeyEvent.DOWN);
-    
+      //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
+  
+      if (event.key === "ArrowDown") {
+      setDownColor("primary");
+      wasm.keyUp(wasm.KeyEvent.DOWN);
+      
+    }
+  
+    if (event.key === "ArrowUp") {
+      setUpColor("primary");
+      wasm.keyUp(wasm.KeyEvent.UP);
+    }
+  
+    if (event.key === "ArrowLeft") {
+      setLeftColor("primary");
+      wasm.keyUp(wasm.KeyEvent.LEFT);
+    }
+  
+    if (event.key === "ArrowRight") {
+      setRightColor("primary");
+      wasm.keyUp(wasm.KeyEvent.RIGHT);
+    }
+  
+    if (event.key === "a") {
+      setAColor("primary");
+      wasm.keyUp(wasm.KeyEvent.A);
+    }
+  
+    if (event.key === "b") {
+      setBColor("primary");
+      wasm.keyUp(wasm.KeyEvent.B);
+    }
+  
   }
 
-  if (event.key === "ArrowUp") {
-    setUpColor("primary");
-    wasm.keyUp(wasm.KeyEvent.UP);
   }
 
-  if (event.key === "ArrowLeft") {
-    setLeftColor("primary");
-    wasm.keyUp(wasm.KeyEvent.LEFT);
-  }
+  useEffect(()=> {
 
-  if (event.key === "ArrowRight") {
-    setRightColor("primary");
-    wasm.keyUp(wasm.KeyEvent.RIGHT);
-  }
+    //Has a key been pressed
+    document.addEventListener('keydown', handleKeyPress);
+  
+    //Has a key been released
+    document.addEventListener('keyup', handleKeyRelease);
 
-  if (event.key === "a") {
-    setAColor("primary");
-    wasm.keyUp(wasm.KeyEvent.A);
-  }
-
-  if (event.key === "b") {
-    setBColor("primary");
-    wasm.keyUp(wasm.KeyEvent.B);
-  }
-
-}
-  });
+    return () => {document.removeEventListener('keydown', handleKeyPress); 
+    document.removeEventListener('keyup', handleKeyRelease);}
+     
+    }, [loaded]
+    );
 
   function draw_loop() {
 
@@ -327,39 +347,6 @@ const Emulate = () => {
         {loaded === false && <p>Loading...</p>}
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
         <Keyboard/>
-        <Stack direction="row" spacing={2}>
-          <Button variant="contained" color={leftColor} endIcon={<ArrowBackIcon />}>
-            Left
-          </Button>
-          <Button variant="contained" color={rightColor} endIcon={<ArrowForwardIcon />}>
-            Right
-          </Button>
-          <Button variant="contained" color={downColor} endIcon={<ArrowDownwardIcon />}>
-            Down
-          </Button>
-          <Button variant="contained" color={upColor} endIcon={<ArrowUpwardIcon />}>
-            Up
-          </Button>
-          <Button variant="contained" color={AColor}>
-            A
-          </Button>
-          <Button variant="contained" color={BColor}>
-            B
-          </Button>
-        </Stack>
-
-        <Stack direction="row" spacing={2}>
-        <Button variant="contained" component="label">
-        Select Bootloader
-        <input id="bininput" hidden accept="file_extension, .bin" multiple type="file" onChange={selectBin}/>
-      </Button>
-
-      <Button variant="contained" component="label">
-        Select Game
-        <input id="rominput" hidden accept="file_extension, .bin" multiple type="file" onChange={selectRom}/>
-      </Button>
-      </Stack>
-
       </header>
     </div>
   );

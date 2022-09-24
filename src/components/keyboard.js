@@ -18,7 +18,7 @@ const Keyboard = () => {
     
         event.preventDefault();
   
-        console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
+        //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
         const result = keys.map((item) => {
             if (item.keycode == event.keyCode) {
