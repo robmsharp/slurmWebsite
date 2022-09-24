@@ -9,10 +9,9 @@ import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
+import Keyboard from './pages/keyboard';
 import db from './firebaseConfig';
-import {useState, useEffect} from 'react';
-import icon_up1 from './icons/up1.png';
-import icon_up2 from './icons/up2.png';
+
 import { createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles";
@@ -45,59 +44,15 @@ const myTheme = createTheme({
 
 function App() {
   
-  const [loading, setLoading] = useState(false);
-
-  const [up, setUp] = useState(false);
-
-  document.addEventListener('keydown', function (event) {
-
-    
-    //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
-
-    
-
-  if (event.key === "ArrowUp") {
-    setUp(true);
-    
-  }
-
-
-  });
-
-  document.addEventListener('keyup', function (event) {
-
-    
-    //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been released`);
-
-    if (event.key === "ArrowUp") {
-    setUp(false);
-    
-  }
-});
-
-  useEffect(()=> {
-
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "blue";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    let up1 = document.getElementById("icon_up1");
-    let up2 = document.getElementById("icon_up2");
-    if (up) {
-      ctx.drawImage(up2, 50, 50);}
-      else {
-    ctx.drawImage(up1, 50, 50);}
-  }, [up]
-  );
+  
+ 
 
   return (
     <>
     <ThemeProvider theme={myTheme} >
     <CssBaseline enableColorScheme />
     <Box sx={{minHeight: 800}}>
-    <img id="icon_up1" src={icon_up1} hidden></img>
-    <img id="icon_up2" src={icon_up2} hidden></img>
-      <canvas id="myCanvas" width="200" height="200" hidden></canvas>
+    
 
       <MainHeader/>
       <Switch>
@@ -107,6 +62,7 @@ function App() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/contact" component={Contact} />
           <Route path="/emulate" component={Emulate} />
+          <Route path="/keyboard" component={Keyboard} />
         </Switch>
     
     
