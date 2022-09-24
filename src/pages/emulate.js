@@ -9,7 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Stack from '@mui/material/Stack';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { CheckBoxOutlineBlank } from '@mui/icons-material';
+import { CheckBoxOutlineBlank, ExitToApp } from '@mui/icons-material';
 import Keyboard from '../components/keyboard';
 
 import {db, storage} from '../firebaseConfig';
@@ -18,6 +18,8 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import loadingImage from '../icons/loadingSmall.png';
 import icon_up1 from '../icons/up1.png';
+
+import { Prompt } from 'react-router';
 
 const Emulate = () => {
 
@@ -110,10 +112,6 @@ const Emulate = () => {
 }
 
 
-
-
-  
-
   function canvasRender() {
 
     const myMemory = wasm.get_memory()
@@ -128,9 +126,12 @@ const Emulate = () => {
     //const canvasElement = document.querySelector("canvas");
 
     const canvasElement = canvasRef.current;
+
+    //This code attempts to remove error when you navigate away from the page
+    if (canvasElement == null) {
+      return;
+    }
     
-
-
     // Set up Context and ImageData on the canvas
     const canvasContext = canvasElement.getContext("2d");
     const canvasImageData = canvasContext.createImageData(
@@ -214,7 +215,13 @@ const Emulate = () => {
 
     console.log("loaded");
 
-    
+    //Unmount code
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress); 
+      document.removeEventListener('keyup', handleKeyRelease);
+      setLoaded(false);
+      //wasm.end_emulator();
+    }  
 
   }, []);
 
@@ -365,8 +372,11 @@ const Emulate = () => {
           reader.readAsArrayBuffer(file);  
   }
 
+  
+
   return (
     <>
+    
     <img id="loadingImage" src={loadingImage} hidden></img>
     <img id="icon_up1" src={icon_up1} hidden></img>
     <div className="App">

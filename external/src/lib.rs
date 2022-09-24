@@ -83,7 +83,7 @@ impl WasmEmulator {
     #[wasm_bindgen(constructor)]
     pub fn new() -> WasmEmulator {
         
-      alert("Creating emulator");
+      //alert("Creating emulator");
       WasmEmulator::default()
         
     }
@@ -196,7 +196,7 @@ pub fn start_emulator(&mut self, inputbin: &[u8], inputflash: &[u8]) {
 
   self.soc.set_memory(&bin_data, 0, std::cmp::min(bin_data.len(), 256));  
   self.loaded=true;
-  alert("Finished loading");   
+  //alert("Finished loading");   
 
 }
 
