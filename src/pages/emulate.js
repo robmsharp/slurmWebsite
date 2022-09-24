@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { CheckBoxOutlineBlank } from '@mui/icons-material';
-
+import Keyboard from '../components/keyboard';
 
 import {db, storage} from '../firebaseConfig';
 
@@ -196,6 +196,8 @@ const Emulate = () => {
 
   document.addEventListener('keydown', function (event) {
 
+    console.log("Emulator key pressed");
+
     if (loaded) {
     console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
@@ -324,6 +326,7 @@ const Emulate = () => {
       <header className="App-header">
         {loaded === false && <p>Loading...</p>}
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
+        <Keyboard/>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" color={leftColor} endIcon={<ArrowBackIcon />}>
             Left

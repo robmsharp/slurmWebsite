@@ -9,7 +9,7 @@ import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
-import Keyboard from './pages/keyboard';
+
 import db from './firebaseConfig';
 
 import { createTheme } from '@mui/material/styles';
@@ -62,7 +62,7 @@ function App() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/contact" component={Contact} />
           <Route path="/emulate" component={Emulate} />
-          <Route path="/keyboard" component={Keyboard} />
+          
         </Switch>
     
     
