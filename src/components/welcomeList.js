@@ -5,7 +5,7 @@ import {Typography, Toolbar, AppBar, CssBaseline,
     Avatar, CardHeader, CardContent, Button, Collapse,
     Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem, 
     ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-    InputLabel, Input, InputAdornment
+    InputLabel, Input, InputAdornment, Link
   } from '@mui/material/';
 
 const WelcomeList = (props)=> {
@@ -19,6 +19,7 @@ const WelcomeList = (props)=> {
         <CardHeader title={info.question}></CardHeader>    
         <CardContent sx={{color: "black", bgcolor:"text.secondary"}}>
         <Typography variant="body2" >{info.answer}</Typography>
+        {info.hasLink && <Link href={info.link}>{info.linkDescription}</Link>}
         </CardContent>
         </Card>  
       ))}
