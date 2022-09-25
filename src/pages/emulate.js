@@ -15,7 +15,7 @@ import {db, storage} from '../firebaseConfig';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import loadingImage from '../icons/loadingSmall.png';
-import icon_up1 from '../icons/up1.png';
+
 
 import { Prompt } from 'react-router';
 
@@ -386,7 +386,7 @@ const Emulate = () => {
     <>
     
     <img id="loadingImage" src={loadingImage} hidden></img>
-    <img id="icon_up1" src={icon_up1} hidden></img>
+    
     <div className="App">
       <header className="App-header">
       
