@@ -9,6 +9,7 @@ import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
+import { useEffect} from "react";
 
 import db from './firebaseConfig';
 
@@ -19,6 +20,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import Footer from './components/footer.js';
 
 import Arcade from './fonts/ARCADE.TTF';
+import { useHistory } from 'react-router-dom';
 
 import {Box
 } from '@mui/material/';
@@ -43,8 +45,17 @@ const myTheme = createTheme({
 });
 
 function App() {
+
+  const history = useHistory();
   
-  
+  //This is for redirecting to welcome page
+  useEffect(() => {
+    
+    const path = '/welcome';
+    history.push(path);
+  }
+
+  , []);
  
 
   return (

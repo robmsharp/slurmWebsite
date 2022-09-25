@@ -16,7 +16,7 @@ const Footer = () => {
         <Container maxWidth="lg">    
         <Typography variant = "body2" color="text.secondary" align="center">Slurm16 created by James Sharp</Typography>    
         <Typography variant = "body2" color="text.secondary" align="center">Website created by Robert Sharp</Typography>      
-        <Link variant = "body2" color="inherit" mx="auto" href="">Admin Login</Link>
+        
         </Container>
         </Box>      
         </footer>

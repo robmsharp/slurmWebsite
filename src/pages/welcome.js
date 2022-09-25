@@ -8,7 +8,7 @@ import {Typography, Toolbar, AppBar, CssBaseline,
     InputLabel, Input, InputAdornment
   } from '@mui/material/';
 
-  import BackgroundImage from '../images/backdrop2.jpg';  
+  //import BackgroundImage from '../images/backdrop2.jpg';  
 
   import {useEffect, useState } from "react";
   import {db, storage} from '../firebaseConfig';
@@ -18,6 +18,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
+import BackgroundImage from '../icons/slurmtitle.png'; 
 
 const Welcome = () => {
 
@@ -68,7 +69,7 @@ const Welcome = () => {
     
     <>
         
-    <Box component="img" sx={{objectFit: 'cover', width:"100%", height: 200}} src={BackgroundImage}></Box>
+    <Box component="img" sx={{objectFit: 'cover'}} src={BackgroundImage}></Box>
     <Typography variant="h2" align="center" sx={{py:2}}>Welcome to the official site for Slurm16</Typography>
     <Container>
     

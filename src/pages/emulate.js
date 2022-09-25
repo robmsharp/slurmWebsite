@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 
 import { useState, useEffect, useRef } from "react";
@@ -37,6 +35,8 @@ const Emulate = () => {
   const canvasRef = React.useRef(null);
 
   function loadBootloader() {
+
+    
 
     const bootRef = ref(storage, 'bin/bootloader.bin');
 
@@ -127,6 +127,8 @@ const Emulate = () => {
 
     const canvasElement = canvasRef.current;
 
+    
+
     //This code attempts to remove error when you navigate away from the page
     if (canvasElement == null) {
       return;
@@ -164,10 +166,6 @@ const Emulate = () => {
 
   //This is for updating canvas after loaded
   useEffect(() => {
-
-    
-
-    
 
     if (loaded === true) { draw_loop(); 
       
@@ -220,7 +218,7 @@ const Emulate = () => {
       document.removeEventListener('keydown', handleKeyPress); 
       document.removeEventListener('keyup', handleKeyRelease);
       setLoaded(false);
-      //wasm.end_emulator();
+      
     }  
 
   }, []);
@@ -326,17 +324,27 @@ const Emulate = () => {
 
   function draw_loop() {
 
+    const canvasElement = canvasRef.current;
+
+    //This code attempts to remove update until new rom is loaded
+    if (canvasElement == null) {
+      return;
+    }
+
     if (loaded) {
       
       canvasRender();
 
     }
+
+    
+
     window.requestAnimationFrame(draw_loop);
   
   }
 
   const selectRom = (event) => {
-    
+
     const file = event.target.files[0];
     console.log(file);
 
