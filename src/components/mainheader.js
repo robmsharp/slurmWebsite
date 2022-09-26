@@ -1,6 +1,6 @@
 import React from "react"; 
 import {Link, NavLink, useLocation} from 'react-router-dom';
-import {Typography, AppBar, Tab, Tabs, Box
+import {Grid, Typography, AppBar, Tab, Tabs, Box
   } from '@mui/material/';
 
 import slurm16Icon from '../icons/slurm16small.png';  
@@ -13,28 +13,38 @@ const MainHeader = () => {
     return (
         <>
         
-        <AppBar position="relative"> 
+        <AppBar position="sticky" sx={{bgcolor: "black",}}> 
         
-        
+        <Grid container spacing={2}>
+        <Grid item xs={1} md={1}>
         <Box
         component="img"
         sx={{
           height: 100,
           width: 184,
-          maxHeight: { xs: 100, md: 50 },
-          maxWidth: { xs: 184, md: 92 },
+          maxHeight: { xs: 25, md: 50 },
+          maxWidth: { xs: 46, md: 92 },
+          marginTop: {xs: 2, md: 1},
+          marginLeft: {xs: 1, md: 0},
+          marginRight: {xs: 5, md: 0}
+          
         }}
         alt="Slurm16"
         src={slurm16Icon}
       />
+      </Grid>
         
-        </AppBar>
         
-        <Tabs value={location.pathname} >
+        <Grid item xs={10}>
+        <Tabs value={location.pathname} sx={{ margin: 1}} >
             <Tab to={routes[0]} value={routes[0]} label="Welcome" component={Link}/>
             <Tab to={routes[1]} value={routes[1]} label="Play Games" component={Link}/>
             
         </Tabs>
+        </Grid>
+        </Grid>
+
+        </AppBar>
         
         </>
 

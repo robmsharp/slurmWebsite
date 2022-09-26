@@ -131,7 +131,7 @@ const Games = () => {
 
     return (
     <>
-    <Typography variant="body2" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
+    <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
     
     <Container>
      

@@ -1,7 +1,7 @@
 import React from "react"; 
 import logo from './logo.svg';
 import './App.css';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import Welcome from './pages/welcome';
 import Games from './pages/games';
 import MainHeader from './components/mainheader';
@@ -27,7 +27,16 @@ import {Box
 
 
 const myTheme = createTheme({
-  typography: {fontFamily: 'Orbitron'},
+  typography: {fontFamily: 'Orbitron',
+  body1: {fontFamily: "Ubuntu"},
+  subtitle1: {fontFamily: "Ubuntu", fontWeight: 700},
+  subtitle2: {fontFamily: "Ubuntu", fontSize: "0.5 em"},
+  h2: {
+    fontSize: '24px',
+    '@media (min-width:1000px)': {
+      fontSize: '2.4rem',
+    }
+  },},
   palette: {
     mode: 'dark',
     primary: {
@@ -46,7 +55,7 @@ const myTheme = createTheme({
 
 function App() {
 
-  const history = useHistory();
+  /*const history = useHistory();
   
   //This is for redirecting to welcome page
   useEffect(() => {
@@ -55,7 +64,7 @@ function App() {
     history.push(path);
   }
 
-  , []);
+  , []);*/
  
 
   return (
@@ -67,6 +76,7 @@ function App() {
 
       <MainHeader/>
       <Switch>
+          <Route exact path="/"> {<Redirect to="/welcome"/>} </Route>
           <Route path="/welcome" component={Welcome} />
           <Route path="/games" component={Games} />
           <Route path="/choosegametype" component={ChooseGameType} />

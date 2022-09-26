@@ -16,9 +16,9 @@ const WelcomeList = (props)=> {
     }
       {props.welcomeData.map((info) => (
         <Card sx={{margin:10}}>
-        <CardHeader title={info.question}></CardHeader>    
+        <CardHeader title={info.question} titleTypographyProps={{variant:'subtitle1' }}></CardHeader>    
         <CardContent sx={{color: "black", bgcolor:"text.secondary"}}>
-        <Typography variant="body2" >{info.answer}</Typography>
+        <Typography variant="body1" >{info.answer}</Typography>
         {info.hasLink && <Link href={info.link}>{info.linkDescription}</Link>}
         </CardContent>
         </Card>  

@@ -200,9 +200,9 @@ const Emulate = () => {
 
     const loadWasm = async () => {
 
-      const external = await import('external');
+      const myexternal = await import('external');
 
-      setWasm(external);
+      setWasm(myexternal);
 
       setLoaded(true);
     }
@@ -211,13 +211,14 @@ const Emulate = () => {
 
     console.log(wasm);
 
-    console.log("loaded");
+    console.log("Start useEffect run");
 
     //Unmount code
     return () => {
       document.removeEventListener('keydown', handleKeyPress); 
       document.removeEventListener('keyup', handleKeyRelease);
       setLoaded(false);
+      window.location.reload();
       
     }  
 

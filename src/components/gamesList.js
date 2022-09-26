@@ -119,7 +119,7 @@ return (
     return (
       
           
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
     <Card sx={{margin: '20px', padding: '10px'}}>
     <CardHeader 
 
@@ -127,15 +127,11 @@ return (
         subheader={game.shortDescription}
       
       />
-      <CardMedia
-        component="img"
-        width="320"
-        height="200"
-        image={game.imageUrl}
-        alt={game.name}
-        sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
-      />
+      
       <CardContent>
+      <Box textAlign='center' marginBottom='10'> 
+      <Box component="img" sx={{border:3, objectFit: 'contain', maxWidth:"320"}} src={game.imageUrl}></Box>
+      </Box> 
       <Box textAlign='center'>
       <Button variant="contained" onClick={() => handlePlay(game.rom)} >
   Play {game.name}
@@ -158,7 +154,7 @@ return (
 
         <Collapse in={expanded[index]} timeout="auto" unmountOnExit>
         <CardContent>
-        <Typography >{game.longDescription}</Typography>
+        <Typography variant="body1">{game.longDescription}</Typography>
           {/*<Typography paragraph>Game index: {index}</Typography>*/}
           {game.screenshots.map((screenshot, index) => {
             return(
@@ -176,7 +172,7 @@ return (
       );
       
       })}
-      <Typography paragraph>Last updated: {game.lastUpdated.toDate().toDateString("en-US")}</Typography>
+      <Typography variant="subtitle2" sx={{marginTop: 2, marginBottom: 2}}>Last updated: {game.lastUpdated.toDate().toDateString("en-US")}</Typography>
 
       <Box textAlign='center'>
       <Button variant="contained" onClick={() => handleDownload(game.romRef)} >

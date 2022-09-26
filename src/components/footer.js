@@ -14,8 +14,8 @@ const Footer = () => {
         <footer>
         <Box bgcolor = "background.paper" sx={{padding:5}}>
         <Container maxWidth="lg">    
-        <Typography variant = "body2" color="text.secondary" align="center">Slurm16 created by James Sharp</Typography>    
-        <Typography variant = "body2" color="text.secondary" align="center">Website created by Robert Sharp</Typography>      
+        <Typography variant = "subtitle2" color="text.secondary" align="center">Slurm16 created by James Sharp</Typography>    
+        <Typography variant = "subtitle2" color="text.secondary" align="center">Website created by Robert Sharp</Typography>      
         
         </Container>
         </Box>      
