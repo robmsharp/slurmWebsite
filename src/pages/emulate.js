@@ -16,6 +16,10 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import loadingImage from '../icons/loadingSmall.png';
 
+import {Box
+} from '@mui/material/';
+
+
 
 import { Prompt } from 'react-router';
 
@@ -382,6 +386,7 @@ const Emulate = () => {
   }
 
   
+  
 
   return (
     <>
@@ -392,7 +397,10 @@ const Emulate = () => {
       <header className="App-header">
       
         {loaded === false && <p>Loading...</p>}
+        <Box 
+          sx={{border:3}}>
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
+        </Box>
         <Keyboard/>
       </header>
     </div>

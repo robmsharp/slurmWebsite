@@ -110,7 +110,7 @@ const Welcome = () => {
     <Toolbar id="back-to-top-anchor" />
         
     <Box component="img" sx={{objectFit: 'cover', maxWidth:"100%"}} src={BackgroundImage}></Box>
-    <Typography variant="h2" align="center" sx={{py:2}}>Welcome to the official site for Slurm16</Typography>
+    <Typography variant="h2" align="center" sx={{py:2}}>Welcome to Slurm16's website</Typography>
     <Container>
     
     <WelcomeList welcomeData={loaded} />

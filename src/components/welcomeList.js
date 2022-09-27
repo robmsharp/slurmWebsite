@@ -8,6 +8,25 @@ import {Typography, Toolbar, AppBar, CssBaseline,
     InputLabel, Input, InputAdornment, Link
   } from '@mui/material/';
 
+
+//Maps over each paragraph  
+const Paragraphs = (paragraphs) => {
+
+  return (
+  <>
+      
+  {
+  
+  paragraphs.paragraphs.map((paragraph) => {
+    return <div><Typography variant="body1" >{paragraph}</Typography><br/></div>
+  })
+  }
+  </>
+  )
+
+};
+
+
 const WelcomeList = (props)=> {
 
     return (
@@ -18,7 +37,8 @@ const WelcomeList = (props)=> {
         <Card sx={{margin:10}}>
         <CardHeader title={info.question} titleTypographyProps={{variant:'subtitle1' }}></CardHeader>    
         <CardContent sx={{color: "black", bgcolor:"text.secondary"}}>
-        <Typography variant="body1" >{info.answer}</Typography>
+        {(!info.hasParagraphs) && <Typography variant="body1" >{info.answer}</Typography>}
+        {(info.hasParagraphs) && <Paragraphs paragraphs={info.paragraphs}/>}
         {info.hasLink && <Link href={info.link}>{info.linkDescription}</Link>}
         </CardContent>
         </Card>  
