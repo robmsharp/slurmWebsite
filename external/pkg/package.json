@@ -1,0 +1,17 @@
+{
+  "name": "react_wasm_rust_library",
+  "collaborators": [
+    "You <you@example.com>"
+  ],
+  "description": "My super awesome Rust, WebAssembly, and Webpack project!",
+  "version": "0.1.0",
+  "files": [
+    "react_wasm_rust_library_bg.wasm",
+    "react_wasm_rust_library.js",
+    "react_wasm_rust_library_bg.js",
+    "react_wasm_rust_library.d.ts"
+  ],
+  "module": "react_wasm_rust_library.js",
+  "types": "react_wasm_rust_library.d.ts",
+  "sideEffects": false
+}
