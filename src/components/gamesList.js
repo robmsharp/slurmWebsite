@@ -52,12 +52,13 @@ const moreAction = () => {
   console.log("Clicked button!");
 }
 
-const handlePlay = (rom) => {
+const handlePlay = (rom, tip) => {
 
   
 
 
   localStorage.setItem('rom', rom);
+  localStorage.setItem('tip', tip);
   const path = '/emulate';
   history.push(path);
 
@@ -130,10 +131,10 @@ return (
       
       <CardContent>
       <Box textAlign='center' marginBottom='10'> 
-      <Box component="img" sx={{border:3, objectFit: 'contain', maxWidth:"320"}} src={game.imageUrl}></Box>
+      <Box component="img" sx={{border:3, objectFit: 'contain', width:"320", height:"200" }} src={game.imageUrl}></Box>
       </Box> 
       <Box textAlign='center'>
-      <Button variant="contained" onClick={() => handlePlay(game.rom)} >
+      <Button variant="contained" onClick={() => handlePlay(game.rom, game.tip)} >
   Play {game.name}
 </Button>
 </Box>

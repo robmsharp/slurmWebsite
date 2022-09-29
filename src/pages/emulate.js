@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useState, useEffect, useRef } from "react";
-import Button from '@mui/material/Button';
+import {Button, Popper, Fade, Typography} from '@mui/material/';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Stack from '@mui/material/Stack';
@@ -35,6 +35,11 @@ const Emulate = () => {
   const [rightColor, setRightColor] = useState("primary");
   const [AColor, setAColor] = useState("primary");
   const [BColor, setBColor] = useState("primary");
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [tip, setTip] = useState("");
+  const [open, setOpen] = useState(true);
+  const divRef = React.useRef();
 
   const canvasRef = React.useRef(null);
 
@@ -75,6 +80,9 @@ const Emulate = () => {
 }
 
   function loadRom() {
+
+    //Set the tip
+    setTip(localStorage.getItem('tip'));
 
     //localStorage.setItem('rom', 'bloodlust')
     const rom = localStorage.getItem('rom');
@@ -386,6 +394,17 @@ const Emulate = () => {
   }
 
   
+
+  useEffect(()=> {
+    setAnchorEl(divRef.current);
+  }, []);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = () => {
+    setOpen(false);
+  };
   
 
   return (
@@ -397,11 +416,35 @@ const Emulate = () => {
       <header className="App-header">
       
         {loaded === false && <p>Loading...</p>}
-        <Box 
+        <Box ref={divRef}
           sx={{border:3}}>
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
         </Box>
         <Keyboard/>
+        <Popper
+  
+  open={open}
+  anchorEl={anchorEl}
+  onClose={handleClose}
+  onClick = {handleClick}
+  
+
+  
+transition
+
+>
+{({ TransitionProps }) => (
+    <Fade {...TransitionProps} timeout={350}>
+      <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+      <Typography variant="body1">
+        {tip}
+        </Typography>
+        <Button onClick={handleClick}>Got it!</Button>
+      </Box>
+    </Fade>
+  )}
+  
+</Popper>  
       </header>
     </div>
     </>

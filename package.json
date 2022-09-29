@@ -5,13 +5,6 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.0",
-    "external": "file:external/pkg",
-    "wasm-instantiate-streaming": "^1.0.2",
-    "webassembly": "^0.11.0",
-    "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.10.2",
     "@mui/material": "^5.9.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -19,14 +12,17 @@
     "@testing-library/user-event": "^13.5.0",
     "esbuild": "^0.14.49",
     "esbuild-wasm": "^0.14.49",
+    "external": "file:external/pkg",
     "file-saver": "^2.0.5",
     "firebase": "^9.9.2",
     "react": "^16.9.5",
     "react-dom": "^16.9.5",
     "react-router-dom": "^5.2.0",
     "react-scripts": "2.1.8",
-    
-    "web-vitals": "^2.1.4"
+    "react-simple-captcha": "^9.0.1",
+    "wasm-instantiate-streaming": "^1.0.2",
+    "web-vitals": "^2.1.4",
+    "webassembly": "^0.11.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

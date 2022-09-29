@@ -10,6 +10,7 @@ import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
 import { useEffect} from "react";
+import Keyboard from './components/keyboard';
 
 import db from './firebaseConfig';
 
@@ -53,6 +54,9 @@ const myTheme = createTheme({
   
 });
 
+const myLightTheme = createTheme({palette: {
+  mode: 'light'}});
+
 function App() {
 
   /*const history = useHistory();
@@ -83,6 +87,7 @@ function App() {
           <Route path="/desktop" component={Desktop} />
           <Route path="/contact" component={Contact} />
           <Route path="/emulate" component={Emulate} />
+          <Route path="/keyboard" component={Keyboard} />
           
         </Switch>
     

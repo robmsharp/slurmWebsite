@@ -32,18 +32,14 @@ const Keyboard = () => {
     const handleKeyPress = (event) => {
     
         event.preventDefault();
-  
-        //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
 
-        const result = keys.map((item) => {
+        setKeys((prevresult)=>prevresult.map((item) => {
             if (item.keycode == event.keyCode) {
                 return {...item, pressed: true};}
             else {
                 return item;
             }    
-        });
-
-        setKeys(result);
+        }));
 
     }
 
@@ -51,18 +47,15 @@ const Keyboard = () => {
 
         event.preventDefault();
 
-        //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been released`);
-
-        const result = keys.map((item) => {
+        setKeys((prevresult)=>prevresult.map((item) => {
             if (item.keycode == event.keyCode) {
                 return {...item, pressed: false};}
             else {
                 return item;
             }    
-        });
+        }));
 
-        setKeys(result);
-        //console.log(result);
+        
     
     }
     

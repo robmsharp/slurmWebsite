@@ -1,6 +1,6 @@
 import React from "react"; 
 
-import {Typography, Toolbar, AppBar, CssBaseline, 
+import {Popper, Popover, Typography, Toolbar, AppBar, CssBaseline, 
     Container, Card, Grid, Box, TextField, Autocomplete, CardActionArea,
     Avatar, CardHeader, CardContent, Button, Collapse,
     Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem, 
@@ -25,39 +25,8 @@ import Zoom from '@mui/material/Zoom';
 import Fab from '@mui/material/Fab';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 
-function ScrollTop() {
-  
-  const trigger = useScrollTrigger();
+import ScrollTop from '../components/scrollTop';
 
-  const handleClick = event => {
-    console.log("handle click");
-    const anchor = (event.target.ownerDocument || document).querySelector(
-      "#back-to-top-anchor"
-    );
-
-    console.log(anchor);
-
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
-
-  return (
-    <Zoom in={trigger}>
-      <Box
-        onClick={handleClick}
-        
-        role="presentation"
-        sx={{ position: 'fixed', bottom: 16, right: 16, zIndex:1}}
-      >
-        <Fab size="small" aria-label="scroll back to top" color="primary">
-          <KeyboardArrowUpIcon />
-        </Fab>
-        
-      </Box>
-    </Zoom>
-  );
-};
 
 const Welcome = () => {
 
@@ -102,21 +71,23 @@ const Welcome = () => {
   
   }, []);
 
-    
+  
 
     return (
     
     <>
     <Toolbar id="back-to-top-anchor" />
-        
+      
     <Box component="img" sx={{objectFit: 'cover', maxWidth:"100%"}} src={BackgroundImage}></Box>
-    <Typography variant="h2" align="center" sx={{py:2}}>Welcome to Slurm16's website</Typography>
+    
+    <Typography   variant="h2" align="center" sx={{py:2}}>Welcome to Slurm16's website</Typography>
+    
     <Container>
     
     <WelcomeList welcomeData={loaded} />
     </Container>
-    <ScrollTop />
-        
+    <ScrollTop anchor="#back-to-top-anchor"/>
+      
         
       
     </>

@@ -18,6 +18,7 @@ import {db, storage} from '../firebaseConfig';
   
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
+import ScrollTop from '../components/scrollTop';
 
 const Games = () => {
 
@@ -131,13 +132,15 @@ const Games = () => {
 
     return (
     <>
+    <Toolbar id="back-to-top-anchor" />
     <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
     
     <Container>
      
     <GamesList gamesData={loaded} />
 
-    </Container>    
+    </Container>
+    <ScrollTop anchor="#back-to-top-anchor"/>    
         </>
     );
 };

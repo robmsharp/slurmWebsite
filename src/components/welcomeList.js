@@ -10,14 +10,14 @@ import {Typography, Toolbar, AppBar, CssBaseline,
 
 
 //Maps over each paragraph  
-const Paragraphs = (paragraphs) => {
+const Paragraphs = (props) => {
 
   return (
   <>
       
   {
   
-  paragraphs.paragraphs.map((paragraph) => {
+  props.paragraphs.map((paragraph) => {
     return <div><Typography variant="body1" >{paragraph}</Typography><br/></div>
   })
   }

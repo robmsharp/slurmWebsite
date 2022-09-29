@@ -39,6 +39,7 @@ const MainHeader = () => {
         <Tabs value={location.pathname} sx={{ margin: 1}} >
             <Tab to={routes[0]} value={routes[0]} label="Welcome" component={Link}/>
             <Tab to={routes[1]} value={routes[1]} label="Play Games" component={Link}/>
+            <Tab to={routes[3]} value={routes[3]} label="Contact" component={Link}/>
             
         </Tabs>
         </Grid>
