@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore} from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import { getAuth} from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -23,5 +23,7 @@ const db = getFirestore(firebase);
 
 const storage = getStorage();
 
+const auth = getAuth(firebase);
 
-export {db, storage, firebase};
+
+export {db, storage, firebase, auth};

@@ -1,7 +1,7 @@
-import React from "react"; 
+import React, {useState} from "react";
 import logo from './logo.svg';
 import './App.css';
-import {Route, Switch, Redirect} from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Welcome from './pages/welcome';
 import Games from './pages/games';
 import MainHeader from './components/mainheader';
@@ -9,7 +9,9 @@ import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
-import { useEffect} from "react";
+import Blog from './pages/blog';
+import Messages from './pages/messages';
+import { useEffect } from "react";
 import Keyboard from './components/keyboard';
 
 import db from './firebaseConfig';
@@ -23,21 +25,25 @@ import Footer from './components/footer.js';
 import Arcade from './fonts/ARCADE.TTF';
 import { useHistory } from 'react-router-dom';
 
-import {Box
+import {
+  Box
 } from '@mui/material/';
 
 
+
 const myTheme = createTheme({
-  typography: {fontFamily: 'Orbitron',
-  body1: {fontFamily: "Ubuntu"},
-  subtitle1: {fontFamily: "Ubuntu", fontWeight: 700},
-  subtitle2: {fontFamily: "Ubuntu", fontSize: "0.5 em"},
-  h2: {
-    fontSize: '24px',
-    '@media (min-width:1000px)': {
-      fontSize: '2.4rem',
-    }
-  },},
+  typography: {
+    fontFamily: 'Orbitron',
+    body1: { fontFamily: "Ubuntu" },
+    subtitle1: { fontFamily: "Ubuntu", fontWeight: 700 },
+    subtitle2: { fontFamily: "Ubuntu", fontSize: "0.5 em" },
+    h2: {
+      fontSize: '24px',
+      '@media (min-width:1000px)': {
+        fontSize: '2.4rem',
+      }
+    },
+  },
   palette: {
     mode: 'dark',
     primary: {
@@ -51,51 +57,45 @@ const myTheme = createTheme({
       paper: '#263469',
     },
   },
-  
+
 });
 
-const myLightTheme = createTheme({palette: {
-  mode: 'light'}});
+
 
 function App() {
 
-  /*const history = useHistory();
   
-  //This is for redirecting to welcome page
-  useEffect(() => {
-    
-    const path = '/welcome';
-    history.push(path);
-  }
 
-  , []);*/
- 
 
   return (
     <>
-    <ThemeProvider theme={myTheme} >
-    <CssBaseline enableColorScheme />
-    <Box sx={{minHeight: 800}}>
     
+      <ThemeProvider theme={myTheme} >
+        <CssBaseline enableColorScheme />
+        <Box sx={{ minHeight: 800 }}>
 
-      <MainHeader/>
-      <Switch>
-          <Route exact path="/"> {<Redirect to="/welcome"/>} </Route>
-          <Route path="/welcome" component={Welcome} />
-          <Route path="/games" component={Games} />
-          <Route path="/choosegametype" component={ChooseGameType} />
-          <Route path="/desktop" component={Desktop} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/emulate" component={Emulate} />
-          <Route path="/keyboard" component={Keyboard} />
-          
-        </Switch>
-    
-    
-    
-    </Box>
-    <Footer/>
-    </ThemeProvider>
+
+          <MainHeader />
+          <Switch>
+            <Route exact path="/"> {<Redirect to="/welcome" />} </Route>
+            <Route path="/welcome" component={Welcome} />
+            <Route path="/games" component={Games} />
+            <Route path="/choosegametype" component={ChooseGameType} />
+            <Route path="/desktop" component={Desktop} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/emulate" component={Emulate} />
+            <Route path="/keyboard" component={Keyboard} />
+            <Route path="/blog" component={Blog} />
+            <Route path="/messages" component={Messages} />
+
+          </Switch>
+
+
+
+        </Box>
+        <Footer />
+      </ThemeProvider>
+     
     </>
   );
 }

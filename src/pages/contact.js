@@ -29,47 +29,123 @@ const style = {
 
 const Contact = () => {
 
+  //Name
   const nameReducer = (state, action) => {
     if (action.type === 'USER_INPUT') {
-      return { value: action.val, isValid: action.val.includes('@') };
+      if (action.val.trim() === '') { 
+        return { value: action.val, isValid: false, helperText: 'You must include your name' };
+      }
+      else {
+        return { value: action.val, isValid: true, helperText: ''}
+      }
     }
     
-    return { value: '', isValid: false };
+    return { value: '', isValid: false, helperText: 'Something went wrong' };
 
   };
 
-  const [nameState, dispatchEmail] = useReducer(nameReducer, {
+  const [nameState, dispatchName] = useReducer(nameReducer, {
     value: '',
     isValid: null,
     helperText: ''
   });
 
-  const { isValid: nameIsValid, helperText: nameHelperText} = nameState;
+  const { value: nameValue, isValid: nameIsValid, helperText: nameHelperText} = nameState;
 
-  const [name, setName] = useState('');
-  const [subject, setSubject] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState(false);
-  const [errorList, setErrorList] = useState([]);
+  //Email
+  const emailReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+      if (action.val.trim() === '') { 
+        return { value: action.val, isValid: false, helperText: 'You must include your email' };
+      }
+      else if (action.val.includes('@') === false) {
+        return { value: action.val, isValid: false, helperText: 'Your email must include @ symbol' };
+      }
+      else {
+        return { value: action.val, isValid: true, helperText: ''}
+      }
+    }
+    
+    return { value: '', isValid: false, helperText: 'Something went wrong' };
+
+  };
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+    helperText: ''
+  });
+
+  const { value: emailValue, isValid: emailIsValid, helperText: emailHelperText} = emailState;
+
+  //Subject
+  const subjectReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+      if (action.val.trim() === '') { 
+        return { value: action.val, isValid: false, helperText: 'You must include your subject' };
+      }
+      
+      else {
+        return { value: action.val, isValid: true, helperText: ''}
+      }
+    }
+    
+    return { value: '', isValid: false, helperText: 'Something went wrong' };
+
+  };
+
+  const [subjectState, dispatchSubject] = useReducer(subjectReducer, {
+    value: '',
+    isValid: null,
+    helperText: ''
+  });
+
+  const { value: subjectValue, isValid: subjectIsValid, helperText: subjectHelperText} = subjectState;
+  
+  //Message
+  const messageReducer = (state, action) => {
+    if (action.type === 'USER_INPUT') {
+      if (action.val.trim() === '') { 
+        return { value: action.val, isValid: false, helperText: 'You must include your message' };
+      }
+      
+      else {
+        return { value: action.val, isValid: true, helperText: ''}
+      }
+    }
+    
+    return { value: '', isValid: false, helperText: 'Something went wrong' };
+
+  };
+
+  const [messageState, dispatchMessage] = useReducer(messageReducer, {
+    value: '',
+    isValid: null,
+    helperText: ''
+  });
+
+  const { value: messageValue, isValid: messageIsValid, helperText: messageHelperText} = messageState;
+
+  
   const [sent, setSent] = useState(false);
   const [captcha, setCaptcha] = useState('');
+  const [error, setError] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
 
   const nameChangeHandler = event => {
-    setName(event.target.value);
+    dispatchName({ type: 'USER_INPUT', val: event.target.value });
   };
 
   const subjectChangeHandler = event => {
-    setSubject(event.target.value);
+    dispatchSubject({ type: 'USER_INPUT', val: event.target.value });
   };
 
   const emailChangeHandler = event => {
-    setEmail(event.target.value);
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
   };
 
   const messageChangeHandler = event => {
-    setMessage(event.target.value);
+    dispatchMessage({ type: 'USER_INPUT', val: event.target.value });
   };
 
   const captchaChangeHandler = event => {
@@ -79,55 +155,26 @@ const Contact = () => {
   const formSubmitHandler = event => {
     event.preventDefault();
     console.log("Name:");
-    console.log(name);
+    console.log(nameValue);
     console.log("Subject:");
-    console.log(subject);
+    console.log(subjectValue);
     console.log("Email:");
-    console.log(email);
+    console.log(emailValue);
     console.log("Message:");
-    console.log(message);
+    console.log(messageValue);
 
-    var validInput = true;
-    var issues = [];
+    //Check the captcha
 
-    if (name.trim() === '') {
-      validInput = false;
-      issues.push("Name not provided");
-    }
-
-    if (subject.trim() === '') {
-      validInput = false;
-      issues.push("Subject not provided");
-    }
-
-    if ((email.trim() === '') || (!email.includes('@'))) {
-      validInput = false;
-      issues.push("Valid email not provided. Email must contain @");
-    }
-
-    if (message.trim() === '') {
-      validInput = false;
-      issues.push("Message not provided");
-    }
-
-    if (validInput) {
+    if (validateCaptcha(captcha)==true) {
 
       console.log('valid input');
-
       setSent(true);
-
-      setName('');
-      setSubject('');
-      setEmail('');
-      setMessage('');
 
     }
 
     else {
       console.log('invalid input');
-      console.log(issues);
       setError(true);
-      setErrorList(issues);
     }
 
   };
@@ -140,37 +187,42 @@ const Contact = () => {
     setSent(false);
   };
 
-
-
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
 
+  //Delayed check of form being valid
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log('Checking form validity!');
+      setFormIsValid(nameIsValid && emailIsValid && subjectIsValid && messageIsValid);
+    }, 500);
+
+    return () => {
+      console.log('CLEANUP');
+      clearTimeout(identifier);
+    };
+  }, [emailIsValid, nameIsValid, subjectIsValid, messageIsValid]);
+
   return (
     <>
+      {/*The modal for failure*/}
       <Modal
         open={error}
         onClose={handleErrorClose}
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Invalid form information
+            Invalid Captcha
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Please correct the following errors and resubmit:
+            Please correct the Captcha and resubmit:
           </Typography>
-          <List>
-
-            {errorList.map((item) => (
-
-              <ListItem>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
-          </List>
+          
         </Box>
       </Modal>
 
+      {/*The modal for success*/}        
       <Modal
         open={sent}
         onClose={handleSentClose}
@@ -180,14 +232,16 @@ const Contact = () => {
             Form sent
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Your message has been sent. Please wait patiently for a reply.
+            Your message has been sent. Thankyou for reaching out.
           </Typography>
         </Box>
       </Modal>
+
+      {/*Instruction */}
       <Toolbar id="back-to-top-anchor" />
       <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Fill in the form and submit in order to contact the developer.</Typography>
 
-
+      {/*The contact form*/}        
       <Container >
         <Card sx={{ mb: 10 }}>
           <CardHeader
@@ -200,20 +254,20 @@ const Contact = () => {
           <CardContent>
 
             <form className="contact-form" onSubmit={formSubmitHandler}>
-
+              {/*It should not be an error if set to initialised value of null*/}
               <TextField
                 id="outlined-basic"
                 placeholder="Enter your name"
                 label="Name"
                 variant="outlined"
-
                 required
                 type="text"
                 sx={{ width: "50%" }}
                 onChange={nameChangeHandler}
-                value={name}
-                error={true}
-                helperText="Cannot be left blank."
+                value={nameValue}
+                
+                error={nameIsValid==false}
+                helperText={nameHelperText}
               />
 
               <br />
@@ -229,7 +283,9 @@ const Contact = () => {
                 type="email"
                 sx={{ width: "50%" }}
                 onChange={emailChangeHandler}
-                value={email}
+                value={emailValue}
+                error={emailIsValid==false}
+                helperText={emailHelperText}
               />
 
 
@@ -246,7 +302,9 @@ const Contact = () => {
                 required
                 sx={{ width: "100%" }}
                 onChange={subjectChangeHandler}
-                value={subject}
+                value={subjectValue}
+                error={subjectIsValid==false}
+                helperText={subjectHelperText}
               />
 
 
@@ -267,7 +325,9 @@ const Contact = () => {
                 type="text"
                 sx={{ width: "100%" }}
                 onChange={messageChangeHandler}
-                value={message}
+                value={messageValue}
+                error={messageIsValid==false}
+                helperText={messageHelperText}
               />
               <br />
               <br />
@@ -294,11 +354,6 @@ const Contact = () => {
               <br />
               <br />
               <Button variant="contained" onClick={formSubmitHandler} disabled={!formIsValid}>Submit</Button>
-
-
-
-
-
 
             </form>
           </CardContent>

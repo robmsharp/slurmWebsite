@@ -9,8 +9,8 @@ import { render } from "react-dom";
 //ReactDOM.render(<App />, document.getElementById('root'));
 
 
-import {BrowserRouter} from 'react-router-dom';
-
+import { BrowserRouter } from 'react-router-dom';
+import { AuthContextProvider } from './authContext';
 
 
 //const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -35,9 +35,13 @@ root.render(
 
 ReactDOM.render(
   <React.StrictMode>
+
     <BrowserRouter>
-      <App />
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
     </BrowserRouter>
+
   </React.StrictMode>,
   document.getElementById("root")
 );
