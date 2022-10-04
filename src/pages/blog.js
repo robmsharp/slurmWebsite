@@ -1,148 +1,118 @@
-import React from "react"; 
+import React from "react";
 
-import {Typography, Toolbar, AppBar, CssBaseline, 
-    Container, Card, Grid, Box, TextField, Autocomplete,
-    Avatar, CardHeader, CardContent, Button, Collapse,
-    Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem, 
-    ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-    InputLabel, Input, InputAdornment
-  } from '@mui/material/';
+import {
+  Typography, Toolbar, AppBar, CssBaseline,
+  Container, Card, Grid, Box, TextField, Autocomplete,
+  Avatar, CardHeader, CardContent, Button, Collapse,
+  Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem,
+  ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
+  InputLabel, Input, InputAdornment
+} from '@mui/material/';
 
 
-import GamesList from '../components/gamesList';
+import BlogList from '../components/blogList';
 
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import {db, storage} from '../firebaseConfig';
-  
+import { db, storage } from '../firebaseConfig';
+
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import ScrollTop from '../components/scrollTop';
 
 const Blog = () => {
 
-  var gamesData = [];
-  var newGamesData = [];
+  var blogData = [];
+  var newBlogData = [];
 
-  var promises=[];
-
-  var promiseIndex = 0;
+  var promises = [];
 
   const [loaded, setLoaded] = useState([]);
 
+  //Load the blog entries
+  useEffect(() => {
 
-  useEffect(()=> {
-    
-    
-
-    const fetchData = async() => {
+    const fetchData = async () => {
 
       try {
 
-        const q = query(collection(db, "games"), where("live", "==", true));
+
+        const q = query(collection(db, "blog"), where("author", "==", "Robert"));
 
         const querySnapshot = await getDocs(q);
 
-        
+
 
         querySnapshot.forEach((doc) => {
-          
+
+
           const data = doc.data();
+
+
+          console.log(data.title);
 
           let promiseIndices = []
 
-          //Cover images
-          const imageRef = ref(storage, 'covers/'+data.coverImage);
+          //Blog images
+          const imageRef = ref(storage, 'blogImages/' + data.image);
 
           const url = getDownloadURL(imageRef);
-          //Insert into array
-          promises.splice(promiseIndex, 0, url);
-          
-          promiseIndices.push(promiseIndex);
 
-          promiseIndex+=1;
+          //Insert into promise array
+          promises.push(url);
 
-          //Screenshots
-          const screenshots = data.screenshots;
-
-          screenshots.forEach((screenshot) => {
-            const screenshotRef = ref(storage, 'screenshots/'+screenshot);
-
-            const screenshotUrl = getDownloadURL(screenshotRef);
-            //Insert into array
-            promises.splice(promiseIndex, 0, screenshotUrl);
-
-            promiseIndices.push(promiseIndex);
-
-            promiseIndex+=1;
-
-          })
-
-          const romRef = ref(storage, 'roms/'+data.rom +'.bin');
-
-          const newData = {...data, "romRef": romRef, "promises": promiseIndices};
-
-          gamesData.push(newData);
+          blogData.push(data);
 
         });
 
         Promise.all(promises)
-  .then(resolvedPromises => {
-    gamesData.map((game) => {
+          .then(resolvedPromises => {
+            blogData.map((blog, index) => {
 
-      let screenshots = []
-      let imageUrl = null;
+              let imageUrl = null;
 
-      game.promises.map((promise, index) => {
+              imageUrl = resolvedPromises[index];
 
-        if (index == 0) {
+              newBlogData.push({ ...blog, "imageUrl": imageUrl, "key": blog.datePosted.toDate() });
 
-          imageUrl = resolvedPromises[promise]
+            });
 
-        }
+            // sort by date
+            const copy = newBlogData.slice();
+            const sorter = (a, b) => {
+                return (b["key"] - a["key"]);
+            };
+            copy.sort(sorter);
 
-        else {
+            setLoaded(copy);
 
-          screenshots.push(resolvedPromises[promise]);
+          });
 
-        }
-
-      })
-      
-      newGamesData.push({...game, "imageUrl": imageUrl, "screenshots": screenshots})
-      });  
-    console.log(newGamesData);
-    setLoaded(newGamesData);
-    
-  });
-
-        //setLoaded(gamesData);
-
-      } catch(err) {
-          console.error(err);
+      } catch (err) {
+        console.error(err);
       }
 
-  };
+    };
 
-  fetchData();
-  console.log(gamesData);
-  
+    fetchData();
+
+
+
   }, []);
 
-    return (
+  return (
     <>
-    <Toolbar id="back-to-top-anchor" />
-    <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
-    
-    <Container>
-     
-    <GamesList gamesData={loaded} />
+      <Toolbar id="back-to-top-anchor" />
+      <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Have fun reading Slurm16's development blog</Typography>
 
-    </Container>
-    <ScrollTop anchor="#back-to-top-anchor"/>    
-        </>
-    );
+      <Container>
+      <BlogList blogData={loaded} />
+
+      </Container>
+      <ScrollTop anchor="#back-to-top-anchor" />
+    </>
+  );
 };
 
 export default Blog;

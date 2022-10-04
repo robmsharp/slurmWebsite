@@ -9,6 +9,7 @@ import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
 import Contact from './pages/contact';
 import Emulate from './pages/emulate';
+import NotFound from './pages/notFound';
 import Blog from './pages/blog';
 import Messages from './pages/messages';
 import { useEffect } from "react";
@@ -87,7 +88,7 @@ function App() {
             <Route path="/keyboard" component={Keyboard} />
             <Route path="/blog" component={Blog} />
             <Route path="/messages" component={Messages} />
-
+            <Route path="*" component ={NotFound} />
           </Switch>
 
 

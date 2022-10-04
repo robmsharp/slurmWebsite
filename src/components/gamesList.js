@@ -3,7 +3,7 @@ import {Typography, Toolbar, AppBar, CssBaseline,
     Avatar, CardHeader, CardContent, Button, Collapse,
     Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem, 
     ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-    InputLabel, Input, InputAdornment
+    InputLabel, Input, InputAdornment, CircularProgress
   } from '@mui/material/';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -111,7 +111,7 @@ const handleExpandClick = (clickedIndex) => {
 return (
   <>
   
-  {props.gamesData.length === 0 && <Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading games list...</Typography>
+  {props.gamesData.length === 0 && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading games list...</Typography><CircularProgress /></>
     } 
     <Grid container xs={12} sm={12}>
 
