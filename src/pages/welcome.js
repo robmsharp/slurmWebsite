@@ -51,6 +51,7 @@ const Welcome = () => {
         querySnapshot.forEach((doc) => {
           
           welcomeData.push(doc.data());
+          
         });
 
         const copy = welcomeData.slice();

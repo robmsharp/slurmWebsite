@@ -6,6 +6,10 @@ import { useEffect, useReducer } from "react";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@mui/material/styles";
 import ScrollTop from '../components/scrollTop';
+import { db, storage } from '../firebaseConfig';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, doc, setDoc, addDoc, serverTimestamp } from "firebase/firestore";
+
 
 //Styling because captcha has white background
 const myLightTheme = createTheme({
@@ -168,7 +172,26 @@ const Contact = () => {
     if (validateCaptcha(captcha)==true) {
 
       console.log('valid input');
-      setSent(true);
+      
+      const data = {
+        
+        beenRead: false,
+        dateSent: serverTimestamp(),
+        email: emailValue,
+        message: messageValue.replace(/\n/g, "\\n"),
+        name: nameValue,
+        replied: false,
+        subject: subjectValue
+
+      };
+
+      const dbRef = collection(db, "messages");
+
+      addDoc(dbRef, data)
+        .then(docRef => {
+            console.log("Document has been added successfully");
+            setSent(true);
+        })
 
     }
 
@@ -323,7 +346,7 @@ const Contact = () => {
 
                 required
                 type="text"
-                sx={{ width: "100%" }}
+                sx={{ width: "100%"}}
                 onChange={messageChangeHandler}
                 value={messageValue}
                 error={messageIsValid==false}

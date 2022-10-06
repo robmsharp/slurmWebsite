@@ -38,7 +38,7 @@ const Blog = () => {
       try {
 
 
-        const q = query(collection(db, "blog"), where("author", "==", "Robert"));
+        const q = query(collection(db, "blog"), where("datePosted", "!=", null));
 
         const querySnapshot = await getDocs(q);
 
