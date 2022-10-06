@@ -7,8 +7,13 @@ import {
 import slurm16Icon from '../icons/slurm16small.png';
 
 import AuthContext from "../authContext";
+import MessageContext from "../api/messagesAPI";
+
+import {countNewMessages} from "../api/messagesAPI";
 
 const MainHeader = () => {
+
+  const messageCtx = useContext(MessageContext);
 
   const routes = ["/welcome", "/games", "/develop", "/contact", "/emulate", "/blog", "/messages"];
   const location = useLocation();
@@ -50,7 +55,7 @@ const MainHeader = () => {
 
                 
                 
-                  <Badge badgeContent={4} color="primary" sx={{ overflow: "visible" }} anchorOrigin={{
+                  <Badge badgeContent={messageCtx.unreadMessages} color="primary" sx={{ overflow: "visible" }} anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
                   }}>

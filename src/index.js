@@ -11,6 +11,7 @@ import { render } from "react-dom";
 
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContextProvider } from './authContext';
+import { MessageContextProvider } from './api/messagesAPI';
 
 
 //const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -38,7 +39,9 @@ ReactDOM.render(
 
     <BrowserRouter>
       <AuthContextProvider>
+      <MessageContextProvider>
         <App />
+        </MessageContextProvider>
       </AuthContextProvider>
     </BrowserRouter>
 

@@ -66,12 +66,14 @@ const MessageList = (props) => {
             <Paragraph paragraph={info.message}/>
             <Grid container spacing={2}>
             <Grid item xs={12} md={10}>
+            <Tooltip title={info.email}> 
             <Button variant="contained" startIcon={<EmailIcon/>} sx={{m:2}} onClick={() => props.handleEmail(info.email)}>Copy address</Button>
+            </Tooltip> 
             <Button disabled={info.beenRead} sx={{m:2}} variant="contained" startIcon={<VisibilityIcon/>} onClick={() => props.handleRead(info.id)}>Mark Read</Button>
             <Button disabled={info.replied} sx={{m:2}} variant="contained" startIcon={<AssignmentTurnedInIcon/>} onClick={() => props.handleReply(info.id)}>Mark Replied</Button>
             </Grid>
             <Grid item xs={2} md={2}>
-            <Button sx={{m:2}} color="secondary" variant="contained" startIcon={<DeleteIcon/>}>Delete</Button>
+            <Button sx={{m:2}} color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => props.handleDelete(info.id, info.subject)}>Delete</Button>
             </Grid>
             </Grid>
           </CardContent>
