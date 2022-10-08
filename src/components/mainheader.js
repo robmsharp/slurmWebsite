@@ -9,7 +9,6 @@ import slurm16Icon from '../icons/slurm16small.png';
 import AuthContext from "../authContext";
 import MessageContext from "../api/messagesAPI";
 
-import {countNewMessages} from "../api/messagesAPI";
 
 const MainHeader = () => {
 

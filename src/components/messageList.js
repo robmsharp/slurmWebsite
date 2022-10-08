@@ -42,8 +42,7 @@ const MessageList = (props) => {
 
   return (
     <>
-      {props.messageData.length === 0 && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
-      }
+      
       {props.messageData.map((info) => (
         <>
         <Card key={info.id} sx={{ margin: 10 }}>

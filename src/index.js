@@ -8,11 +8,10 @@ import { render } from "react-dom";
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 
-
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContextProvider } from './authContext';
 import { MessageContextProvider } from './api/messagesAPI';
-
+import { SnackbarContextProvider } from './api/snackbarAPI';
 
 //const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -38,11 +37,13 @@ ReactDOM.render(
   <React.StrictMode>
 
     <BrowserRouter>
+    <SnackbarContextProvider>
       <AuthContextProvider>
       <MessageContextProvider>
         <App />
         </MessageContextProvider>
       </AuthContextProvider>
+      </SnackbarContextProvider>
     </BrowserRouter>
 
   </React.StrictMode>,

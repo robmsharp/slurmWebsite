@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useState } from "react";
 
 import {
   Typography, Toolbar, AppBar, CssBaseline,
@@ -6,130 +6,85 @@ import {
   Avatar, CardHeader, CardContent, Button, Collapse,
   Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem,
   ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-  InputLabel, Input, InputAdornment
+  InputLabel, Input, InputAdornment, CircularProgress
 } from '@mui/material/';
 
-
 import MessageList from '../components/messageList';
-
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
-
-import { db, storage } from '../firebaseConfig';
-
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import MessageContext from "../api/messagesAPI";
+import SnackbarContext from "../api/snackbarAPI";
 import ScrollTop from '../components/scrollTop';
-
-import { onSnapshot } from 'firebase/firestore';
-
-import { getFirestore, doc, setDoc, deleteDoc } from "firebase/firestore";
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
 const Messages = () => {
 
-  const [loaded, setLoaded] = useState([]);
+  //Load the message Context
+  const messageCtx = useContext(MessageContext);
+  const snackCtx = useContext(SnackbarContext);
 
+  //Used for the delete dialog
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState();
   const [deleteSubject, setDeleteSubject] = useState();
 
-  const handleRead = (id) => {
+  //Handle the deletion after confirming
+  const deleteMessageConfirmed = (id) => {
 
-    const data = { beenRead: true }
+    if (messageCtx.deleteMessage(id)) {
+      snackCtx.notify("Message deleted.");
+    }
 
-    const docRef = doc(db, "messages", id);
+    else {
+      snackCtx.notifyLevel("Unable to delete message", "error");
+    }
 
-    setDoc(docRef, data, { merge: true })
-
-  }
-
-  const handleReply = (id) => {
-
-    const data = { replied: true }
-
-    const docRef = doc(db, "messages", id);
-
-    setDoc(docRef, data, { merge: true })
-
-  }
-
-  const handleEmail = (email) => {
-
-    navigator.clipboard.writeText(email);
-
-  }
-
-  
-  useEffect(() => {
-    const colRef = collection(db, 'messages')
-    const snap = onSnapshot(colRef, (snapshot) => {
-
-
-      //const q = query(collection(db, "messages"), where("dateSent", "!=", null));
-
-      //const querySnapshot = await getDocs(q);
-
-      //querySnapshot.forEach((doc) => {
-
-      console.log("Snapshotting!");
-
-      var messageData = [];
-
-      snapshot.docs.forEach((doc) => {
-
-        const data = doc.data();
-
-        var color = "#0f790f";
-
-        if (data.beenRead === true) {
-          color = "#263469";
-        }
-
-        messageData.push({ ...data, "color": color, "id": doc.id });
-
-      });
-
-      // sort by date
-      const copy = messageData.slice();
-      const sorter = (a, b) => {
-        return (b["dateSent"] - a["dateSent"]);
-      };
-      copy.sort(sorter);
-
-      setLoaded(copy);
-      //setLoaded(messageData);
-
-    });
-  }, []);
-
-
-
-  const deleteMessage = (id) => {
-    console.log(id);
-
-    const docRef = doc(db, "messages", id);
-
-    deleteDoc(docRef)
-      .then(() => {
-        console.log("Entire Document has been deleted successfully.")
-      })
-      .catch(error => {
-        console.log(error);
-      })
-
+    //Close the dialog
     setDeleteOpen(false);
 
   }
 
+  //Copy email to clipboard
+  const handleEmail = (email) => {
+
+    navigator.clipboard.writeText(email);
+    snackCtx.notify(email.concat(" copied to clipboard"));
+
+  }
+
+  //Mark as read
+  const handleRead = (id) => {
+
+    if (messageCtx.markAsRead(id)) {
+      snackCtx.notify("Message marked as read.");
+    }
+
+    else {
+      snackCtx.notifyLevel("Unable to modify message", "error");
+    }
+
+  }
+
+  //Mark as replied
+  const handleReply = (id) => {
+
+    if (messageCtx.markAsReplied(id)) {
+      snackCtx.notify("Message marked as replied.");
+    }
+
+    else {
+      snackCtx.notifyLevel("Unable to modify message", "error");
+    }
+
+  }
+
+  //Close the dialog when click cancel
   const closeDialog = () => {
     setDeleteOpen(false);
   }
 
+  //Open the delete dialog
   const handleDelete = (id, subject) => {
-    console.log("Deleting");
     setDeleteId(id);
     setDeleteSubject(subject);
     setDeleteOpen(true);
@@ -142,7 +97,10 @@ const Messages = () => {
       <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Review the contact messages</Typography>
 
       <Container>
-        <MessageList messageData={loaded} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />
+      {messageCtx.denied === false && messageCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
+      }
+        {messageCtx.denied === true && <Typography>Access denied.</Typography>}
+        {messageCtx.denied === false && messageCtx.loaded != false && <MessageList messageData={messageCtx.loaded} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
@@ -159,7 +117,7 @@ const Messages = () => {
               <Button variant="contained" onClick={closeDialog}>Cancel</Button>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Button color="secondary" variant="contained" onClick={() => deleteMessage(deleteId)}>
+              <Button color="secondary" variant="contained" onClick={() => deleteMessageConfirmed(deleteId)}>
                 Delete
               </Button>
             </Grid>
