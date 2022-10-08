@@ -100,7 +100,7 @@ const Messages = () => {
       {messageCtx.denied === false && messageCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
       }
         {messageCtx.denied === true && <Typography>Access denied.</Typography>}
-        {messageCtx.denied === false && messageCtx.loaded != false && <MessageList messageData={messageCtx.loaded} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
+        {messageCtx.denied === false && messageCtx.loaded != false && <MessageList messageData={messageCtx.messages} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />

@@ -9,12 +9,14 @@ import React, { useState, useEffect } from 'react';
 const MessageContext = React.createContext({
     unreadMessages: 0,
     loaded: false,
-    denied: false
+    denied: false,
+    messages: null
 
 });
 
 export const MessageContextProvider = (props) => {
 
+    const [messages, setMessages] = useState(null);
     const [unreadMessages, setUnreadMessages] = useState();
     const [loaded, setLoaded] = useState(false);
     const [denied, setDenied] = useState(false);
@@ -49,6 +51,7 @@ export const MessageContextProvider = (props) => {
             return true;
         })
             .catch(error => {
+                console.log(error);
                 return false;
             })
 
@@ -78,9 +81,9 @@ export const MessageContextProvider = (props) => {
 
             //Sets denied to true if non-admin user doesn't have permission to read data
             if (snapshot === null) {
-                /*setLoaded(true);
+                setLoaded(true);
                 setUnreadMessages(0);
-                setDenied(true);*/
+                setDenied(true);
             }
 
             else {
@@ -137,8 +140,8 @@ export const MessageContextProvider = (props) => {
                     };
                     return ({ ...data, "pageIndex": pageIndex });
                 });
-
-                setLoaded(paginated);
+                setMessages(paginated);
+                setLoaded(true);
 
             }
 
@@ -152,6 +155,7 @@ export const MessageContextProvider = (props) => {
                 unreadMessages: unreadMessages,
                 loaded: loaded,
                 denied: denied,
+                messages: messages,
                 deleteMessage: deleteMessage,
                 markAsReplied: markAsReplied,
                 markAsRead: markAsRead

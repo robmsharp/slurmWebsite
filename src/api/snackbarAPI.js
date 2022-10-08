@@ -6,24 +6,22 @@ import {
     Snackbar
 } from '@mui/material/';
 
+import { useSnackbar } from 'notistack';
 
 const SnackbarContext = React.createContext();
 
 
 export const SnackbarContextProvider = (props) => {
 
-    const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState('');
-    const [severity, setSeverity] = useState("success");
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    
 
 
     //Makes a green notification appear at bottom left
     const notify = (message) => {
 
-        setOpen(false);
-        setMessage(message);
-        setSeverity("success");
-        setOpen(true);
+        enqueueSnackbar(message, {variant: "success"});
 
     }
 
@@ -31,29 +29,11 @@ export const SnackbarContextProvider = (props) => {
     //Green (success) is standard
     const notifyLevel = (message, severity) => {
 
-        setOpen(false);
-
-        if (message) {
-            setMessage(message);
-        }
-        else {
-            console.log("missing message for notification");
-        }
-        if (severity) {
-            setSeverity(severity);
-        }
-        else {
-            setSeverity("success");
-        }
-        setOpen(true);
+        enqueueSnackbar(message, {variant: severity});
 
     }
 
-    const handleClose = () => {
-        
-        setOpen(false);
-
-    };
+   
 
     return (
         <SnackbarContext.Provider
@@ -64,11 +44,7 @@ export const SnackbarContextProvider = (props) => {
             }}
         >
             {props.children}
-            <Snackbar open={open} onClose={handleClose}>
-                <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity={severity}sx={{ width: '100%' }}>
-                    {message}
-                </MuiAlert>
-            </Snackbar>
+            
         </SnackbarContext.Provider>
     );
 };

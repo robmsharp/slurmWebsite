@@ -13,6 +13,9 @@ import { AuthContextProvider } from './authContext';
 import { MessageContextProvider } from './api/messagesAPI';
 import { SnackbarContextProvider } from './api/snackbarAPI';
 
+import { SnackbarProvider } from 'notistack';
+
+
 //const root = ReactDOM.createRoot(document.getElementById('root'));
 
 
@@ -37,6 +40,7 @@ ReactDOM.render(
   <React.StrictMode>
 
     <BrowserRouter>
+    <SnackbarProvider maxSnack={3}>
     <SnackbarContextProvider>
       <AuthContextProvider>
       <MessageContextProvider>
@@ -44,6 +48,7 @@ ReactDOM.render(
         </MessageContextProvider>
       </AuthContextProvider>
       </SnackbarContextProvider>
+      </SnackbarProvider>
     </BrowserRouter>
 
   </React.StrictMode>,
