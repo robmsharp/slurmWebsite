@@ -26,126 +26,151 @@ export const MessageContextProvider = (props) => {
 
     //Delete the message
     //Returns false if encounters an error, otherwise returns true
-    const deleteMessage = (id) => {
+    const deleteMessage = async (id) => {
 
         const docRef = doc(db, "messages", id);
 
-        deleteDoc(docRef)
-            .then(() => {
-                return true;
-            })
-            .catch(error => {
-                return false;
-            })
+        try {
+            await deleteDoc(docRef);
+            return true;
+        }
+
+        catch (error) {
+            console.log(error);
+            return false;
+        }
 
     }
 
     //Mark the message as read
-    const markAsRead = (id) => {
+    const markAsRead = async (id) => {
 
         const data = { beenRead: true }
 
         const docRef = doc(db, "messages", id);
 
-        setDoc(docRef, data, { merge: true }).then(() => {
+        try {
+            await setDoc(docRef, data, { merge: true });
             return true;
-        })
-            .catch(error => {
-                console.log(error);
-                return false;
-            })
+        }
+
+        catch (error) {
+            console.log(error);
+            return false;
+        }
 
     }
 
     //Mark the message as replied
-    const markAsReplied = (id) => {
+    const markAsReplied = async (id) => {
 
         const data = { replied: true }
 
         const docRef = doc(db, "messages", id);
 
-        setDoc(docRef, data, { merge: true }).then(() => {
+        try {
+            await setDoc(docRef, data, { merge: true });
             return true;
-        })
-            .catch(error => {
-                return false;
-            })
+        }
+
+        catch (error) {
+            console.log(error);
+            return false;
+        }
 
     }
 
     //Keep track of message data changes
-    
-    useEffect(() => {
-        const colRef = collection(db, 'messages');
-        const snap = onSnapshot(colRef, (snapshot) => {
 
-            //Sets denied to true if non-admin user doesn't have permission to read data
-            if (snapshot === null) {
-                setLoaded(true);
+    useEffect(() => {
+
+        console.log("snapping");
+        
+        try {
+            const colRef = collection(db, 'messages');
+        
+            const snap = onSnapshot(colRef, (snapshot) => {
+
+                console.log(snapshot);
+
+                
+
+                
+
+                    //Count the number of unread messages
+                    var count = 0;
+
+
+                    snapshot.docs.forEach((doc) => {
+
+                        const data = doc.data();
+
+                        if (data.beenRead === false) {
+                            count += 1;
+                        };
+
+                        setUnreadMessages(count);
+                    });
+
+                    //Set color of header
+                    var messageData = [];
+
+                    snapshot.docs.forEach((doc) => {
+
+                        const data = doc.data();
+
+                        var color = "palette.primary.main";
+
+                        if (data.beenRead === true) {
+                            color = "palette.background.paper";
+                        }
+
+                        messageData.push({ ...data, "color": color, "id": doc.id });
+
+                    });
+
+                    // sort by date
+                    const copy = messageData.slice();
+                    const sorter = (a, b) => {
+                        return (b["dateSent"] - a["dateSent"]);
+                    };
+
+                    const sorted = copy.sort(sorter);
+
+                    var count = 0;
+                    var pageIndex = 0;
+
+                    //Paginate the data, must occur after sorting
+                    const paginated = sorted.map((data) => {
+                        count += 1;
+                        if (count >= messagesPerPage) {
+                            count = 0;
+                            pageIndex += 1;
+                        };
+                        return ({ ...data, "pageIndex": pageIndex });
+                    });
+                    setMessages(paginated);
+                    setLoaded(true);
+
+                
+
+            }, 
+            error => {
+                console.log(error);
                 setUnreadMessages(0);
                 setDenied(true);
-            }
-
-            else {
-
-                //Count the number of unread messages
-                var count = 0;
-
-
-                snapshot.docs.forEach((doc) => {
-
-                    const data = doc.data();
-
-                    if (data.beenRead === false) {
-                        count += 1;
-                    };
-
-                    setUnreadMessages(count);
-                });
-
-                //Set color of header
-                var messageData = [];
-
-                snapshot.docs.forEach((doc) => {
-
-                    const data = doc.data();
-
-                    var color = "palette.primary.main";
-
-                    if (data.beenRead === true) {
-                        color = "palette.background.paper";
-                    }
-
-                    messageData.push({ ...data, "color": color, "id": doc.id });
-
-                });
-
-                // sort by date
-                const copy = messageData.slice();
-                const sorter = (a, b) => {
-                    return (b["dateSent"] - a["dateSent"]);
-                };
-
-                const sorted = copy.sort(sorter);
-
-                var count = 0;
-                var pageIndex = 0;
-
-                //Paginate the data, must occur after sorting
-                const paginated = sorted.map((data) => {
-                    count += 1;
-                    if (count >= messagesPerPage) {
-                        count = 0;
-                        pageIndex += 1;
-                    };
-                    return ({ ...data, "pageIndex": pageIndex });
-                });
-                setMessages(paginated);
                 setLoaded(true);
+            });
+        }
 
-            }
+        catch (error) {
+            console.log(error);
+            setUnreadMessages(0);
+            setDenied(true);
+            setLoaded(true);
+        }
 
-        });
+        console.log("end snapping");
 
     }, []);
 

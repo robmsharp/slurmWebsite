@@ -29,10 +29,14 @@ const Messages = () => {
   const [deleteSubject, setDeleteSubject] = useState();
 
   //Handle the deletion after confirming
-  const deleteMessageConfirmed = (id) => {
+  const deleteMessageConfirmed =  async (id) => {
 
-    if (messageCtx.deleteMessage(id)) {
+    const success = await messageCtx.deleteMessage(id);
+    
+    if (success===true) {
+
       snackCtx.notify("Message deleted.");
+
     }
 
     else {
@@ -53,9 +57,12 @@ const Messages = () => {
   }
 
   //Mark as read
-  const handleRead = (id) => {
+  const handleRead =  async (id) => {
 
-    if (messageCtx.markAsRead(id)) {
+    const success = await messageCtx.markAsRead(id);
+    
+
+    if (success===true) {
       snackCtx.notify("Message marked as read.");
     }
 
@@ -66,9 +73,12 @@ const Messages = () => {
   }
 
   //Mark as replied
-  const handleReply = (id) => {
+  const handleReply = async (id) => {
 
-    if (messageCtx.markAsReplied(id)) {
+    const success = await messageCtx.markAsReplied(id);
+    
+
+    if (success===true) {
       snackCtx.notify("Message marked as replied.");
     }
 
@@ -100,7 +110,7 @@ const Messages = () => {
       {messageCtx.denied === false && messageCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
       }
         {messageCtx.denied === true && <Typography>Access denied.</Typography>}
-        {messageCtx.denied === false && messageCtx.loaded != false && <MessageList messageData={messageCtx.messages} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
+        {messageCtx.denied === false && messageCtx.loaded === true && <MessageList messageData={messageCtx.messages} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />

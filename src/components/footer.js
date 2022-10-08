@@ -113,7 +113,7 @@ const Footer = () => {
     useEffect(()=> {
 
         
-        ctx.onLogin();
+        //ctx.onLogin();
          
         }, []
         );

@@ -72,7 +72,7 @@ function App() {
   return (
     <>
     
-      <ThemeProvider theme={myTheme} >
+      
         <CssBaseline enableColorScheme />
         <Box sx={{ minHeight: 800 }}>
 
@@ -96,7 +96,7 @@ function App() {
 
         </Box>
         <Footer />
-      </ThemeProvider>
+      
      
     </>
   );
