@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 
 import {
   Typography, Toolbar, AppBar, CssBaseline,
@@ -6,111 +6,102 @@ import {
   Avatar, CardHeader, CardContent, Button, Collapse,
   Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem,
   ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-  InputLabel, Input, InputAdornment
+  InputLabel, Input, InputAdornment, CircularProgress, Pagination, Dialog, DialogTitle
 } from '@mui/material/';
 
 
+import BlogDialog from '../components/blogDialog';
+
 import BlogList from '../components/blogList';
 
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
 
-import { db, storage } from '../firebaseConfig';
-
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import ScrollTop from '../components/scrollTop';
 
+import SnackContext from "../api/snackbarAPI";
+import AuthContext from "../api/authorisationAPI";
+import BlogContext from "../api/blogAPI";
+
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+
 const Blog = () => {
 
-  var blogData = [];
-  var newBlogData = [];
+  const blogCtx = useContext(BlogContext);
+  const authCtx = useContext(AuthContext);
+  const snackCtx = useContext(SnackContext);
 
-  var promises = [];
+  const [openDialog, setOpen] = useState(false);
 
-  const [loaded, setLoaded] = useState([]);
+  //Set the page to the first entry
+  const [page, setPage] = useState(1);
 
-  //Load the blog entries
-  useEffect(() => {
+  const handleClose = () => {
+    setOpen(false);
+  }
 
-    const fetchData = async () => {
+  const handleChange = (event, value) => {
+    setPage(value);
+    console.log(page);
+  };
 
-      try {
+  const blogFunction = async (id, myfunction, messageSuccess, messageFailure) => {
 
+    const success = await myfunction(id);
 
-        const q = query(collection(db, "blog"), where("datePosted", "!=", null));
+    if (success) {
+      snackCtx.notifyLevel(messageSuccess, "success");
+    }
+    else {
+      snackCtx.notifyLevel(messageFailure, "error");
+    }
 
-        const querySnapshot = await getDocs(q);
+  }
 
-
-
-        querySnapshot.forEach((doc) => {
-
-
-          const data = doc.data();
-
-
-          console.log(data.title);
-
-          let promiseIndices = []
-
-          //Blog images
-          const imageRef = ref(storage, 'blogImages/' + data.image);
-
-          const url = getDownloadURL(imageRef);
-
-          //Insert into promise array
-          promises.push(url);
-
-          blogData.push(data);
-
-        });
-
-        Promise.all(promises)
-          .then(resolvedPromises => {
-            blogData.map((blog, index) => {
-
-              let imageUrl = null;
-
-              imageUrl = resolvedPromises[index];
-
-              newBlogData.push({ ...blog, "imageUrl": imageUrl, "key": blog.datePosted.toDate() });
-
-            });
-
-            // sort by date
-            const copy = newBlogData.slice();
-            const sorter = (a, b) => {
-                return (b["key"] - a["key"]);
-            };
-            copy.sort(sorter);
-
-            setLoaded(copy);
-
-          });
-
-      } catch (err) {
-        console.error(err);
-      }
-
-    };
-
-    fetchData();
+  const handlePublish = (id) => {
+    blogFunction(id, blogCtx.publish, "Blog entry published.", "Unable to publish blog entry.");
+  }
 
 
+  const handleUnpublish = (id) => {
 
-  }, []);
+  }
+
+
+  const handleEdit = (id) => {
+
+  }
+
+
+  const handleDelete = (id) => {
+
+  }
 
   return (
     <>
       <Toolbar id="back-to-top-anchor" />
-      <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Have fun reading Slurm16's development blog</Typography>
-
+      {authCtx.isLoggedIn ?  <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Create new entries or edit existing entries in the blog</Typography> : <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Have fun reading Slurm16's development blog</Typography>
+      }
+      
       <Container>
-      <BlogList blogData={loaded} />
+        {blogCtx.error === false && blogCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
+        }
+        {blogCtx.error === true && <Typography>Something went wrong.</Typography>}
+        {blogCtx.error === false && blogCtx.loaded === true && <>
+          <Button variant="contained" startIcon={<NoteAddIcon/>} onClick={()=>{setOpen(true)}}>Create new entry</Button>
+          <Box display="flex" justifyContent="center">
+            
+            <Pagination count={blogCtx.totalPages} page={page} onChange={handleChange} color="primary" />
+          </Box>
+          <BlogList blogData={blogCtx.entries} auth={authCtx.isLoggedIn} page={page} handlePublish={handlePublish} handleUnpublish={handleUnpublish} handleEdit={handleEdit} handleDelete={handleDelete} />
+        </>}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
+    
+      <BlogDialog openDialog = {openDialog} handleClose = {handleClose}/>
+      
+    
+    
     </>
   );
 };

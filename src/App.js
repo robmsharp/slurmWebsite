@@ -82,8 +82,7 @@ function App() {
             <Route exact path="/"> {<Redirect to="/welcome" />} </Route>
             <Route path="/welcome" component={Welcome} />
             <Route path="/games" component={Games} />
-            <Route path="/choosegametype" component={ChooseGameType} />
-            <Route path="/desktop" component={Desktop} />
+            
             <Route path="/contact" component={Contact} />
             <Route path="/emulate" component={Emulate} />
             <Route path="/keyboard" component={Keyboard} />

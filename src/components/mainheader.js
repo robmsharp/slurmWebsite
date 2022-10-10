@@ -6,7 +6,7 @@ import {
 
 import slurm16Icon from '../icons/slurm16small.png';
 
-import AuthContext from "../authContext";
+import AuthContext from "../api/authorisationAPI";
 import MessageContext from "../api/messagesAPI";
 
 
@@ -47,24 +47,24 @@ const MainHeader = () => {
 
           {ctx.isLoggedIn && <>
             <Grid item xs={8}>
-              <Tabs value={location.pathname} sx={{ margin: 1, "& .MuiTabs-flexContainer": { paddingTop: "12px" } }} >
+              <Tabs value={location.pathname} sx={{ margin: 1 }} >
                 <Tab to={routes[0]} value={routes[0]} label="Welcome" component={Link} />
                 <Tab to={routes[1]} value={routes[1]} label="Play Games" component={Link} />
                 <Tab to={routes[5]} value={routes[5]} label="Blog" component={Link} />
 
                 
                 
-                  <Badge badgeContent={messageCtx.unreadMessages} color="primary" sx={{ overflow: "visible" }} anchorOrigin={{
+                  
+                    <Tab label={<Badge badgeContent={messageCtx.unreadMessages} color="primary" sx={{ overflow: "visible" }} anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
-                  }}>
-                    <Tab to={routes[6]} value={routes[6]} label="Messages" component={Link} />
-                  </Badge>
+                  }}>Messages</Badge> } to={routes[6]} value={routes[6]} component={Link} />
+                  
 
               </Tabs>
             </Grid>
             <Grid item xs={2}>
-              <Button onClick={ctx.onLogout} sx={{ mt: "25px" }}>Admin Logout</Button>
+              <Button onClick={ctx.onLogout} sx={{ mt: "13px" }}>Admin Logout</Button>
             </Grid>
           </>
           }

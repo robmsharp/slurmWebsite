@@ -43,7 +43,7 @@ const MessageList = (props) => {
   return (
     <>
       
-      {props.messageData.map((info) => (
+      {props.messageData.filter(info => info.pageIndex === props.page).map((info) => (
         <>
         <Card key={info.id} sx={{ margin: 10 }}>
         

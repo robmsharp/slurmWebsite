@@ -222,7 +222,7 @@ const Contact = () => {
     }, 500);
 
     return () => {
-      console.log('CLEANUP');
+      
       clearTimeout(identifier);
     };
   }, [emailIsValid, nameIsValid, subjectIsValid, messageIsValid]);

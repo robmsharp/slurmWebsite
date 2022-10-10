@@ -10,7 +10,8 @@ const MessageContext = React.createContext({
     unreadMessages: 0,
     loaded: false,
     denied: false,
-    messages: null
+    messages: null,
+    totalPages: 1
 
 });
 
@@ -20,6 +21,7 @@ export const MessageContextProvider = (props) => {
     const [unreadMessages, setUnreadMessages] = useState();
     const [loaded, setLoaded] = useState(false);
     const [denied, setDenied] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
 
     //This determines how many messages shown per page
     const messagesPerPage = 5;
@@ -84,18 +86,10 @@ export const MessageContextProvider = (props) => {
 
     useEffect(() => {
 
-        console.log("snapping");
         
-        try {
             const colRef = collection(db, 'messages');
         
             const snap = onSnapshot(colRef, (snapshot) => {
-
-                console.log(snapshot);
-
-                
-
-                
 
                     //Count the number of unread messages
                     var count = 0;
@@ -137,18 +131,21 @@ export const MessageContextProvider = (props) => {
 
                     const sorted = copy.sort(sorter);
 
-                    var count = 0;
-                    var pageIndex = 0;
+                    var count = 1;
+                    var pageIndex = 1;
 
                     //Paginate the data, must occur after sorting
                     const paginated = sorted.map((data) => {
-                        count += 1;
-                        if (count >= messagesPerPage) {
-                            count = 0;
+                        
+                        if (count > messagesPerPage) {
+                            count = 1;
                             pageIndex += 1;
                         };
+                        count += 1;
+
                         return ({ ...data, "pageIndex": pageIndex });
                     });
+                    setTotalPages(pageIndex);
                     setMessages(paginated);
                     setLoaded(true);
 
@@ -161,16 +158,7 @@ export const MessageContextProvider = (props) => {
                 setDenied(true);
                 setLoaded(true);
             });
-        }
-
-        catch (error) {
-            console.log(error);
-            setUnreadMessages(0);
-            setDenied(true);
-            setLoaded(true);
-        }
-
-        console.log("end snapping");
+        
 
     }, []);
 
@@ -181,6 +169,7 @@ export const MessageContextProvider = (props) => {
                 loaded: loaded,
                 denied: denied,
                 messages: messages,
+                totalPages: totalPages,
                 deleteMessage: deleteMessage,
                 markAsReplied: markAsReplied,
                 markAsRead: markAsRead

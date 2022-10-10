@@ -9,49 +9,82 @@ import {
   InputLabel, Input, InputAdornment, Link, CircularProgress
 } from '@mui/material/';
 
+import EmailIcon from '@mui/icons-material/Email';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
 
 //Maps over each paragraph  
 const Paragraph = (props) => {
 
   return (
-    
+
     <>
-    
+
       {props.paragraph.split('\\n').map((i, key) => {
         return <div>
-          {(key===props.imageIndex) && <div><Box component="img" sx={{objectFit: 'cover', maxWidth:"100%"}} src={props.image}></Box><br/><br/></div>}
+          {(key === props.imageIndex) && <div><Box component="img" sx={{ objectFit: 'cover', maxWidth: "100%" }} src={props.image}></Box><br /><br /></div>}
           <Typography key={key} variant="body1">{i}</Typography>
-          <br/>
-          </div>;
-        
+          <br />
+        </div>;
+
       })}
     </>
-    
+
   )
 
 };
+
+const AdminButtons = (props) => {
+
+  const {info, handlePublish, handleUnpublish, handleEdit, handleDelete} = props;
+
+  return (
+    
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={10}>
+      {info.published===false &&
+        <Button sx={{ m: 2 }} variant="contained" startIcon={<VisibilityIcon/>} onClick={() => handlePublish(info.id)}>Publish</Button>
+      }
+      {info.published===true &&
+        <Button sx={{ m: 2 }} variant="contained" startIcon={<VisibilityOffIcon/>} onClick={() => handleUnpublish(info.id)}>Unpublish</Button>
+      }
+      
+            <Button sx={{m:2}} variant="contained" startIcon={<AssignmentTurnedInIcon />} onClick={() => handleEdit(info.id)}>Edit</Button>
+            </Grid>
+            <Grid item xs={2} md={2}>
+            <Button sx={{m:2}} color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => handleDelete(info.id, info.subject)}>Delete</Button>
+            </Grid>
+            </Grid>
+
+
+  );
+
+
+}
 
 
 const BlogList = (props) => {
 
   return (
     <>
-      {props.blogData.length === 0 && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
-      }
-      {props.blogData.map((info) => (
+
+      {props.blogData.filter(info => info.published === true || props.auth).filter(info => info.pageIndex === props.page).map((info) => (
         <Card key={info.date} sx={{ margin: 10 }}>
-          <CardHeader title={info.title} 
-          
-          subheader={"Written by: ".concat(info.author, ", Posted: ", info.key.toDateString("en-US"))}
+          <CardHeader title={info.title}
+
+            subheader={"Written by: ".concat(info.author, ", Posted: ", info.key.toDateString("en-US"))}
           />
           <CardContent sx={{ color: "black", bgcolor: "text.secondary" }}>
-          
+
             <Paragraph paragraph={info.text} image={info.imageUrl} imageIndex={info.imageIndex} />
-            
-            {info.dateUpdated && <Typography variant="subtitle2" sx={{marginTop: 2, marginBottom: 2}}>Last updated: {info.dateUpdated.toDate().toDateString("en-US")}</Typography>}
-  
+
+            {info.dateUpdated && <Typography variant="subtitle2" sx={{ marginTop: 2, marginBottom: 2 }}>Last updated: {info.dateUpdated.toDate().toDateString("en-US")}</Typography>}
+            {props.auth && <AdminButtons info={info} handlePublish={props.handlePublish} handleUnpublish={props.handleUnpublish} handleEdit={props.handleEdit} handleDelete={props.handleDelete}/>}
           </CardContent>
-        </Card>
+        </Card >
       ))}
 
 

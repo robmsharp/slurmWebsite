@@ -6,7 +6,7 @@ import {
   Avatar, CardHeader, CardContent, Button, Collapse,
   Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem,
   ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-  InputLabel, Input, InputAdornment, CircularProgress
+  InputLabel, Input, InputAdornment, CircularProgress, Pagination
 } from '@mui/material/';
 
 import MessageList from '../components/messageList';
@@ -27,6 +27,14 @@ const Messages = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState();
   const [deleteSubject, setDeleteSubject] = useState();
+
+  //Set the page to the first message
+  const [page, setPage] = useState(1);
+
+  const handleChange = (event, value) => {
+    setPage(value);
+    console.log(page);
+  };
 
   //Handle the deletion after confirming
   const deleteMessageConfirmed =  async (id) => {
@@ -53,7 +61,7 @@ const Messages = () => {
 
     navigator.clipboard.writeText(email);
     snackCtx.notify(email.concat(" copied to clipboard"));
-
+    
   }
 
   //Mark as read
@@ -110,7 +118,12 @@ const Messages = () => {
       {messageCtx.denied === false && messageCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
       }
         {messageCtx.denied === true && <Typography>Access denied.</Typography>}
-        {messageCtx.denied === false && messageCtx.loaded === true && <MessageList messageData={messageCtx.messages} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />}
+        {messageCtx.denied === false && messageCtx.loaded === true && <>
+        <Box display="flex" justifyContent="center">
+          <Pagination count={messageCtx.totalPages} page={page} onChange={handleChange} color="primary" />
+          </Box>
+        <MessageList messageData={messageCtx.messages} page={page} handleRead={handleRead} handleReply={handleReply} handleEmail={handleEmail} handleDelete={handleDelete} />
+        </>}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />

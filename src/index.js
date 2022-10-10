@@ -9,9 +9,10 @@ import { render } from "react-dom";
 //ReactDOM.render(<App />, document.getElementById('root'));
 
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContextProvider } from './authContext';
+import { AuthContextProvider } from './api/authorisationAPI';
 import { MessageContextProvider } from './api/messagesAPI';
 import { SnackbarContextProvider } from './api/snackbarAPI';
+import { BlogContextProvider } from './api/blogAPI';
 
 import { SnackbarProvider } from 'notistack';
 import { createTheme } from '@mui/material/styles';
@@ -69,17 +70,21 @@ const myTheme = createTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={myTheme} >
-    <BrowserRouter>
+    
     <SnackbarProvider maxSnack={3}>
     <SnackbarContextProvider>
       <AuthContextProvider>
+      <BlogContextProvider>
       <MessageContextProvider>
+      <BrowserRouter>
         <App />
+        </BrowserRouter>
         </MessageContextProvider>
+        </BlogContextProvider>
       </AuthContextProvider>
       </SnackbarContextProvider>
       </SnackbarProvider>
-    </BrowserRouter>
+    
     </ThemeProvider>
 
   </React.StrictMode>,

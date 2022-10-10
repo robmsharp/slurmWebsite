@@ -33,7 +33,7 @@ import {
     addDoc,
 } from "firebase/firestore";
 
-import AuthContext from "../authContext"
+import AuthContext from "../api/authorisationAPI"
 
 const Footer = () => {
 
@@ -113,7 +113,7 @@ const Footer = () => {
     useEffect(()=> {
 
         
-        //ctx.onLogin();
+        ctx.onLogin();
          
         }, []
         );
