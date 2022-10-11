@@ -8,13 +8,16 @@ import React, { useState, useEffect } from 'react';
 
 import { db, storage } from '../firebaseConfig';
 
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, uploadBytesResumable, } from "firebase/storage";
 
 const BlogContext = React.createContext({
     loaded: false,
     error: false,
     entries: null,
-    totalPages: 1
+    totalPages: 1,
+    percentage: 0,
+    imageName: null,
+    imageUrl: null
 
 });
 
@@ -25,9 +28,46 @@ export const BlogContextProvider = (props) => {
     const [error, setError] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [percentage, setPercent] = useState(0);
+
+    const [imageName, setImageName] = useState(null);
+
+    const [imageUrl, setImageUrl] = useState(null);
 
     //This determines how many blog entries shown per page
     const entriesPerPage = 1;
+
+    //Upload an image
+    const uploadImage = (file) => {
+
+        setImageName(file.name);
+
+        const storageRef = ref(storage, `/blogImages/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+     
+                // update progress
+                setPercent(percent);
+            },
+            (err) => console.log(err),
+            () => {
+                // download url
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    console.log(url);
+
+                    
+                    setImageUrl(url);
+
+                });
+            }
+        ); 
+    };
 
     //Create the blog entry
     //Returns false if encounters an error, otherwise returns true
@@ -214,10 +254,14 @@ export const BlogContextProvider = (props) => {
                 entries: entries,
                 totalPages: totalPages,
                 error: error,
+                percentage: percentage,
+                imageName: imageName,
+                imageUrl: imageUrl,
                 createEntry: createEntry,
                 deleteEntry: deleteEntry,
                 publish: publish,
-                unpublish: unpublish
+                unpublish: unpublish,
+                uploadImage: uploadImage
 
             }}
         >

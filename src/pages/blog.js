@@ -76,6 +76,10 @@ const Blog = () => {
 
   }
 
+  const handleImageUpload = (file) => {
+    blogCtx.uploadImage(file);
+  }
+
   return (
     <>
       <Toolbar id="back-to-top-anchor" />
@@ -87,7 +91,7 @@ const Blog = () => {
         }
         {blogCtx.error === true && <Typography>Something went wrong.</Typography>}
         {blogCtx.error === false && blogCtx.loaded === true && <>
-          <Button variant="contained" startIcon={<NoteAddIcon/>} onClick={()=>{setOpen(true)}}>Create new entry</Button>
+          <Button variant="contained" startIcon={<NoteAddIcon/>} onClick={()=>{setOpen(true)}} sx={{m: 2}}>Create new entry</Button>
           <Box display="flex" justifyContent="center">
             
             <Pagination count={blogCtx.totalPages} page={page} onChange={handleChange} color="primary" />
@@ -98,7 +102,9 @@ const Blog = () => {
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
     
-      <BlogDialog openDialog = {openDialog} handleClose = {handleClose}/>
+      <BlogDialog openDialog = {openDialog} handleClose = {handleClose} 
+      imageUrl = {blogCtx.imageUrl} imageName= {blogCtx.imageName}
+      percentage={blogCtx.percentage} handleImageUpload={handleImageUpload} />
       
     
     
