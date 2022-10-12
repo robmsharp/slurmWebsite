@@ -22,10 +22,11 @@ const Paragraph = (props) => {
   return (
 
     <>
-
+      
       {props.paragraph.split('\\n').map((i, key) => {
         return <div>
-          {(key === props.imageIndex) && <div><Box component="img" sx={{ objectFit: 'cover', maxWidth: "100%" }} src={props.image}></Box><br /><br /></div>}
+          {(key === props.imageIndex-1) && <div><Box display="flex" alignItems="center"
+        justifyContent="center"><Box component="img" src={props.image}></Box></Box><br /><br /></div>}
           <Typography key={key} variant="body1">{i}</Typography>
           <br />
         </div>;
@@ -81,11 +82,18 @@ const BlogList = (props) => {
 
             <Paragraph paragraph={info.text} image={info.imageUrl} imageIndex={info.imageIndex} />
 
+            {/*include the image if it is -1 location at the bottom*/}
+            {(info.imageIndex===-1) && <div><Box display="flex" alignItems="center"
+        justifyContent="center"><Box component="img" src={info.imageUrl}></Box></Box><br /><br /></div>}
+          
+
             {info.dateUpdated && <Typography variant="subtitle2" sx={{ marginTop: 2, marginBottom: 2 }}>Last updated: {info.dateUpdated.toDate().toDateString("en-US")}</Typography>}
             {props.auth && <AdminButtons info={info} handlePublish={props.handlePublish} handleUnpublish={props.handleUnpublish} handleEdit={props.handleEdit} handleDelete={props.handleDelete}/>}
+          
           </CardContent>
         </Card >
       ))}
+      
 
 
     </>

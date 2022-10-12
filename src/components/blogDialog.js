@@ -31,7 +31,7 @@ const BlogDialog = (props) => {
   const [publish, setPublish] = useState(true);
   const [includeImage, setIncludeImage] = useState(false);
   const [location, setLocation] = useState(1);
-  const { openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName } = props;
+  const { openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, cantCreate, handleCreate } = props;
 
   function LinearProgressWithLabel(props, value) {
     return (
@@ -108,7 +108,72 @@ const BlogDialog = (props) => {
     console.log("Title:");
     console.log(titleValue);
 
+    console.log("Text:");
+    console.log(textValue);
+
+    console.log("publish");
+    console.log(publish);
+
+    console.log("hasImage");
+    console.log(includeImage);
+
+    console.log("image Name");
+    console.log(imageName);
+
+    console.log("image location");
+    console.log(imageUrl);
+
+    //Prevent if title is empty
+    if (!titleIsValid) { cantCreate("missing title") };
+
+    //Prevent if text is empty
+    if (!textIsValid) { cantCreate("missing text") };
+
+    //Prevent creation if image hasn't been uploaded
+    if (includeImage) {
+
+      if ((imageName === null) || (imageUrl === null) || (percentage < 100)) {
+
+        cantCreate("image");
+        return;
+
+      }
+
+
+    }
+
+    //Needs datePosted
+    //Needs author
+    //Added later in database function in blogAPI
+
+    var data = {
+      title: titleValue,
+
+      text: textValue.replace(/\n/g, "\\n"),
+
+      includeImage: includeImage,
+      published: publish
+    };
+
+    if (includeImage) {
+      data = {...data,
+        
+        imageIndex: location,
+
+        image: imageName
+
+      };
+
+
+    }
+
+    handleCreate(data);
+
+
   }
+
+
+
 
   const handlePublish = (event) => {
     setPublish(event.target.checked);
@@ -147,7 +212,7 @@ const BlogDialog = (props) => {
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
             New Blog Entry
           </Typography>
-          <Button variant="contained" onClick={handleClose}>
+          <Button variant="contained" onClick={formSubmitHandler}>
             Create
           </Button>
         </Toolbar>
@@ -241,7 +306,7 @@ const BlogDialog = (props) => {
 
 
               {(percentage > 0) && <Box sx={{ mt: 2, width: '100%' }}>
-              <LinearProgressWithLabel value={percentage} />
+                <LinearProgressWithLabel value={percentage} />
               </Box>}
 
 
@@ -272,12 +337,12 @@ const BlogDialog = (props) => {
               <br />
 
 
-              {(imageUrl != null) &&   <CardMedia
-        component="img"
-        image={imageUrl}
-        alt="screenshot"
-        sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
-      />}
+              {(imageUrl != null) && <CardMedia
+                component="img"
+                image={imageUrl}
+                alt="screenshot"
+                sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
+              />}
 
             </CardContent>
           </Card></Container>

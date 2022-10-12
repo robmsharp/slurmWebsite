@@ -8,7 +8,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import ScrollTop from '../components/scrollTop';
 import { db, storage } from '../firebaseConfig';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { getFirestore, doc, setDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, doc, setDoc, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 
 
 //Styling because captcha has white background
@@ -176,7 +176,7 @@ const Contact = () => {
       const data = {
         
         beenRead: false,
-        dateSent: serverTimestamp(),
+        dateSent: Timestamp.fromDate(new Date()),
         email: emailValue,
         message: messageValue.replace(/\n/g, "\\n"),
         name: nameValue,

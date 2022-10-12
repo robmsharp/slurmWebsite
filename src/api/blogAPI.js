@@ -6,9 +6,10 @@ import { onSnapshot } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 
 
-import { db, storage } from '../firebaseConfig';
+import { db, storage, auth } from '../firebaseConfig';
 
-import { getStorage, ref, getDownloadURL, uploadBytesResumable, } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, uploadBytesResumable} from "firebase/storage";
+import { addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 
 const BlogContext = React.createContext({
     loaded: false,
@@ -35,7 +36,7 @@ export const BlogContextProvider = (props) => {
     const [imageUrl, setImageUrl] = useState(null);
 
     //This determines how many blog entries shown per page
-    const entriesPerPage = 1;
+    const entriesPerPage = 5;
 
     //Upload an image
     const uploadImage = (file) => {
@@ -71,7 +72,37 @@ export const BlogContextProvider = (props) => {
 
     //Create the blog entry
     //Returns false if encounters an error, otherwise returns true
-    const createEntry = async (id) => {
+    const createEntry = async (data) => {
+
+        const datePosted = Timestamp.fromDate(new Date());
+
+        const author = auth.currentUser.displayName;
+
+        console.log(author);
+
+        data = {...data, datePosted: datePosted, author: author};
+
+        try {
+            const dbRef = collection(db, "blog");
+             
+
+            addDoc(dbRef, data);
+
+            
+            return true;
+            
+        }
+
+        catch (error) {
+            console.log(error);
+            return false;
+        }
+
+    }
+
+    //Update the blog entry
+    //Returns false if encounters an error, otherwise returns true
+    const updateEntry = async (id, data) => {
 
         const docRef = doc(db, "blog", id);
 
