@@ -116,13 +116,15 @@ const Blog = () => {
       }
 
       <Container>
-        {blogCtx.error === false && blogCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
-        }
-        {blogCtx.error === true && <Typography>Something went wrong.</Typography>}
-        {blogCtx.error === false && blogCtx.loaded === true && <>
-          <Button variant="contained" startIcon={<NoteAddIcon />} onClick={() => { setOpen(true) }} sx={{ m: 2 }}>Create new entry</Button>
-          <Box display="flex" justifyContent="center">
+        {blogCtx.error === false && blogCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>}
 
+        {blogCtx.error === true && <Typography>Something went wrong.</Typography>}
+
+        {blogCtx.error === false && blogCtx.loaded === true && authCtx.isLoggedIn && <Button variant="contained" startIcon={<NoteAddIcon />} onClick={() => { setOpen(true) }} sx={{ m: 2 }}>Create new entry</Button>}
+
+        {blogCtx.error === false && blogCtx.loaded === true && <>
+          <Box display="flex" justifyContent="center">
+            
             <Pagination count={blogCtx.totalPages} page={page} onChange={handleChange} color="primary" />
           </Box>
           <BlogList blogData={blogCtx.entries} auth={authCtx.isLoggedIn} page={page} handlePublish={handlePublish} handleUnpublish={handleUnpublish} handleEdit={handleEdit} handleDelete={handleDelete} />
@@ -133,8 +135,8 @@ const Blog = () => {
 
       <BlogDialog openDialog={openDialog} handleClose={handleClose}
         imageUrl={blogCtx.imageUrl} imageName={blogCtx.imageName}
-        percentage={blogCtx.percentage} handleImageUpload={handleImageUpload} 
-        cantCreate={cantCreate} handleCreate={handleCreate}/>
+        percentage={blogCtx.percentage} handleImageUpload={handleImageUpload}
+        cantCreate={cantCreate} handleCreate={handleCreate} />
 
 
 

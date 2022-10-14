@@ -13,6 +13,7 @@ import { AuthContextProvider } from './api/authorisationAPI';
 import { MessageContextProvider } from './api/messagesAPI';
 import { SnackbarContextProvider } from './api/snackbarAPI';
 import { BlogContextProvider } from './api/blogAPI';
+import { WelcomeContextProvider } from "./api/welcomeAPI";
 
 import { SnackbarProvider } from 'notistack';
 import { createTheme } from '@mui/material/styles';
@@ -76,9 +77,11 @@ ReactDOM.render(
       <AuthContextProvider>
       <BlogContextProvider>
       <MessageContextProvider>
+      <WelcomeContextProvider>
       <BrowserRouter>
         <App />
         </BrowserRouter>
+        </WelcomeContextProvider>
         </MessageContextProvider>
         </BlogContextProvider>
       </AuthContextProvider>
