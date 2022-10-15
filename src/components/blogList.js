@@ -74,7 +74,7 @@ const BlogList = (props) => {
 
       {props.blogData.filter(info => info.published === true || props.auth).filter(info => info.pageIndex === props.page).map((info) => (
         <Card key={info.date} sx={{ margin: 10 }}>
-          <CardHeader title={info.title}
+          <CardHeader title={info.title} titleTypographyProps={{variant:'subtitle3' }}
 
             subheader={"Written by: ".concat(info.author, ", Posted: ", info.key.toDateString("en-US"))}
           />
@@ -88,7 +88,7 @@ const BlogList = (props) => {
           
 
             {info.dateUpdated && <Typography variant="subtitle2" sx={{ marginTop: 2, marginBottom: 2 }}>Last updated: {info.dateUpdated.toDate().toDateString("en-US")}</Typography>}
-            {props.auth && <AdminButtons info={info} handlePublish={props.handlePublish} handleUnpublish={props.handleUnpublish} handleEdit={props.handleEdit} handleDelete={props.handleDelete}/>}
+            {props.auth && <AdminButtons info={info} handlePublish={props.handlePublish} handleUnpublish={props.handleUnpublish} handleEdit={props.handleEdit} handleDelete={props.handleOpenDelete}/>}
           
           </CardContent>
         </Card >

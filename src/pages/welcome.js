@@ -19,7 +19,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-import BackgroundImage from '../icons/slurmtitle.png';
+import BackgroundImage from '../icons/slurmtitle2.png';
 
 import Fade from '@mui/material/Fade';
 import Zoom from '@mui/material/Zoom';
@@ -226,7 +226,27 @@ const Welcome = () => {
 
     }
 
-  }
+    if (dialogType === "delete") {
+
+      
+
+        const success = await welcomeCtx.deleteEntry(id);
+
+        if (success) {
+          snackCtx.notifyLevel("Item successfully deleted.", "success");
+          setDialogOpen(false);
+        }
+
+        else {
+          snackCtx.notifyLevel("Unable to delete item.", "error");
+        }
+      }
+    }    
+
+
+    
+
+  
 
   const handleCancel = () => {
     setDialogOpen(false);
@@ -241,6 +261,8 @@ const Welcome = () => {
 
       <Typography variant="h2" align="center" sx={{ py: 2 }}>Welcome to Slurm16's website</Typography>
 
+
+      <Container>
       {welcomeCtx.error === false && welcomeCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
       }
       {welcomeCtx.error === true && welcomeCtx.loaded === false && <Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Something went wrong.</Typography>
@@ -248,7 +270,6 @@ const Welcome = () => {
 
       {authCtx.isLoggedIn === true && welcomeCtx.error === false && welcomeCtx.loaded === true && <Button variant="contained" startIcon={<NoteAddIcon />} onClick={handleCreate} sx={{ m: 2 }}>Create new item</Button>}
 
-      <Container>
 
         {welcomeCtx.error === false && welcomeCtx.loaded === true &&
           <WelcomeList auth={authCtx.isLoggedIn} welcomeData={welcomeCtx.entries}

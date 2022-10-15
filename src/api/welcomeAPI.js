@@ -99,7 +99,7 @@ export const WelcomeContextProvider = (props) => {
     //Returns false if encounters an error, otherwise returns true
     const deleteEntry = async (id) => {
 
-        const docRef = doc(db, "blog", id);
+        const docRef = doc(db, "welcome", id);
 
         try {
             await deleteDoc(docRef);

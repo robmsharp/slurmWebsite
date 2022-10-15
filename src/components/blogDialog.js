@@ -31,7 +31,7 @@ const BlogDialog = (props) => {
   const [publish, setPublish] = useState(true);
   const [includeImage, setIncludeImage] = useState(false);
   const [location, setLocation] = useState(1);
-  const { openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, cantCreate, handleCreate } = props;
+  const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, cantCreate, handleCreate } = props;
 
   function LinearProgressWithLabel(props, value) {
     return (
@@ -210,7 +210,7 @@ const BlogDialog = (props) => {
             <CloseIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            New Blog Entry
+            {title}
           </Typography>
           <Button variant="contained" onClick={formSubmitHandler}>
             Create
@@ -220,7 +220,7 @@ const BlogDialog = (props) => {
       <Box sx={{ bgcolor: "black" }}>
 
         <Typography sx={{ m: 2 }}>
-          Fill out the details of the blog entry and upload an image if needed.</Typography>
+          {instruction}</Typography>
 
         <Container >
           <Card sx={{ mb: 10 }}>

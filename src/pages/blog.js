@@ -31,7 +31,13 @@ const Blog = () => {
   const snackCtx = useContext(SnackContext);
 
   const [openDialog, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [instruction, setInstruction] = useState('');
 
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteTitle, setDeleteTitle] = useState('');
+  
   //Set the page to the first entry
   const [page, setPage] = useState(1);
 
@@ -97,11 +103,32 @@ const Blog = () => {
 
 
   const handleEdit = (id) => {
+    setInstruction('Edit the details of the blog entry and re-upload an image if needed.');
+    setTitle('Edit existing entry');
+    setOpen(true);
+  }
+
+
+  const handleOpenDelete = (id, title) => {
+    setDeleteId(id);
+    setDeleteTitle(title);
+    setDeleteOpen(true);
 
   }
 
 
-  const handleDelete = (id) => {
+  const handleDelete = async () => {
+
+    const success = await blogCtx.deleteEntry(deleteId);
+
+    //Close the dialog upon successful creation
+    if (success) {
+      snackCtx.notifyLevel("Blog entry deleted.", "success");
+      setDeleteOpen(false);
+    }
+    else {
+      snackCtx.notifyLevel("Unable to delete blog entry.", "error");
+    }
 
   }
 
@@ -109,10 +136,17 @@ const Blog = () => {
     blogCtx.uploadImage(file);
   }
 
+  const handleOpenCreate = () => {
+    setInstruction('Fill out the details of the blog entry and upload an image if needed.');
+    setTitle('Create new entry');
+    setOpen(true);
+
+  }
+
   return (
     <>
       <Toolbar id="back-to-top-anchor" />
-      {authCtx.isLoggedIn ? <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Create new entries or edit existing entries in the blog</Typography> : <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Have fun reading Slurm16's development blog</Typography>
+      {authCtx.isLoggedIn ? <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Create new entries or edit existing entries in the blog</Typography> : <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Learn about Slurm16's development through this blog</Typography>
       }
 
       <Container>
@@ -120,23 +154,43 @@ const Blog = () => {
 
         {blogCtx.error === true && <Typography>Something went wrong.</Typography>}
 
-        {blogCtx.error === false && blogCtx.loaded === true && authCtx.isLoggedIn && <Button variant="contained" startIcon={<NoteAddIcon />} onClick={() => { setOpen(true) }} sx={{ m: 2 }}>Create new entry</Button>}
+        {blogCtx.error === false && blogCtx.loaded === true && authCtx.isLoggedIn && <Button variant="contained" startIcon={<NoteAddIcon />} onClick={handleOpenCreate} sx={{ m: 2 }}>Create new entry</Button>}
 
         {blogCtx.error === false && blogCtx.loaded === true && <>
           <Box display="flex" justifyContent="center">
-            
+
             <Pagination count={blogCtx.totalPages} page={page} onChange={handleChange} color="primary" />
           </Box>
-          <BlogList blogData={blogCtx.entries} auth={authCtx.isLoggedIn} page={page} handlePublish={handlePublish} handleUnpublish={handleUnpublish} handleEdit={handleEdit} handleDelete={handleDelete} />
+          <BlogList blogData={blogCtx.entries} auth={authCtx.isLoggedIn} page={page} handleOpenDelete={handleOpenDelete} handlePublish={handlePublish} handleUnpublish={handleUnpublish} handleEdit={handleEdit} />
         </>}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
 
-      <BlogDialog openDialog={openDialog} handleClose={handleClose}
+      <BlogDialog title={title} instruction={instruction} openDialog={openDialog} handleClose={handleClose}
         imageUrl={blogCtx.imageUrl} imageName={blogCtx.imageName}
         percentage={blogCtx.percentage} handleImageUpload={handleImageUpload}
         cantCreate={cantCreate} handleCreate={handleCreate} />
+
+      <Dialog open={deleteOpen}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <Box sx={{ p: 5, color: "black", bgcolor: "text.secondary" }}>
+          <Typography>
+            {
+              "You are about to delete the message \"".concat(deleteTitle, "\". This cannot be undone.")}
+          </Typography>
+          <Grid container spacing={1} justify='space-between' sx={{ mt: 5 }}>
+            <Grid item xs={12} md={4}>
+              <Button variant="contained" onClick={() => {setDeleteOpen(false)}}>Cancel</Button>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Button color="secondary" variant="contained" onClick={handleDelete}>
+                Delete
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Dialog>
 
 
 

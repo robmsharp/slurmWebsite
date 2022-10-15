@@ -44,6 +44,7 @@ const myTheme = createTheme({
     body1: { fontFamily: "Ubuntu" },
     subtitle1: { fontFamily: "Ubuntu", fontWeight: 700 },
     subtitle2: { fontFamily: "Ubuntu", fontSize: "0.5 em" },
+    subtitle3: { fontFamily: "Ubuntu", fontSize: "24px", fontWeight: 700 },
     h2: {
       fontSize: '24px',
       '@media (min-width:1000px)': {
