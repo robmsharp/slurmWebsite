@@ -26,12 +26,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const BlogDialog = (props) => {
 
+  
+  
   const locationOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const [publish, setPublish] = useState(true);
-  const [includeImage, setIncludeImage] = useState(false);
-  const [location, setLocation] = useState(1);
-  const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, cantCreate, handleCreate } = props;
+  //const [includeImage, setIncludeImage] = useState(false);
+  //const [location, setLocation] = useState(1);
+  const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, 
+    cantCreate, handleCreate, imageDataArray,
+    setImageDataArray,
+    imageIndexArray,
+    setImageIndexArray,
+    lastImageIndex,
+    setLastImageIndex,
+    addImageSlot } = props;
 
   function LinearProgressWithLabel(props, value) {
     return (
@@ -48,6 +57,7 @@ const BlogDialog = (props) => {
     );
   };
 
+  
 
   const titleReducer = (state, action) => {
     if (action.type === 'USER_INPUT') {
@@ -115,7 +125,7 @@ const BlogDialog = (props) => {
     console.log(publish);
 
     console.log("hasImage");
-    console.log(includeImage);
+    //console.log(includeImage);
 
     console.log("image Name");
     console.log(imageName);
@@ -130,7 +140,7 @@ const BlogDialog = (props) => {
     if (!textIsValid) { cantCreate("missing text") };
 
     //Prevent creation if image hasn't been uploaded
-    if (includeImage) {
+    /*if (includeImage) {
 
       if ((imageName === null) || (imageUrl === null) || (percentage < 100)) {
 
@@ -140,13 +150,13 @@ const BlogDialog = (props) => {
       }
 
 
-    }
+    }*/
 
     //Needs datePosted
     //Needs author
     //Added later in database function in blogAPI
 
-    var data = {
+    /*var data = {
       title: titleValue,
 
       text: textValue.replace(/\n/g, "\\n"),
@@ -167,7 +177,7 @@ const BlogDialog = (props) => {
 
     }
 
-    handleCreate(data);
+    handleCreate(data);*/
 
 
   }
@@ -180,18 +190,25 @@ const BlogDialog = (props) => {
   };
 
   const handleIncludeImage = (event) => {
-    setIncludeImage(event.target.checked);
+    //setIncludeImage(event.target.checked);
+    const value = !imageDataArray[event.target.name];
+    const key = event.target.name;
+    if (key!= null) {
+    setImageDataArray(prev => ({...prev, [key] : value}));
+  }
+    console.log(imageDataArray);
   };
 
   const handleLocationChange = (event) => {
-    setLocation(event.target.value);
+    const key = "location".concat(event.target.name);
+    setImageDataArray(prev => ({...prev, [key] : event.target.value}));
   };
 
   const handleUpload = (event) => {
     console.log("Changed");
     const file = event.target.files[0];
     console.log(file);
-    handleImageUpload(file);
+    handleImageUpload(event.target.name, file);
   };
 
   return (
@@ -274,16 +291,20 @@ const BlogDialog = (props) => {
               <br />
               <br />
             </CardContent>
+
+            {imageIndexArray.map((index) => (
+
+              <>
             <CardHeader
 
-              title="Image"
+              title={"Image".concat(index)}
 
 
             />
 
             <CardContent>
 
-              <FormControlLabel control={<Checkbox checked={includeImage} onChange={handleIncludeImage} sx={{
+              <FormControlLabel name={"include".concat(index)} control={<Checkbox checked={imageDataArray["include".concat(index)]} onChange={handleIncludeImage} sx={{
                 color: "white", '&.Mui-checked': {
                   color: "white",
                 }
@@ -292,21 +313,22 @@ const BlogDialog = (props) => {
               <Button
                 variant="contained"
                 component="label"
-                disabled={!includeImage}
+                disabled={!imageDataArray["include".concat(index)]}
               >
                 Upload File
                 <input
                   type="file"
+                  name={index}
                   hidden
                   accept="image/*"
                   onChange={handleUpload}
                 />
               </Button>
-              {(imageName != null) && <Typography>{imageName}</Typography>}
+              {(imageDataArray["imageName".concat(index)] != null) && <Typography>{imageDataArray["imageName".concat(index)]}</Typography>}
 
 
-              {(percentage > 0) && <Box sx={{ mt: 2, width: '100%' }}>
-                <LinearProgressWithLabel value={percentage} />
+              {(imageDataArray["percentage".concat(index)] > 0) && <Box sx={{ mt: 2, width: '100%' }}>
+                <LinearProgressWithLabel value={imageDataArray["percentage".concat(index)]} />
               </Box>}
 
 
@@ -319,10 +341,11 @@ const BlogDialog = (props) => {
                 <InputLabel>Location</InputLabel>
                 <Select
                   variant="outlined"
-                  value={location}
+                  name={index}
+                  value={imageDataArray["location".concat(index)]}
                   label="Location"
                   onChange={handleLocationChange}
-                  disabled={!includeImage}
+                  disabled={!imageDataArray["include".concat(index)]}
                 >
                   <MenuItem value={1}>Top</MenuItem>
                   <MenuItem value={-1}>Bottom</MenuItem>
@@ -337,14 +360,19 @@ const BlogDialog = (props) => {
               <br />
 
 
-              {(imageUrl != null) && <CardMedia
+              {(imageDataArray["imageUrl".concat(index)] != null) && <CardMedia
                 component="img"
-                image={imageUrl}
+                image={imageDataArray["imageUrl".concat(index)]}
                 alt="screenshot"
-                sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
+                sx={{ padding: "1em 1em 0 1em", objectFit: "contain", width:"10%" }}
               />}
 
             </CardContent>
+            </>
+            ))}
+
+          <Button variant="contained" onClick={addImageSlot}>Add Image Slot</Button>      
+
           </Card></Container>
 
 

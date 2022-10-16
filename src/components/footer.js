@@ -71,14 +71,14 @@ const Footer = () => {
                 }
             });
 
-            /*if (docs.docs.length === 0) {
+            if (querySnapshot.docs.length === 0) {
                 await addDoc(collection(db, "users"), {
                     uid: user.uid,
                     name: user.displayName,
                     authProvider: "google",
                     email: user.email,
                 });
-            }*/
+            }
 
         } catch (err) {
             console.error(err);

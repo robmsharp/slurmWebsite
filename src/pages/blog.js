@@ -37,7 +37,23 @@ const Blog = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [deleteTitle, setDeleteTitle] = useState('');
-  
+
+  const [imageDataArray, setImageDataArray] = useState({ 
+    "location1": 1, "include1": false, "location2": 1, "include2": false,  "location3": 1, "include3": false });
+
+  const [imageIndexArray, setImageIndexArray] = useState([1, 2, 3]);
+  const [lastImageIndex, setLastImageIndex] = useState(3);
+
+  const addImageSlot = () => {
+
+    setImageIndexArray((prevArray) => [...prevArray, lastImageIndex + 1]);
+
+    setImageDataArray(prev => ({ ...prev, ["include".concat(lastImageIndex + 1)]: false }));
+
+    setLastImageIndex(prev => prev + 1);
+
+  }
+
   //Set the page to the first entry
   const [page, setPage] = useState(1);
 
@@ -103,7 +119,7 @@ const Blog = () => {
 
 
   const handleEdit = (id) => {
-    setInstruction('Edit the details of the blog entry and re-upload an image if needed.');
+    setInstruction('Edit the details of the blog entry and upload new images.');
     setTitle('Edit existing entry');
     setOpen(true);
   }
@@ -132,12 +148,15 @@ const Blog = () => {
 
   }
 
-  const handleImageUpload = (file) => {
-    blogCtx.uploadImage(file);
+  
+  const handleImageUpload = (index, file) => {
+    
+    blogCtx.uploadImage(file, index, setImageDataArray);
+    
   }
 
   const handleOpenCreate = () => {
-    setInstruction('Fill out the details of the blog entry and upload an image if needed.');
+    setInstruction('Fill out the details of the blog entry and upload images.');
     setTitle('Create new entry');
     setOpen(true);
 
@@ -170,8 +189,19 @@ const Blog = () => {
       <BlogDialog title={title} instruction={instruction} openDialog={openDialog} handleClose={handleClose}
         imageUrl={blogCtx.imageUrl} imageName={blogCtx.imageName}
         percentage={blogCtx.percentage} handleImageUpload={handleImageUpload}
-        cantCreate={cantCreate} handleCreate={handleCreate} />
+        cantCreate={cantCreate} handleCreate={handleCreate}
+        imageDataArray={imageDataArray}
+        setImageDataArray={setImageDataArray}
+        imageIndexArray={imageIndexArray}
+        setImageIndexArray={setImageIndexArray}
+        lastImageIndex={lastImageIndex}
+        setLastImageIndex={setLastImageIndex}
+        addImageSlot={addImageSlot}
 
+
+      />
+
+      {/* Dialog for deletion confirmation */}
       <Dialog open={deleteOpen}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <Box sx={{ p: 5, color: "black", bgcolor: "text.secondary" }}>
@@ -181,7 +211,7 @@ const Blog = () => {
           </Typography>
           <Grid container spacing={1} justify='space-between' sx={{ mt: 5 }}>
             <Grid item xs={12} md={4}>
-              <Button variant="contained" onClick={() => {setDeleteOpen(false)}}>Cancel</Button>
+              <Button variant="contained" onClick={() => { setDeleteOpen(false) }}>Cancel</Button>
             </Grid>
             <Grid item xs={12} md={4}>
               <Button color="secondary" variant="contained" onClick={handleDelete}>
