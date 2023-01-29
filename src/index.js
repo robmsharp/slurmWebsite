@@ -14,6 +14,7 @@ import { MessageContextProvider } from './api/messagesAPI';
 import { SnackbarContextProvider } from './api/snackbarAPI';
 import { BlogContextProvider } from './api/blogAPI';
 import { WelcomeContextProvider } from "./api/welcomeAPI";
+import { GameContextProvider } from "./api/gamesAPI";
 
 import { SnackbarProvider } from 'notistack';
 import { createTheme } from '@mui/material/styles';
@@ -76,6 +77,7 @@ ReactDOM.render(
     <SnackbarProvider maxSnack={3}>
     <SnackbarContextProvider>
       <AuthContextProvider>
+      <GameContextProvider>
       <BlogContextProvider>
       <MessageContextProvider>
       <WelcomeContextProvider>
@@ -85,6 +87,7 @@ ReactDOM.render(
         </WelcomeContextProvider>
         </MessageContextProvider>
         </BlogContextProvider>
+        </GameContextProvider>
       </AuthContextProvider>
       </SnackbarContextProvider>
       </SnackbarProvider>

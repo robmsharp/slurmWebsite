@@ -78,7 +78,7 @@ export const BlogContextProvider = (props) => {
 
         const author = auth.currentUser.displayName;
 
-        console.log(author);
+        //console.log(author);
 
         data = {...data, datePosted: datePosted, author: author};
 
@@ -180,7 +180,7 @@ export const BlogContextProvider = (props) => {
 
     useEffect(() => {
 
-        console.log("start");
+        //console.log("start");
 
         const colRef = collection(db, 'blog');
 
@@ -197,7 +197,7 @@ export const BlogContextProvider = (props) => {
 
             snapshot.docs.forEach((doc) => {
 
-                console.log("snapping");
+                //console.log("snapping");
 
                 const data = doc.data();
 
@@ -231,7 +231,7 @@ export const BlogContextProvider = (props) => {
                     });
 
 
-                    console.log("sorting");
+                    //console.log("sorting");
 
                     // sort by date
                     const copy = newBlogData.slice();
@@ -257,7 +257,7 @@ export const BlogContextProvider = (props) => {
                     });
 
 
-                    console.log("snapping done");
+                    //console.log("snapping done");
 
                     setTotalPages(pageIndex);
                     setEntries(paginated);
