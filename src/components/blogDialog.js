@@ -15,8 +15,9 @@ import { connectStorageEmulator } from "firebase/storage";
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
+
+import LinearProgressWithLabel from './progress.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,14 +27,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const BlogDialog = (props) => {
 
-  
-  
+
+
   const locationOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const [publish, setPublish] = useState(true);
   //const [includeImage, setIncludeImage] = useState(false);
   //const [location, setLocation] = useState(1);
-  const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName, 
+  const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName,
     cantCreate, handleCreate, imageDataArray,
     setImageDataArray,
     imageIndexArray,
@@ -42,22 +43,9 @@ const BlogDialog = (props) => {
     setLastImageIndex,
     addImageSlot } = props;
 
-  function LinearProgressWithLabel(props, value) {
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '100%', mr: 1 }}>
-          <LinearProgress variant="determinate" {...props} />
-        </Box>
-        <Box sx={{ minWidth: 35 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            props.value,
-          )}%`}</Typography>
-        </Box>
-      </Box>
-    );
-  };
-
   
+
+
 
   const titleReducer = (state, action) => {
     if (action.type === 'USER_INPUT') {
@@ -193,15 +181,15 @@ const BlogDialog = (props) => {
     //setIncludeImage(event.target.checked);
     const value = !imageDataArray[event.target.name];
     const key = event.target.name;
-    if (key!= null) {
-    setImageDataArray(prev => ({...prev, [key] : value}));
-  }
+    if (key != null) {
+      setImageDataArray(prev => ({ ...prev, [key]: value }));
+    }
     console.log(imageDataArray);
   };
 
   const handleLocationChange = (event) => {
     const key = "location".concat(event.target.name);
-    setImageDataArray(prev => ({...prev, [key] : event.target.value}));
+    setImageDataArray(prev => ({ ...prev, [key]: event.target.value }));
   };
 
   const handleUpload = (event) => {
@@ -295,83 +283,83 @@ const BlogDialog = (props) => {
             {imageIndexArray.map((index) => (
 
               <>
-            <CardHeader
+                <CardHeader
 
-              title={"Image".concat(index)}
+                  title={"Image".concat(index)}
 
 
-            />
-
-            <CardContent>
-
-              <FormControlLabel name={"include".concat(index)} control={<Checkbox checked={imageDataArray["include".concat(index)]} onChange={handleIncludeImage} sx={{
-                color: "white", '&.Mui-checked': {
-                  color: "white",
-                }
-              }} />} label="Include image" />
-
-              <Button
-                variant="contained"
-                component="label"
-                disabled={!imageDataArray["include".concat(index)]}
-              >
-                Upload File
-                <input
-                  type="file"
-                  name={index}
-                  hidden
-                  accept="image/*"
-                  onChange={handleUpload}
                 />
-              </Button>
-              {(imageDataArray["imageName".concat(index)] != null) && <Typography>{imageDataArray["imageName".concat(index)]}</Typography>}
+
+                <CardContent>
+
+                  <FormControlLabel name={"include".concat(index)} control={<Checkbox checked={imageDataArray["include".concat(index)]} onChange={handleIncludeImage} sx={{
+                    color: "white", '&.Mui-checked': {
+                      color: "white",
+                    }
+                  }} />} label="Include image" />
+
+                  <Button
+                    variant="contained"
+                    component="label"
+                    disabled={!imageDataArray["include".concat(index)]}
+                  >
+                    Upload File
+                    <input
+                      type="file"
+                      name={index}
+                      hidden
+                      accept="image/*"
+                      onChange={handleUpload}
+                    />
+                  </Button>
+                  {(imageDataArray["imageName".concat(index)] != null) && <Typography>{imageDataArray["imageName".concat(index)]}</Typography>}
 
 
-              {(imageDataArray["percentage".concat(index)] > 0) && <Box sx={{ mt: 2, width: '100%' }}>
-                <LinearProgressWithLabel value={imageDataArray["percentage".concat(index)]} />
-              </Box>}
+                  {(imageDataArray["percentage".concat(index)] > 0) && <Box sx={{ mt: 2, width: '100%' }}>
+                    <LinearProgressWithLabel value={imageDataArray["percentage".concat(index)]} />
+                  </Box>}
 
 
-              <br />
-              <br />
+                  <br />
+                  <br />
 
 
 
-              <FormControl fullWidth>
-                <InputLabel>Location</InputLabel>
-                <Select
-                  variant="outlined"
-                  name={index}
-                  value={imageDataArray["location".concat(index)]}
-                  label="Location"
-                  onChange={handleLocationChange}
-                  disabled={!imageDataArray["include".concat(index)]}
-                >
-                  <MenuItem value={1}>Top</MenuItem>
-                  <MenuItem value={-1}>Bottom</MenuItem>
-                  {locationOptions.map((location) => {
-                    return <MenuItem value={location}>{location}</MenuItem>
-                  })}
+                  <FormControl fullWidth>
+                    <InputLabel>Location</InputLabel>
+                    <Select
+                      variant="outlined"
+                      name={index}
+                      value={imageDataArray["location".concat(index)]}
+                      label="Location"
+                      onChange={handleLocationChange}
+                      disabled={!imageDataArray["include".concat(index)]}
+                    >
+                      <MenuItem value={1}>Top</MenuItem>
+                      <MenuItem value={-1}>Bottom</MenuItem>
+                      {locationOptions.map((location) => {
+                        return <MenuItem value={location}>{location}</MenuItem>
+                      })}
 
-                </Select>
-              </FormControl>
+                    </Select>
+                  </FormControl>
 
-              <br />
-              <br />
+                  <br />
+                  <br />
 
 
-              {(imageDataArray["imageUrl".concat(index)] != null) && <CardMedia
-                component="img"
-                image={imageDataArray["imageUrl".concat(index)]}
-                alt="screenshot"
-                sx={{ padding: "1em 1em 0 1em", objectFit: "contain", width:"10%" }}
-              />}
+                  {(imageDataArray["imageUrl".concat(index)] != null) && <CardMedia
+                    component="img"
+                    image={imageDataArray["imageUrl".concat(index)]}
+                    alt="screenshot"
+                    sx={{ padding: "1em 1em 0 1em", objectFit: "contain", width: "10%" }}
+                  />}
 
-            </CardContent>
-            </>
+                </CardContent>
+              </>
             ))}
 
-          <Button variant="contained" onClick={addImageSlot}>Add Image Slot</Button>      
+            <Button variant="contained" onClick={addImageSlot}>Add Image Slot</Button>
 
           </Card></Container>
 
