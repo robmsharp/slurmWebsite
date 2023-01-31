@@ -5,6 +5,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Welcome from './pages/welcome';
 import Games from './pages/games';
 import Admin from './pages/admin';
+import Test from './pages/test';
 import MainHeader from './components/mainheader';
 import ChooseGameType from './pages/chooseGameType';
 import Desktop from './pages/desktop';
@@ -84,6 +85,7 @@ function App() {
             <Route path="/welcome" component={Welcome} />
             <Route path="/games" component={Games} />
             <Route path="/admin" component={Admin} />
+            <Route path="/test" component={Test} />
             <Route path="/contact" component={Contact} />
             <Route path="/emulate" component={Emulate} />
             <Route path="/keyboard" component={Keyboard} />

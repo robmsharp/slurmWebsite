@@ -20,6 +20,8 @@ import { saveAs } from "file-saver";
 
 import { useHistory } from 'react-router-dom';
 
+import Skeleton from '@mui/material/Skeleton';
+
 
 /*
         action={
@@ -169,6 +171,8 @@ const GamesList = (props) => {
                             sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
                             
                           />
+                            
+                          
                           
                         </Grid>
                       );
