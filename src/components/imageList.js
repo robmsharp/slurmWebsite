@@ -13,19 +13,34 @@ import {
 
 import LinearProgressWithLabel from './progress.js';
 
-const handleIncludeImage = () => {
 
-}
 
-const handleLocationChange = () => {
+const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleImageUpload }) => {
 
-}
+    const handleIncludeImage = (event) => {
 
-const handleUpload = () => {
+        const key = event.target.name;
+    
+        toggleInclude(key);
+    
+    }
 
-}
+    const handleLocationChange = (event) => {
 
-const ImageList = ({ data }) => {
+        const key = event.target.name;
+        updatePosition(key, event.target.value);
+
+    }
+    
+    const handleUpload = (event) => {
+
+        const file = event.target.files[0];
+        console.log(file);
+        handleImageUpload(event.target.name, file);
+    
+    }
+    
+    
 
     const locationOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -121,6 +136,9 @@ const ImageList = ({ data }) => {
                     </CardContent>
                 </>
             ))}
+
+<Button variant="contained" onClick={addImageSlot}>Add Image Slot</Button>
+    
 
         </>
     );

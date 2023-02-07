@@ -14,7 +14,7 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
             const newData = new Map(prevData);
             const newKey = generic.concat(length);
             setLength(prev=>prev+1);
-            newData.set(newKey, [false, null, -1, -1, false]);
+            newData.set(newKey, [null, null, false, -1, -1, false]);
             return newData;
         });
     };
@@ -46,6 +46,15 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
     const updateInclude = (key, include) => {
 
         changeData(key, include, "includeUpdate");
+    
+    }
+
+    //Change the include to the opposite
+    const toggleInclude = (key) => {
+
+        const [fileName, imageURL, include, percent, position, mandatory] = getData(key);
+        changeData(key, !include, "includeUpdate");
+    
     }
 
     const getData = (key) => {
@@ -84,7 +93,7 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
         });
     };
 
-    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition];
+    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude];
 
 };
 

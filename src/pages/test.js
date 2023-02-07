@@ -15,14 +15,19 @@ import useImage from '../hooks/useImage';
 
 const Test = () => {
 
+    const handleImageUpload = (key, file) => {
+        updateFileName(key, 'test.jpg');
+        updateImageURL(key, 'https://firebasestorage.googleapis.com/v0/b/slurm16-9621b.appspot.com/o/blogImages%2Fpete.png?alt=media&token=8409a46d-5454-4510-822f-dd3caafd35a2');
+    }
+
 //Format of data:
 //key, [fileName, imageURL, include, percent, position, mandatory]
 
-    const [data, getData, addImageSlot, updatePercentage, updateImage, updateInclude] = useImage(
-        1, "screenshot", 
+    const [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude] = useImage(
+        3, "screenshot", 
         new Map([["cover image", [null, null, true, -1, -1, true]], 
-        ["screenshot1", [null, null, true, -1, -1, false]],
-        ["screenshot2", ["Pete", 'https://firebasestorage.googleapis.com/v0/b/slurm16-9621b.appspot.com/o/blogImages%2Fpete.png?alt=media&token=8409a46d-5454-4510-822f-dd3caafd35a2', true, -1, -1, false]]
+        ["screenshot1", [null, null, false, -1, -1, false]],
+        ["screenshot2", ["Pete.jpg", 'https://firebasestorage.googleapis.com/v0/b/slurm16-9621b.appspot.com/o/blogImages%2Fpete.png?alt=media&token=8409a46d-5454-4510-822f-dd3caafd35a2', true, -1, -1, false]]
     ]
         )
     );
@@ -39,8 +44,7 @@ const Test = () => {
     return (
         <>
             <br />
-            {getData("cover image")}
-            <ImageList data={data}/>
+            <ImageList data={data} addImageSlot = {addImageSlot} toggleInclude={toggleInclude} updatePosition = {updatePosition} handleImageUpload={handleImageUpload}/>
             
         </>
 
