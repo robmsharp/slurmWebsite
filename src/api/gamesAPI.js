@@ -111,14 +111,11 @@ export const GameContextProvider = (props) => {
 
     useEffect(() => {
 
-        console.log("game start");
-
 
         const colRef = collection(db, 'games');
 
         const snap = onSnapshot(colRef, (snapshot) => {
 
-            console.log("snapping");
 
             //Find the max id
             var max = 0;

@@ -45,6 +45,8 @@ const ExpandMore = styled((props) => {
 
 const GamesList = (props) => {
 
+  const {data, handleOpenEdit, loggedIn} = props;
+
   const history = useHistory();
 
   const [expanded, setExpanded] = React.useState([false, false]);
@@ -106,8 +108,6 @@ const GamesList = (props) => {
     setExpanded(newArray);
   }
 
-  console.log("props");
-  console.log(props);
 
   return (
     <>
@@ -115,7 +115,7 @@ const GamesList = (props) => {
 
       <Grid container>
 
-        {props.gamesData.map((game, index) => {
+        {data.map((game, index) => {
 
           return (
 
@@ -131,6 +131,14 @@ const GamesList = (props) => {
 
                 <CardContent>
                   <Box textAlign='center' marginBottom='10'>
+
+                  {/*Can edit if logged in*/}
+                  {(loggedIn) && <Box textAlign='center' sx={{pb: 5}}>
+                    <Button variant="contained" onClick={() => handleOpenEdit(game.id)} >
+                      Edit {game.name}
+                    </Button>
+                  </Box>}
+
                     <Box component="img" sx={{ border: 3, objectFit: 'contain', width: "320", height: "200" }} src={game.imageUrl}></Box>
                   </Box>
                   <Box textAlign='center'>

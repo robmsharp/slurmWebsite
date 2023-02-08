@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useReducer } from "react";
 
 import {
   Typography, Toolbar, AppBar, CssBaseline,
@@ -106,6 +106,8 @@ const Games = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   //Instruction of dialog
   const [instruction, setInstruction] = useState('');
+  //Button of dialog
+  const [dialogButton, setDialogButton] = useState('');
 
   //Initial data
   //Format of data:
@@ -141,17 +143,40 @@ const Games = () => {
   }
 
   //Load the values
-  const loadValues = () => {
+  const loadValues = (gameKey) => {
+
+    const gameData = gameCtx.games.find(game => game.id === gameKey);
+
+    setGameFilePercentage(100);
+    dispatchTitle({ type: "TITLE_INPUT", val: gameData.name });
+    dispatchSD({ type: "SHORT_DESCRIPTION_INPUT", val: gameData.shortDescription });
+    dispatchLD({ type: "LONG_DESCRIPTION_INPUT", val: gameData.longDescription });
 
   }
 
+  //Open the dialog for creating a new game
   const handleOpenCreate = () => {
 
-    setInstruction('Fill out the details of the blog entry and upload images.');
-    setDialogTitle('Create new entry');
+    setInstruction('Fill out the details of the game entry and upload images.');
+    setDialogTitle('Create new game');
+    setDialogButton('Create');
 
     //Reset all values
     resetAllValues();
+
+    setOpen(true);
+
+  }
+
+  //Open the dialog for editing an existing game
+  const handleOpenEdit = (gameKey) => {
+
+    setInstruction('Edit the details of the game entry and upload images.');
+    setDialogTitle('Edit existing game');
+    setDialogButton('Save');
+
+    //Reset all values
+    loadValues(gameKey);
 
     setOpen(true);
 
@@ -174,7 +199,7 @@ const Games = () => {
     setOpen(false);
   }
 
-  const cantCreate = (reason) => {
+  /*const cantCreate = (reason) => {
     if (reason === "image") {
       snackCtx.notifyLevel("Creating blog entry with image requires a fully uploaded image", "error");
     }
@@ -188,6 +213,12 @@ const Games = () => {
       snackCtx.notifyLevel("Creating blog entry requires text", "error");
     }
 
+  }*/
+
+  const verifyData = () => {
+
+
+
   }
 
   const handleImageUpload = (index, file) => {
@@ -199,8 +230,12 @@ const Games = () => {
   return (
     <>
       <Toolbar id="back-to-top-anchor" />
-      <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
 
+      {authCtx.isLoggedIn ? <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Edit the game entries or create a new one</Typography>
+ : <Typography variant="body1" color="text.primary" padding="15px" gutterBottom>Select the game you would like to play</Typography>
+
+      }
+      
       {gameCtx.denied === false && gameCtx.loaded === true && authCtx.isLoggedIn && <Button variant="contained" startIcon={<NoteAddIcon />} onClick={handleOpenCreate} sx={{ m: 2 }}>Create new game</Button>}
 
 
@@ -208,22 +243,26 @@ const Games = () => {
         {gameCtx.denied === false && gameCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
         }
         {gameCtx.denied === true && <Typography>Access denied.</Typography>}
-        {gameCtx.denied === false && gameCtx.loaded === true && <GamesList gamesData={gameCtx.games} />}
+        {gameCtx.denied === false && gameCtx.loaded === true && <GamesList data={gameCtx.games} handleOpenEdit={handleOpenEdit} loggedIn={authCtx.isLoggedIn}/>}
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
 
 
-      <GameDialog title={title} instruction={instruction} openDialog={openDialog} handleClose={handleClose}
-        handleImageUpload={handleImageUpload}
-        cantCreate={cantCreate} handleCreate={handleCreate}
-        imageDataArray={imageDataArray}
-        setImageDataArray={setImageDataArray}
-        imageIndexArray={imageIndexArray}
-        setImageIndexArray={setImageIndexArray}
-        lastImageIndex={lastImageIndex}
-        setLastImageIndex={setLastImageIndex}
-        addImageSlot={addImageSlot}
+      <GameDialog 
+      
+      openDialog={openDialog} 
+      handleClose={handleClose}
+      title={dialogTitle} instruction={instruction}
+       dialogButton={dialogButton}
+       publish={publish} setPublish={setPublish} 
+       toggleInclude={toggleInclude} updatePosition={updatePosition} handleImageUpload={handleImageUpload}
+       titleState={titleState} dispatchTitle={dispatchTitle}
+       LDState = {LDState} dispatchLD={dispatchLD}
+       SDState = {SDState} dispatchSD={dispatchSD}
+      
+      
+      
 
 
       />
