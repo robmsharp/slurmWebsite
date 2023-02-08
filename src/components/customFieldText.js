@@ -8,7 +8,7 @@ import {
   InputLabel, Input, InputAdornment, Link, Dialog, DialogTitle, IconButton, FormControlLabel, Checkbox, Select, FormControl
 } from '@mui/material/';
 
-const CustomTextField = ({ label, placeholder, required, state, dispatch, type }) => {
+const CustomTextField = ({ label, placeholder, required, state, dispatch, type, multi }) => {
   
   
 
@@ -21,6 +21,7 @@ const CustomTextField = ({ label, placeholder, required, state, dispatch, type }
   return (
     <>
     <br />
+    {(!multi) ?
     <TextField
       id="outlined-basic"
       placeholder={placeholder}
@@ -34,6 +35,25 @@ const CustomTextField = ({ label, placeholder, required, state, dispatch, type }
       error={state.isValid === false}
       helperText={state.helperText}
     />
+    :
+    <TextField
+      id="outlined-basic"
+      placeholder={placeholder}
+      label={label}
+      variant="outlined"
+      required={required}
+      name={type}
+      sx={{ width: "100%" }}
+      onChange={handleChange}
+      value={state.value}
+      error={state.isValid === false}
+      helperText={state.helperText}
+      multiline
+                maxRows={20}
+                minRows={3}
+    />
+    
+    }
     <br />
     </>
   );

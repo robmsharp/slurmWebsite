@@ -56,6 +56,10 @@ const Games = () => {
       case 'LONG_DESCRIPTION_INPUT':
         inputName = 'long description';
         break;
+      //Tip is not required  
+      case 'TIP_INPUT':
+          return { value: action.val, isValid: true, helperText: '' }
+          break;  
       case 'RESET':
         return { value: '', isValid: null, helperText: '' };
       default:
@@ -76,6 +80,14 @@ const Games = () => {
   //Title field
 
   const [titleState, dispatchTitle] = useReducer(textReducer, {
+    value: '',
+    isValid: null,
+    helperText: ''
+  });
+
+  //Tip field
+
+  const [tipState, dispatchTip] = useReducer(textReducer, {
     value: '',
     isValid: null,
     helperText: ''
@@ -139,6 +151,7 @@ const Games = () => {
     dispatchTitle({ type: "RESET", val: null });
     dispatchSD({ type: "RESET", val: null });
     dispatchLD({ type: "RESET", val: null });
+    dispatchTip({ type: "RESET", val: null });
     resetData(new Map([initialData]));
   }
 
@@ -151,6 +164,8 @@ const Games = () => {
     dispatchTitle({ type: "TITLE_INPUT", val: gameData.name });
     dispatchSD({ type: "SHORT_DESCRIPTION_INPUT", val: gameData.shortDescription });
     dispatchLD({ type: "LONG_DESCRIPTION_INPUT", val: gameData.longDescription });
+    dispatchTip({ type: "TIP_INPUT", val: gameData.tip });
+    
 
   }
 
@@ -258,6 +273,7 @@ const Games = () => {
        publish={publish} setPublish={setPublish} 
        toggleInclude={toggleInclude} updatePosition={updatePosition} handleImageUpload={handleImageUpload}
        titleState={titleState} dispatchTitle={dispatchTitle}
+       tipState={tipState} dispatchTip={dispatchTip}
        LDState = {LDState} dispatchLD={dispatchLD}
        SDState = {SDState} dispatchSD={dispatchSD}
       

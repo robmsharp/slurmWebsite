@@ -29,10 +29,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const GameDialog = (props) => {
 
 
-  const { openDialog, handleClose, title, instruction, dialogButton, publish, setPublish, toggleInclude, updatePosition, handleImageUpload, titleState, dispatchTitle,
+  const { openDialog, handleClose, title, instruction, dialogButton, publish, setPublish, toggleInclude, updatePosition, handleImageUpload, 
+    titleState, dispatchTitle,
+    tipState, dispatchTip,
     LDState, dispatchLD,
     SDState, dispatchSD} = props;
-
 
   const formSubmitHandler = event => {
 
@@ -100,10 +101,16 @@ const GameDialog = (props) => {
               <br />
               <br />
 
-              <CustomTextField label="Title" placeholder="Input title" required="true" state={titleState} dispatch={dispatchTitle} type="TITLE_INPUT" />
-              <CustomTextField label="Short description" placeholder="Input short description" required="true" state={SDState} dispatch={dispatchSD} type="SHORT_DESCRIPTION_INPUT" />
-              <CustomTextField label="Long description" placeholder="Input long description" required="true" state={LDState} dispatch={dispatchLD} type="LONG_DESCRIPTION_INPUT" />
+              <CustomTextField label="Title" placeholder="Input title" required="true" state={titleState} dispatch={dispatchTitle} type="TITLE_INPUT" multi={false}/>
+              <CustomTextField label="Short description" placeholder="Input short description" required="true" state={SDState} dispatch={dispatchSD} type="SHORT_DESCRIPTION_INPUT" multi={false} />
+              <CustomTextField label="Long description" placeholder="Input long description" required="true" state={LDState} dispatch={dispatchLD} type="LONG_DESCRIPTION_INPUT" multi={true}/>
+              <CustomTextField label="Game tip" placeholder="Input game tip" required="false" state={tipState} dispatch={dispatchTip} type="TIP_INPUT" multi={false}/>
 
+              <UploadFile buttonTitle="Upload rom" handleUpload={handleFileUpload1} acceptedFileType=".bin" percentage={percentage1} fieldname="rom" />
+            
+              <br />
+              <ImageList data={data} addImageSlot = {addImageSlot} toggleInclude={toggleInclude} updatePosition = {updatePosition} handleImageUpload={handleImageUpload}/>
+            
 
 
             </CardContent>
