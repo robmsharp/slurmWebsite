@@ -25,8 +25,8 @@ const Test = () => {
 
     const [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude] = useImage(
         3, "screenshot", 
-        new Map([["cover image", [null, null, true, -1, -1, true]], 
-        ["screenshot1", [null, null, false, -1, -1, false]],
+        new Map([["cover image", [null, null, true, 50, -1, true]], 
+        ["screenshot1", [null, null, false, 100, -1, false]],
         ["screenshot2", ["Pete.jpg", 'https://firebasestorage.googleapis.com/v0/b/slurm16-9621b.appspot.com/o/blogImages%2Fpete.png?alt=media&token=8409a46d-5454-4510-822f-dd3caafd35a2', true, -1, -1, false]]
     ]
         )

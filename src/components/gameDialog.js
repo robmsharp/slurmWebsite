@@ -25,11 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const GameDialog = (props) => {
 
-  const locationOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-  const [publish, setPublish] = useState(true);
-  //const [includeImage, setIncludeImage] = useState(false);
-  //const [location, setLocation] = useState(1);
+  
   const { title, instruction, openDialog, handleClose, percentage, handleImageUpload, imageUrl, imageName,
     cantCreate, handleCreate, imageDataArray,
     setImageDataArray,

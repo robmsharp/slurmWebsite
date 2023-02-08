@@ -8,6 +8,11 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
     const [data, setData] = useState(initialData);
     const [length, setLength] = useState(initialLength);
 
+    //Used for reseting the data
+    const resetData = (newData) => {
+        setData(newData);
+    }
+
     //Add slot for later upload
     const addImageSlot = (include, name) => {
         setData(prevData => {
@@ -93,7 +98,7 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
         });
     };
 
-    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude];
+    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData];
 
 };
 

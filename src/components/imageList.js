@@ -54,6 +54,7 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
     Location
     Image
     */
+   
     return (
         <>
             {Array.from(data).map(([key, [fileName, imageURL, include, percentage, location, mandatory]]) => (
