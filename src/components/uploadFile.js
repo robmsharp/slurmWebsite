@@ -7,17 +7,12 @@ import {
 
 import LinearProgressWithLabel from './progress.js';
 
-const UploadFile = ({ buttonTitle, handleUpload, acceptedFileType, percentage, fieldname }) => {
+const UploadFile = ({ buttonTitle, handleUpload, acceptedFileType, percentage, fieldname, filename }) => {
 
-    const [filename, setFilename] = useState('');
 
     const handleFileSelect = (event) => {
 
-        const filename = event.target.files[0].name;
-        const selectedFile = event.target.files[0];
-
-        setFilename(filename);
-        handleUpload(filename, selectedFile);
+        handleUpload(event.target.files[0].name, event.target.files[0]);
 
     };
 

@@ -143,7 +143,10 @@ export const GameContextProvider = (props) => {
                 //Screenshots
                 const screenshots = data.screenshots;
 
-                screenshots.forEach((screenshot) => {
+                screenshots.forEach((screenshotMap) => {
+
+                    const screenshot = screenshotMap.name;
+
                     const screenshotRef = ref(storage, 'screenshots/' + screenshot);
 
                     const screenshotUrl = getDownloadURL(screenshotRef);

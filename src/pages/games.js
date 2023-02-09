@@ -111,6 +111,7 @@ const Games = () => {
 
   //Uploading the game file
   const [gameFilePercentage, setGameFilePercentage] = useState(0);
+  const [gameFilename, setGameFilename] = useState('');
 
   //Open the dialog
   const [openDialog, setOpen] = useState(false);
@@ -128,7 +129,7 @@ const Games = () => {
 
   //Image data
   const [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData] = useImage(
-    3, "screenshot",
+    1, "screenshot",
     new Map([initialData])
   );
 
@@ -161,6 +162,7 @@ const Games = () => {
     const gameData = gameCtx.games.find(game => game.id === gameKey);
 
     setGameFilePercentage(100);
+    setGameFilename(gameData.rom + ".bin");
     dispatchTitle({ type: "TITLE_INPUT", val: gameData.name });
     dispatchSD({ type: "SHORT_DESCRIPTION_INPUT", val: gameData.shortDescription });
     dispatchLD({ type: "LONG_DESCRIPTION_INPUT", val: gameData.longDescription });
@@ -242,6 +244,7 @@ const Games = () => {
 
   }
 
+
   return (
     <>
       <Toolbar id="back-to-top-anchor" />
@@ -276,6 +279,11 @@ const Games = () => {
        tipState={tipState} dispatchTip={dispatchTip}
        LDState = {LDState} dispatchLD={dispatchLD}
        SDState = {SDState} dispatchSD={dispatchSD}
+       handleFileUpload = {handleGameFileUpload}
+       filePercentage = {gameFilePercentage}
+       imageData={data}
+       addImageSlot={addImageSlot}
+       gameFilename = {gameFilename}
       
       
       

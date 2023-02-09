@@ -20,6 +20,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinearProgressWithLabel from './progress.js';
 
 
+import ImageList from '../components/imageList';
+
+import UploadFile from '../components/uploadFile';
+
 import CustomTextField from '../components/customFieldText';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -33,7 +37,15 @@ const GameDialog = (props) => {
     titleState, dispatchTitle,
     tipState, dispatchTip,
     LDState, dispatchLD,
-    SDState, dispatchSD} = props;
+    SDState, dispatchSD,
+    handleFileUpload,
+    filePercentage,
+    imageData,
+    addImageSlot,
+    gameFilename
+  
+  
+  } = props;
 
   const formSubmitHandler = event => {
 
@@ -105,15 +117,21 @@ const GameDialog = (props) => {
               <CustomTextField label="Short description" placeholder="Input short description" required="true" state={SDState} dispatch={dispatchSD} type="SHORT_DESCRIPTION_INPUT" multi={false} />
               <CustomTextField label="Long description" placeholder="Input long description" required="true" state={LDState} dispatch={dispatchLD} type="LONG_DESCRIPTION_INPUT" multi={true}/>
               <CustomTextField label="Game tip" placeholder="Input game tip" required="false" state={tipState} dispatch={dispatchTip} type="TIP_INPUT" multi={false}/>
-
-              <UploadFile buttonTitle="Upload rom" handleUpload={handleFileUpload1} acceptedFileType=".bin" percentage={percentage1} fieldname="rom" />
-            
+              </CardContent>
+              
+              <CardHeader
+                        title="Game File"
+                    />
+                    <CardContent>
+              <UploadFile buttonTitle="Upload game file" handleUpload={handleFileUpload} acceptedFileType=".bin" percentage={filePercentage} fieldname="rom" filename = {gameFilename}/>
+              </CardContent>
               <br />
-              <ImageList data={data} addImageSlot = {addImageSlot} toggleInclude={toggleInclude} updatePosition = {updatePosition} handleImageUpload={handleImageUpload}/>
+              
+              <ImageList data={imageData} addImageSlot = {addImageSlot} toggleInclude={toggleInclude} updatePosition = {updatePosition} handleImageUpload={handleImageUpload}/>
             
 
 
-            </CardContent>
+            
 
 
 
