@@ -8,8 +8,8 @@ import React, { useState, useEffect } from 'react';
 
 
 
-import {db, storage} from '../firebaseConfig';
-  
+import { db, storage } from '../firebaseConfig';
+
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 const GameContext = React.createContext({
@@ -30,7 +30,7 @@ export const GameContextProvider = (props) => {
     var gamesData = [];
     var newGamesData = [];
 
-    var promises=[];
+    var promises = [];
 
 
 
@@ -89,8 +89,8 @@ export const GameContextProvider = (props) => {
 
     }
 
-     //Update the game
-     const editGame = async (data, id) => {
+    //Update the game
+    const editGame = async (data, id) => {
 
 
         const docRef = doc(db, "games", id);
@@ -116,32 +116,33 @@ export const GameContextProvider = (props) => {
 
         const snap = onSnapshot(colRef, (snapshot) => {
 
+            let promises = [];
 
-            //Find the max id
-            var max = 0;
 
-            //For promises
-            var promiseIndex = 0;
 
             snapshot.docs.forEach((doc) => {
 
                 const data = doc.data();
 
-                let promiseIndices = []
+
+                //To find the max game id
+                //This will be calculated and stored in maxId state for when adding a new game slot (id will be max+1)
+                let max = 0;
 
                 //Cover images
                 const imageRef = ref(storage, 'covers/' + data.coverImage);
 
                 const url = getDownloadURL(imageRef);
-                //Insert into array
-                promises.splice(promiseIndex, 0, url);
 
-                promiseIndices.push(promiseIndex);
+                //Create object
+                const coverObj = { key: "cover image", name: data.coverImage, urlPromise: Promise.resolve(url), position: 1 };
 
-                promiseIndex += 1;
+                promises.push(Promise.resolve(url));
 
                 //Screenshots
                 const screenshots = data.screenshots;
+
+                var arrayObjects = [coverObj];
 
                 screenshots.forEach((screenshotMap) => {
 
@@ -150,77 +151,79 @@ export const GameContextProvider = (props) => {
                     const screenshotRef = ref(storage, 'screenshots/' + screenshot);
 
                     const screenshotUrl = getDownloadURL(screenshotRef);
-                    //Insert into array
-                    promises.splice(promiseIndex, 0, screenshotUrl);
 
-                    promiseIndices.push(promiseIndex);
 
-                    promiseIndex += 1;
+                    promises.push(Promise.resolve(screenshotUrl));
 
-                })
+                    const screenshotObj = { key: "screenshot" + screenshotMap.id, name: screenshotMap.name, urlPromise: Promise.resolve(screenshotUrl), position: screenshotMap.position };
 
+                    arrayObjects.push(screenshotObj);
+
+
+                });
+
+                //Rom reference (note downloaded later)
                 const romRef = ref(storage, 'roms/' + data.rom + '.bin');
 
-                const newData = { ...data, "firebaseId": doc.id, "romRef": romRef, "promises": promiseIndices };
+
+                const screenshotMap = new Map();
+
+                Promise.all(arrayObjects.map(obj => obj.urlPromise))
+                    .then(resolvedPromises => {
+                        arrayObjects.forEach((obj, index) => {
+                            //Format of data:
+                            //key, [fileName, imageURL, include, percent, position, mandatory]
+                            screenshotMap.set(obj.key, [obj.name, resolvedPromises[index], true, 100, obj.position, obj.key === "cover image"]);
+                        });
+                    });
+
+                   
+                const newData = { ...data, "firebaseId": doc.id, "romRef": romRef, "images": screenshotMap };
+ 
 
                 gamesData.push(newData);
 
             });
-
             Promise.all(promises)
-                .then(resolvedPromises => {
-                    gamesData.map((game) => {
+  .then(() => {
 
-                        let screenshots = []
-                        let imageUrl = null;
+    const finalData = gamesData.map((item) => {
 
-                        game.promises.map((promise, index) => {
+        return {
+            ...item, "imagesArray": Array.from(item.images).slice(1) 
+        }
 
-                            if (index == 0) {
+    } )
 
-                                imageUrl = resolvedPromises[promise]
+    console.log(finalData);
+    setGames(finalData);
+    setLoaded(true);
+    console.log("loaded games");
+  });
 
-                            }
+    },
+        error => {
+            console.log(error);
+            setDenied(true);
+            setLoaded(true);
+        });
 
-                            else {
-
-                                screenshots.push({"id": index, "name": resolvedPromises[promise]});
-
-                            }
-
-                        })
-
-                        newGamesData.push({ ...game, "imageUrl": imageUrl, "screenshots": screenshots })
-                    });
-                    console.log("the data:");
-                    console.log(newGamesData);
-                    setGames(newGamesData);
-                    setLoaded(true);
-                    console.log("loaded games");
-
-                })},
-                    error => {
-                        console.log(error);
-                        setDenied(true);
-                        setLoaded(true);
-                    });
+}, []);
 
 
-        }, []);
+return (
+    <GameContext.Provider
+        value={{
+            games: games,
+            loaded: loaded,
+            denied: denied,
+            maxId: maxId
 
-        return (
-            <GameContext.Provider
-                value={{
-                    games: games,
-                    loaded: loaded,
-                    denied: denied,
-                    maxId: maxId
-
-                }}
-            >
-                {props.children}
-            </GameContext.Provider>
-        );
+        }}
+    >
+        {props.children}
+    </GameContext.Provider>
+);
     };
 
-    export default GameContext;
+export default GameContext;

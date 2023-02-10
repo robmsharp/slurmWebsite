@@ -159,6 +159,7 @@ const Games = () => {
   //Load the values
   const loadValues = (gameKey) => {
 
+    //Find the matching game
     const gameData = gameCtx.games.find(game => game.id === gameKey);
 
     setGameFilePercentage(100);
@@ -167,7 +168,11 @@ const Games = () => {
     dispatchSD({ type: "SHORT_DESCRIPTION_INPUT", val: gameData.shortDescription });
     dispatchLD({ type: "LONG_DESCRIPTION_INPUT", val: gameData.longDescription });
     dispatchTip({ type: "TIP_INPUT", val: gameData.tip });
+
+    setPublish(gameData.live);
     
+    //Set the cover image
+    resetData(gameData.images);
 
   }
 
