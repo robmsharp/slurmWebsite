@@ -6,7 +6,7 @@ import {
   Avatar, CardHeader, CardContent, Button, Collapse,
   Tooltip, Menu, MenuItem, List, ListItemIcon, ListItem,
   ListItemText, Paper, Divider, ThemeProvider, Tab, Tabs, Badge, CardMedia,
-  InputLabel, Input, InputAdornment, CircularProgress
+  InputLabel, Input, InputAdornment, CircularProgress, Dialog, DialogTitle
 } from '@mui/material/';
 
 import GameContext from '../api/gamesAPI';
@@ -108,6 +108,11 @@ const Games = () => {
     isValid: null,
     helperText: ''
   });
+
+  //Delete dialog states
+  const [gameKey, setGameKey] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState('');
 
   //Uploading the game file
   const [gameFilePercentage, setGameFilePercentage] = useState(0);
@@ -249,6 +254,50 @@ const Games = () => {
 
   }
 
+  
+  const handleSwap = async (id1, id2) => {
+
+
+    gameCtx.setLoaded(false);
+
+    const success = await gameCtx.swapGame(id1, id2);
+
+    if (success) {
+      snackCtx.notifyLevel("Games successfully swapped.", "success");
+    }
+
+    else {
+      snackCtx.notifyLevel("Unable to swap games.", "error");
+    }
+
+  }
+
+ 
+
+  const handleDelete = (deleteGameKey, gameTitle) => {
+
+    //So we know which game to delete when confirmation occurs
+    setGameKey(deleteGameKey);
+    setDeleteMessage('Confirm delete the game \"'.concat(gameTitle).concat('\"? This operation cannot be undone.'));
+    setDeleteOpen(true);
+
+  }
+
+
+  const handleDeleteConfirm = async () => {
+
+    const success = await gameCtx.deleteGame(gameKey);
+
+    if (success) {
+      snackCtx.notifyLevel("Game successfully deleted.", "success");
+    }
+
+    else {
+      snackCtx.notifyLevel("Unable to delete game.", "error");
+    }
+
+  }
+
 
   return (
     <>
@@ -266,7 +315,16 @@ const Games = () => {
         {gameCtx.denied === false && gameCtx.loaded === false && <><Typography variant="h6" color="text.primary" padding="15px" gutterBottom>Loading information...</Typography><CircularProgress /></>
         }
         {gameCtx.denied === true && <Typography>Access denied.</Typography>}
-        {gameCtx.denied === false && gameCtx.loaded === true && <GamesList data={gameCtx.games} handleOpenEdit={handleOpenEdit} loggedIn={authCtx.isLoggedIn}/>}
+        {gameCtx.denied === false && gameCtx.loaded === true && <GamesList data={gameCtx.games} 
+        handleOpenEdit={handleOpenEdit} 
+        loggedIn={authCtx.isLoggedIn} 
+        handleSwap = {handleSwap}
+       last = {gameCtx.maxId}
+       handleDelete = {handleDelete}
+       loaded = {gameCtx.loaded}
+       />
+       
+       }
 
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
@@ -289,12 +347,40 @@ const Games = () => {
        imageData={data}
        addImageSlot={addImageSlot}
        gameFilename = {gameFilename}
+       
       
       
       
 
 
       />
+
+{/* Delete dialog */}
+<Dialog fullWidth
+        maxWidth="md" open={deleteOpen}>
+        <DialogTitle>Confirm delete game</DialogTitle>
+        <Box sx={{ p: 5, color: "black", bgcolor: "text.secondary" }}>
+          <Typography>
+          {deleteMessage}
+          </Typography>
+          <br />
+
+          <Grid container spacing={1} justify='space-between' sx={{ mt: 5 }}>
+            <Grid item xs={12} md={4}>
+              <Button variant="contained" color='primary' onClick={() => setDeleteOpen(false)}>
+                Cancel
+              </Button>
+            </Grid>
+
+
+            <Grid item xs={12} md={4}>
+              <Button variant="contained" color='secondary' onClick={handleDeleteConfirm}>Confirm</Button>
+            </Grid>
+
+
+          </Grid>
+        </Box>
+      </Dialog>
 
 
 

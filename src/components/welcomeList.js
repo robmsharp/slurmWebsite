@@ -32,7 +32,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
               <Button sx={{m:2}} variant="contained" startIcon={<AssignmentTurnedInIcon />} onClick={() => handleEdit(info.firebaseId, info.question, info.answer)}>Edit</Button>
               </Grid>
               <Grid item xs={2} md={2}>
-              <Button sx={{m:2}} color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => handleDelete(info.firebaseId, info.subject)}>Delete</Button>
+              <Button sx={{m:2}} color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => handleDelete(info.firebaseId, info.question)}>Delete</Button>
               </Grid>
               </Grid>
   

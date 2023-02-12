@@ -284,7 +284,7 @@ const Welcome = () => {
       </Container>
       <ScrollTop anchor="#back-to-top-anchor" />
 
-      <Dialog fullWidth
+      <Dialog fullWidth 
         maxWidth="md" open={dialogOpen}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <Box sx={{ p: 5, color: "black", bgcolor: "text.secondary" }}>

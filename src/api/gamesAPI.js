@@ -1,5 +1,5 @@
 
-import { collection, query, where, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
 
 import { onSnapshot } from 'firebase/firestore';
@@ -31,6 +31,48 @@ export const GameContextProvider = (props) => {
     var newGamesData = [];
 
     var promises = [];
+
+    const swapGame = async(id1, id2) => {
+
+
+    var firebaseIdSwap;
+    var firebaseIdTarget;
+
+    //Get the firebase id's 
+    games.forEach((entry, i) => {
+
+      if (entry.id === id1) {
+        firebaseIdSwap = entry.firebaseId;
+      }
+
+      if (entry.id === id2) {
+        firebaseIdTarget = entry.firebaseId;
+      }
+
+    });
+
+        const docRefSwap = doc(db, "games", firebaseIdSwap);
+
+        const docRefTarget = doc(db, "games", firebaseIdTarget);
+
+        updateDoc(docRefSwap, { id: id2 }).then(() => {
+
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        });
+
+        updateDoc(docRefTarget, { id: id1 }).then(() => {
+
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        });
+
+        return true;
+
+
+    }
 
 
 
@@ -116,18 +158,19 @@ export const GameContextProvider = (props) => {
 
         const snap = onSnapshot(colRef, (snapshot) => {
 
-            let promises = [];
+            promises = [];
+            gamesData = [];
 
-
+            //To find the max game id
+                //This will be calculated and stored in maxId state for when adding a new game slot (id will be max+1)
+                let max = 0;
 
             snapshot.docs.forEach((doc) => {
 
                 const data = doc.data();
 
 
-                //To find the max game id
-                //This will be calculated and stored in maxId state for when adding a new game slot (id will be max+1)
-                let max = 0;
+                
 
                 //Cover images
                 const imageRef = ref(storage, 'covers/' + data.coverImage);
@@ -183,23 +226,33 @@ export const GameContextProvider = (props) => {
 
                 gamesData.push(newData);
 
+                max+=1;
+
             });
             Promise.all(promises)
   .then(() => {
 
+    
     const finalData = gamesData.map((item) => {
 
+        console.log("error:");
+    console.log(item.images);
+    console.log(Array.from(item.images));
+
         return {
-            ...item, "imagesArray": Array.from(item.images).slice(1) 
+            ...item, "imagesArray": Array.from(item.images).slice(1), "coverImage": Array.from(item.images)[0][1][1] 
         }
 
     } )
 
+    setMaxId(max);
     console.log(finalData);
     setGames(finalData);
     setLoaded(true);
     console.log("loaded games");
-  });
+
+  }
+  );
 
     },
         error => {
@@ -217,7 +270,10 @@ return (
             games: games,
             loaded: loaded,
             denied: denied,
-            maxId: maxId
+            maxId: maxId,
+            swapGame: swapGame,
+            deleteGame: deleteGame,
+            setLoaded: setLoaded
 
         }}
     >

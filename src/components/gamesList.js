@@ -23,6 +23,10 @@ import { useHistory } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
 
 /*
         action={
@@ -46,7 +50,8 @@ const ExpandMore = styled((props) => {
 
 const GamesList = (props) => {
 
-  const {data, handleOpenEdit, loggedIn} = props;
+  const {data, handleOpenEdit, loggedIn, last, handleSwap,
+  handleDelete, loaded} = props;
 
   const history = useHistory();
 
@@ -110,24 +115,22 @@ const GamesList = (props) => {
   }
 
 
-  return (
+  return ( loaded ? 
     <>
+    
     
 
 
       <Grid container>
 
-        {data.map((game, index) => {
+        {data.sort((a, b) => a.id - b.id).map((game, index) => {
 
-{console.log(game)}
-
-{console.log(game.images)}
 
           return (
 
 
-            <Grid item xs={12} md={6} key={"grid" + game.id + index} >
-              <Card sx={{ margin: '20px', padding: '10px' }}>
+            <Grid item xs={12} md={6} key={"game"+game.id} >
+              <Card key={"card"+game.id} sx={{ margin: '20px', padding: '10px' }}>
                 <CardHeader
 
                   title={game.name}
@@ -141,22 +144,23 @@ const GamesList = (props) => {
                   {/*Can edit if logged in*/}
                   {(loggedIn) && <Box textAlign='center' sx={{pb: 5}}>
                     
-                    
-
+                  
                     <Grid container spacing={1}>
             <Grid item xs = {12} md={9}>
-            <Button variant="contained" onClick={() => handleOpenEdit(game.id) } sx={{mr: 1}} >
+            <Button variant="contained" onClick={() => handleOpenEdit(game.id) } sx={{mr: 1}} startIcon={<AssignmentTurnedInIcon/>}>
                       Edit
                     </Button>
-                    <Button variant="contained" onClick={() => handleOpenEdit(game.id)} sx={{mr: 1}} >
-                      Edit
-                    </Button>
-                    <Button variant="contained" onClick={() => handleOpenEdit(game.id)} >
-                      Edit
-                    </Button>
+                    {(game.id>1) &&
+                    <Button variant="contained" onClick={() => handleSwap(game.id, game.id-1)} sx={{mr: 1}} startIcon={<ArrowUpwardIcon/>}>
+                      Up
+                    </Button>}
+                    {(game.id < last ) &&
+                    <Button variant="contained" onClick={() => handleSwap(game.id, game.id+1)} startIcon={<ArrowDownwardIcon/>}>
+                      Down
+                    </Button>}
                     </Grid>
             <Grid item xs={2} md={2}>
-             <Button color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => handleOpenEdit(game.id)} >
+             <Button color="secondary" variant="contained" startIcon={<DeleteIcon/>} onClick={() => handleDelete(game.id)} >
                       Delete
                     </Button>
             </Grid>
@@ -165,7 +169,7 @@ const GamesList = (props) => {
 
                   </Box>}
 
-                    <Box component="img" sx={{ border: 3, objectFit: 'contain', width: "320", height: "200" }} src={game.images.get("cover image")[1]}></Box>
+                    <Box component="img" sx={{ border: 3, objectFit: 'contain', width: "320", height: "200" }} src={game.coverImage}></Box>
                   </Box>
                   <Box textAlign='center'>
                     <Button variant="contained" onClick={() => handlePlay(game.rom, game.tip)} >
@@ -193,10 +197,10 @@ const GamesList = (props) => {
                     <Grid container>
                     {game.imagesArray.map((value, id) => {
                       return (
-                        <Grid item key={value[0]}>
+                        <Grid item key={"grid"+value[0]}>
                           
                           <CardMedia
-                            key={value[0]}
+                            key={"screenshot"+value[0]}
                             component="img"
                             width="320"
                             height="200"
@@ -230,9 +234,9 @@ const GamesList = (props) => {
           )
         })}
       </Grid>
-
-    </>
-  );
+    
+    </> : <></>
+      );
 };
 
 export default GamesList;
