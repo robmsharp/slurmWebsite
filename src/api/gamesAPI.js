@@ -1,5 +1,5 @@
 
-import { collection, query, where, getDocs, doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, deleteDoc, updateDoc, runTransaction } from "firebase/firestore";
 
 
 import { onSnapshot } from 'firebase/firestore';
@@ -28,51 +28,53 @@ export const GameContextProvider = (props) => {
     const [denied, setDenied] = useState(false);
 
     var gamesData = [];
-    var newGamesData = [];
 
     var promises = [];
 
-    const swapGame = async(id1, id2) => {
-
-
-    var firebaseIdSwap;
-    var firebaseIdTarget;
-
-    //Get the firebase id's 
-    games.forEach((entry, i) => {
-
-      if (entry.id === id1) {
-        firebaseIdSwap = entry.firebaseId;
-      }
-
-      if (entry.id === id2) {
-        firebaseIdTarget = entry.firebaseId;
-      }
-
-    });
-
-        const docRefSwap = doc(db, "games", firebaseIdSwap);
-
-        const docRefTarget = doc(db, "games", firebaseIdTarget);
-
-        updateDoc(docRefSwap, { id: id2 }).then(() => {
-
-        }).catch((e) => {
-            console.log(e);
-            return false;
+    const swapGame = async (id1, id2) => {
+        var firebaseIdSwap;
+        var firebaseIdTarget;
+      
+        // Get the firebase ids of the two games
+        games.forEach((entry, i) => {
+          if (entry.id === id1) {
+            firebaseIdSwap = entry.firebaseId;
+          }
+      
+          if (entry.id === id2) {
+            firebaseIdTarget = entry.firebaseId;
+          }
         });
+      
+        // Get references to the two documents
+        const docRefSwap = doc(db, "games", firebaseIdSwap);
+        const docRefTarget = doc(db, "games", firebaseIdTarget);
+      
+        // Start the transaction
+        await runTransaction(db, async (transaction) => {
 
-        updateDoc(docRefTarget, { id: id1 }).then(() => {
-
-        }).catch((e) => {
-            console.log(e);
-            return false;
+          return Promise.all([
+            transaction.get(docRefSwap),
+            transaction.get(docRefTarget)
+          ])
+          .then((docs) => {
+            
+            // Update the two documents in the transaction
+            transaction.update(docRefSwap, { id: id2 });
+            transaction.update(docRefTarget, { id: id1 });
+          });
+        })
+        .then(() => {
+          console.log("Transaction successfully completed.");
+        })
+        .catch((error) => {
+          console.log("Transaction failed: ", error);
+          return false;
         });
 
         return true;
 
-
-    }
+      };
 
 
 
