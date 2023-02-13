@@ -68,6 +68,35 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
 
     }
 
+    const verifyImage = (image) => {
+
+
+
+    }
+
+    const verify = () => {
+
+        //verify cover
+        if (getData("cover image") === undefined) {
+            return [false, "Missing cover image"];
+        }
+
+        //Verify each image has uploaded if it is "included"
+
+    }
+
+    const getCover = () => {
+
+        return getData("cover image");
+
+    }
+
+    const getScreenshots = () => {
+
+
+    }
+
+
     const changeData = (key, updatedValue, updateType) => {
         setData(prevData => {
             const newData = new Map(prevData);

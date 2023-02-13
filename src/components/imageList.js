@@ -34,9 +34,10 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
     
     const handleUpload = (event) => {
 
+        const key = event.target.name;
         const file = event.target.files[0];
         console.log(file);
-        handleImageUpload(event.target.name, file);
+        handleImageUpload(key, file);
     
     }
     

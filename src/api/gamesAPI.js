@@ -1,5 +1,5 @@
 
-import { collection, query, where, getDocs, doc, setDoc, deleteDoc, updateDoc, runTransaction } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, deleteDoc, updateDoc, runTransaction, addDoc, Timestamp  } from "firebase/firestore";
 
 
 import { onSnapshot } from 'firebase/firestore';
@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 
 import { db, storage } from '../firebaseConfig';
 
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, uploadBytesResumable} from "firebase/storage";
 
 const GameContext = React.createContext({
     games: null,
@@ -30,6 +30,79 @@ export const GameContextProvider = (props) => {
     var gamesData = [];
 
     var promises = [];
+
+    //Upload game file
+    const uploadGameFile = (filename, file, setGameFilename, setGameFilePercentage) => {
+
+        setGameFilename(filename);
+        const directory = "roms";
+
+        const storageRef = ref(storage, `/${directory}/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+     
+                // update progress
+                setGameFilePercentage(percent);
+            },
+            (err) => {console.log(err)},
+            () => {
+                // don't need to download url
+                
+            }
+        ); 
+
+    }
+
+    //Upload an image
+    //Functions for updating data through props
+    const uploadImage = (key, file, updatePercentage, updateImageURL, updateFileName) => {
+
+        var directory = "";
+
+        updateFileName(key, file.name);
+
+        if (key==="cover image") {
+
+            directory = "covers";
+
+        } else {
+
+            directory = "roms";
+
+        }
+
+        const storageRef = ref(storage, `/${directory}/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+     
+                // update progress
+                updatePercentage(key, percent);
+            },
+            (err) => {console.log(err)},
+            () => {
+                // download url
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    console.log(url);
+                    
+                    updateImageURL(key, url);
+                });
+            }
+        ); 
+    };
+
+
 
     const swapGame = async (id1, id2) => {
         var firebaseIdSwap;
@@ -81,7 +154,18 @@ export const GameContextProvider = (props) => {
     //Returns false if encounters an error, otherwise returns true
     const deleteGame = async (id) => {
 
-        const docRef = doc(db, "games", id);
+        //Find the firebase id
+        var firebaseId;
+      
+        // Get the firebase ids of the two games
+        games.forEach((entry, i) => {
+          if (entry.id === id) {
+            firebaseId = entry.firebaseId;
+          }
+      
+        });
+
+        const docRef = doc(db, "games", firebaseId);
 
         try {
             await deleteDoc(docRef);
@@ -95,29 +179,10 @@ export const GameContextProvider = (props) => {
 
     }
 
-    //Publish the game
-    const publishGame = async (id) => {
+    
+    //Update the game
+    const editGame = async (data, id) => {
 
-        const data = { beenRead: true }
-
-        const docRef = doc(db, "games", id);
-
-        try {
-            await setDoc(docRef, data, { merge: true });
-            return true;
-        }
-
-        catch (error) {
-            console.log(error);
-            return false;
-        }
-
-    }
-
-    //Unpublish game
-    const unpublishGame = async (id) => {
-
-        const data = { replied: true }
 
         const docRef = doc(db, "games", id);
 
@@ -134,13 +199,21 @@ export const GameContextProvider = (props) => {
     }
 
     //Update the game
-    const editGame = async (data, id) => {
+    const createGame = async (data) => {
+
+        const id = maxId+1;
+
+        const dateUpdated= Timestamp.fromDate(new Date());
+
+        const newData = {...data, id: id, lastUpdated: dateUpdated};
 
 
-        const docRef = doc(db, "games", id);
 
         try {
-            await setDoc(docRef, data, { merge: true });
+            const dbRef = collection(db, "games");
+             
+
+            await addDoc(dbRef, newData);
             return true;
         }
 
@@ -275,7 +348,11 @@ return (
             maxId: maxId,
             swapGame: swapGame,
             deleteGame: deleteGame,
-            setLoaded: setLoaded
+            setLoaded: setLoaded,
+            editGame: editGame,
+            createGame: createGame,
+            uploadImage: uploadImage,
+            uploadGameFile: uploadGameFile
 
         }}
     >

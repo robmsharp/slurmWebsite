@@ -49,6 +49,8 @@ const GameDialog = (props) => {
 
   const formSubmitHandler = event => {
 
+    handleSubmit();
+
   }
 
   //Change the checkbox for publish

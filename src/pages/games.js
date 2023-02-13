@@ -118,6 +118,9 @@ const Games = () => {
   const [gameFilePercentage, setGameFilePercentage] = useState(0);
   const [gameFilename, setGameFilename] = useState('');
 
+  //The mode (ie. edit or create)
+  const [mode, setMode] = useState('');
+
   //Open the dialog
   const [openDialog, setOpen] = useState(false);
   //Title of dialog
@@ -133,7 +136,7 @@ const Games = () => {
   const initialData = ["cover image", [null, null, true, -1, -1, true]];
 
   //Image data
-  const [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData] = useImage(
+  const [imageData, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData] = useImage(
     1, "screenshot",
     new Map([initialData])
   );
@@ -142,10 +145,9 @@ const Games = () => {
 
   //Uploads the file to database
   //Updates the game file percentage
-  const handleGameFileUpload = (filename, selectedFile) => {
+  const handleGameFileUpload = (filename, file) => {
 
-    console.log("file uploaded:" + filename);
-    //TO DO
+    gameCtx.uploadGameFile(filename, file, setGameFilename, setGameFilePercentage);
 
   };
 
@@ -187,29 +189,66 @@ const Games = () => {
     setInstruction('Fill out the details of the game entry and upload images.');
     setDialogTitle('Create new game');
     setDialogButton('Create');
+    setMode('Create');
 
     //Reset all values
     resetAllValues();
 
+    //Set the gameKey to the max + 1 ie. unique id
+    setGameKey(maxId+1);
+
     setOpen(true);
+
+
+    //Just for test
+
+    /*const screenshots = [{id: 3, name: "pocmans1.png", position: 1}]
+    const data = {coverImage: "pocman.png", name: "test", live: true, rom: "pocman", shortDescription: "Nope", longDescription: "LOOOOONG", tip: "hello", screenshots: screenshots}
+
+    gameCtx.createGame(data);*/
 
   }
 
   //Open the dialog for editing an existing game
-  const handleOpenEdit = (gameKey) => {
+  const handleOpenEdit = (key) => {
 
     setInstruction('Edit the details of the game entry and upload images.');
     setDialogTitle('Edit existing game');
     setDialogButton('Save');
+    setMode('Edit');
+
+    setGameKey(key);
 
     //Reset all values
-    loadValues(gameKey);
+    loadValues(key);
 
     setOpen(true);
 
   }
 
-  const handleCreate = async (data) => {
+  const handleSubmit = () => {
+
+    const [status, reason] = verifyData();
+
+    if (status)
+
+     {const newData = createData();}
+     else 
+     {
+      //Inform the user of the problem
+      snackCtx.notifyLevel(reason, "error");
+      return;
+     }
+
+    if (mode === 'Create') {
+      handleCreate(newData);
+    }
+
+  }
+
+  const handleCreate = async (newData) => {
+
+
     //const success = await blogCtx.createEntry(data);
 
     //Close the dialog upon successful creation
@@ -226,31 +265,48 @@ const Games = () => {
     setOpen(false);
   }
 
-  /*const cantCreate = (reason) => {
-    if (reason === "image") {
-      snackCtx.notifyLevel("Creating blog entry with image requires a fully uploaded image", "error");
-    }
-
-    if (reason === "missing title") {
-      snackCtx.notifyLevel("Creating blog entry requires a title", "error");
-    }
-
-
-    if (reason === "missing text") {
-      snackCtx.notifyLevel("Creating blog entry requires text", "error");
-    }
-
-  }*/
-
   const verifyData = () => {
 
+    if (!gameFilename) return [false, "You must select a game file"];
 
+    if (gameFilePercentage<100) return [false, "Game file not uploaded"];
+
+    if (!gameFilename) return [false, "You must select a game file"];
+
+    if (!titleState) return [false, "You must input a title"];
+
+    if (!LDState) return [false, "You must input a long description"];
+
+    if (!SDState) return [false, "You must input a short description"];
+
+    //Tip can be empty
+	
+    return [true, ""];
+  }
+
+  const createData = () => {
+
+    const newData = {
+      coverImage: "pocman.png", 
+      name: "test", 
+      live: true, 
+      rom: "pocman", 
+      shortDescription: "Nope", 
+      longDescription: "LOOOOONG", 
+      tip: "hello", 
+      screenshots: screenshots}
+
+
+
+    return newData;
 
   }
 
-  const handleImageUpload = (index, file) => {
+  const handleImageUpload = (key, file) => {
 
     //blogCtx.uploadImage(file, index, setImageDataArray);
+
+    gameCtx.uploadImage(key, file, updatePercentage, updateImageURL, updateFileName);
 
   }
 
@@ -285,6 +341,8 @@ const Games = () => {
 
 
   const handleDeleteConfirm = async () => {
+
+    setDeleteOpen(false);
 
     const success = await gameCtx.deleteGame(gameKey);
 
@@ -344,7 +402,7 @@ const Games = () => {
        SDState = {SDState} dispatchSD={dispatchSD}
        handleFileUpload = {handleGameFileUpload}
        filePercentage = {gameFilePercentage}
-       imageData={data}
+       imageData={imageData}
        addImageSlot={addImageSlot}
        gameFilename = {gameFilename}
        
