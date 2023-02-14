@@ -42,7 +42,8 @@ const GameDialog = (props) => {
     filePercentage,
     imageData,
     addImageSlot,
-    gameFilename
+    gameFilename,
+    handleSubmit
   
   
   } = props;
@@ -115,10 +116,10 @@ const GameDialog = (props) => {
               <br />
               <br />
 
-              <CustomTextField label="Title" placeholder="Input title" required="true" state={titleState} dispatch={dispatchTitle} type="TITLE_INPUT" multi={false}/>
-              <CustomTextField label="Short description" placeholder="Input short description" required="true" state={SDState} dispatch={dispatchSD} type="SHORT_DESCRIPTION_INPUT" multi={false} />
-              <CustomTextField label="Long description" placeholder="Input long description" required="true" state={LDState} dispatch={dispatchLD} type="LONG_DESCRIPTION_INPUT" multi={true}/>
-              <CustomTextField label="Game tip" placeholder="Input game tip" required="false" state={tipState} dispatch={dispatchTip} type="TIP_INPUT" multi={false}/>
+              <CustomTextField label="Title" placeholder="Input title" required={true} state={titleState} dispatch={dispatchTitle} type="TITLE_INPUT" multi={false}/>
+              <CustomTextField label="Short description" placeholder="Input short description" required={true} state={SDState} dispatch={dispatchSD} type="SHORT_DESCRIPTION_INPUT" multi={false} />
+              <CustomTextField label="Long description" placeholder="Input long description" required={true} state={LDState} dispatch={dispatchLD} type="LONG_DESCRIPTION_INPUT" multi={true}/>
+              <CustomTextField label="Game tip" placeholder="Input game tip" required={false} state={tipState} dispatch={dispatchTip} type="TIP_INPUT" multi={false}/>
               </CardContent>
               
               <CardHeader

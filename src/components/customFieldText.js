@@ -8,6 +8,7 @@ import {
   InputLabel, Input, InputAdornment, Link, Dialog, DialogTitle, IconButton, FormControlLabel, Checkbox, Select, FormControl
 } from '@mui/material/';
 
+//Required is a boolean
 const CustomTextField = ({ label, placeholder, required, state, dispatch, type, multi }) => {
   
   

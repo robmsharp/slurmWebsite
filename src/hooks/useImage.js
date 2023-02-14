@@ -68,9 +68,16 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
 
     }
 
-    const verifyImage = (image) => {
+    const verifyImage = (image, key) => {
 
+        const [fileName, imageURL, include, percent, position, mandatory] = image;
 
+        if (include===true) {
+            if (!fileName) {return [false, key+" is missing an image"]};
+            if (percent<100) {return [false, key+" has not finished uploading"]};
+        }
+
+        return [true, ""];
 
     }
 
@@ -82,17 +89,40 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
         }
 
         //Verify each image has uploaded if it is "included"
+        Array.from(data).forEach(([key, image]) => {
+
+
+            const [status, message] = verifyImage(image, key);
+
+            if (status === false) {
+                return [status, message];
+            }
+
+        }
+        );
+
+        return [true, ""];
 
     }
 
     const getCover = () => {
 
-        return getData("cover image");
+        return getData("cover image")[0];
 
     }
 
     const getScreenshots = () => {
 
+        var id=1;
+
+        const result = Array.from(data).reduce((acc, [key, [fileName, imageURL, include, percent, position, mandatory]]) => {
+            if (include) {
+              acc.push({ id: id++, fileName, position });
+            }
+            return acc;
+          }, []);
+
+        return result;  
 
     }
 
@@ -127,7 +157,7 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
         });
     };
 
-    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData];
+    return [data, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData, getCover, getScreenshots, verify];
 
 };
 

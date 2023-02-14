@@ -136,7 +136,7 @@ const Games = () => {
   const initialData = ["cover image", [null, null, true, -1, -1, true]];
 
   //Image data
-  const [imageData, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData] = useImage(
+  const [imageData, getData, addImageSlot, updatePercentage, updateImageURL, updateFileName, updateInclude, updatePosition, toggleInclude, resetData, getCover, getScreenshots, verify] = useImage(
     1, "screenshot",
     new Map([initialData])
   );
@@ -195,7 +195,7 @@ const Games = () => {
     resetAllValues();
 
     //Set the gameKey to the max + 1 ie. unique id
-    setGameKey(maxId+1);
+    setGameKey(gameCtx.maxId+1);
 
     setOpen(true);
 
@@ -232,7 +232,16 @@ const Games = () => {
 
     if (status)
 
-     {const newData = createData();}
+     {const newData = createData();
+    
+      if (mode === 'Create') {
+        handleCreate(newData);
+      }
+  
+      console.log(newData);
+    
+    
+    }
      else 
      {
       //Inform the user of the problem
@@ -240,9 +249,7 @@ const Games = () => {
       return;
      }
 
-    if (mode === 'Create') {
-      handleCreate(newData);
-    }
+    
 
   }
 
@@ -271,30 +278,37 @@ const Games = () => {
 
     if (gameFilePercentage<100) return [false, "Game file not uploaded"];
 
-    if (!gameFilename) return [false, "You must select a game file"];
+    if (!titleState.value) return [false, "You must input a title"];
 
-    if (!titleState) return [false, "You must input a title"];
+    if (!LDState.value) return [false, "You must input a long description"];
 
-    if (!LDState) return [false, "You must input a long description"];
-
-    if (!SDState) return [false, "You must input a short description"];
+    if (!SDState.value) return [false, "You must input a short description"];
 
     //Tip can be empty
-	
+    const [status, message] = verify();
+
+    if (status === false) {
+      return [false, message];
+    }
+
+
     return [true, ""];
   }
 
   const createData = () => {
 
+    
+
     const newData = {
-      coverImage: "pocman.png", 
-      name: "test", 
+      id: gameKey,
+      coverImage: getCover(), 
+      name: titleState.value, 
       live: true, 
-      rom: "pocman", 
-      shortDescription: "Nope", 
-      longDescription: "LOOOOONG", 
-      tip: "hello", 
-      screenshots: screenshots}
+      rom: gameFilename, 
+      shortDescription: SDState.value, 
+      longDescription: LDState.value, 
+      tip: tipState.value, 
+      screenshots: getScreenshots()}
 
 
 
@@ -405,6 +419,7 @@ const Games = () => {
        imageData={imageData}
        addImageSlot={addImageSlot}
        gameFilename = {gameFilename}
+       handleSubmit = {handleSubmit}
        
       
       
