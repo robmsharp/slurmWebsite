@@ -181,10 +181,23 @@ export const GameContextProvider = (props) => {
 
     
     //Update the game
-    const editGame = async (data, id) => {
+    const editGame = async (data) => {
 
+        const dateUpdated= Timestamp.fromDate(new Date());
 
-        const docRef = doc(db, "games", id);
+        const newData = {...data, lastUpdated: dateUpdated};
+
+        var firebaseId;
+      
+        // Get the firebase ids of the two games
+        games.forEach((entry, i) => {
+          if (entry.id === data.id) {
+            firebaseId = entry.firebaseId;
+          }
+        });
+      
+        // Get references to the two documents
+        const docRef = doc(db, "games", firebaseId);
 
         try {
             await setDoc(docRef, data, { merge: true });
@@ -201,11 +214,9 @@ export const GameContextProvider = (props) => {
     //Update the game
     const createGame = async (data) => {
 
-        const id = maxId+1;
-
         const dateUpdated= Timestamp.fromDate(new Date());
 
-        const newData = {...data, id: id, lastUpdated: dateUpdated};
+        const newData = {...data, lastUpdated: dateUpdated};
 
 
 

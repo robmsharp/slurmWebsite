@@ -238,7 +238,9 @@ const Games = () => {
         handleCreate(newData);
       }
   
-      console.log(newData);
+      else {
+        handleEdit(newData);
+      }
     
     
     }
@@ -256,17 +258,34 @@ const Games = () => {
   const handleCreate = async (newData) => {
 
 
-    //const success = await blogCtx.createEntry(data);
+    const success = await gameCtx.createGame(newData);
 
     //Close the dialog upon successful creation
-    /*if (success) {
-      snackCtx.notifyLevel("Blog entry created.", "success");
+    if (success) {
+      snackCtx.notifyLevel("Game created.", "success");
       setOpen(false);
     }
     else {
-      snackCtx.notifyLevel("Unable to create blog entry.", "error");
-    }*/
+      snackCtx.notifyLevel("Unable to create game.", "error");
+    }
   }
+
+
+  const handleEdit = async (newData) => {
+
+
+    const success = await gameCtx.editGame(newData);
+
+    //Close the dialog upon successful creation
+    if (success) {
+      snackCtx.notifyLevel("Game updated.", "success");
+      setOpen(false);
+    }
+    else {
+      snackCtx.notifyLevel("Unable to update game.", "error");
+    }
+  }
+
 
   const handleClose = () => {
     setOpen(false);
