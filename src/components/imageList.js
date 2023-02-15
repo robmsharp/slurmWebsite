@@ -60,7 +60,7 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
         <>
             {Array.from(data).map(([key, [fileName, imageURL, include, percentage, location, mandatory]]) => (
 
-                <>
+                <div key={key}>
                     <CardHeader
 
                         title={key}
@@ -70,7 +70,7 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
 
                     <CardContent>
 
-                        {(mandatory === false) && <><FormControlLabel name={key} control={<Checkbox checked={include} onChange={handleIncludeImage} sx={{
+                        {(mandatory === false) && <><FormControlLabel key={"include"+key} name={key} control={<Checkbox checked={include} onChange={handleIncludeImage} sx={{
                     color: "white", '&.Mui-checked': {
                       color: "white",
                     }
@@ -80,6 +80,7 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
                     variant="contained"
                     component="label"
                     disabled={!include}
+                    key={"button"+key}
                   >
                     {"Upload ".concat(key)}
                     <input
@@ -95,7 +96,7 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
 
 
                         {(percentage > 0) && <Box sx={{ mt: 2, width: '100%' }}>
-                            <LinearProgressWithLabel value={percentage} />
+                            <LinearProgressWithLabel value={percentage} key={"progress"+key} />
                         </Box>}
 
 
@@ -113,11 +114,12 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
                                 label="Location"
                                 onChange={handleLocationChange}
                                 disabled={!include}
+                                key={"location"+key}
                             >
                                 <MenuItem value={1}>Top</MenuItem>
                                 <MenuItem value={-1}>Bottom</MenuItem>
-                                {locationOptions.map((location) => {
-                                    return <MenuItem value={location}>{location}</MenuItem>
+                                {locationOptions.map((location, id) => {
+                                    return <MenuItem value={location} key={"menu"+id}>{location}</MenuItem>
                                 })}
 
                             </Select>
@@ -133,10 +135,11 @@ const ImageList = ({ data, addImageSlot, toggleInclude, updatePosition, handleIm
                             image={imageURL}
                             alt="screenshot"
                             sx={{ padding: "1em 1em 0 1em", objectFit: "contain", width: "10%" }}
+                            key={"image"+key}
                         />}
 
                     </CardContent>
-                </>
+                </div>
             ))}
 
 <Button variant="contained" onClick={addImageSlot}>Add Image Slot</Button>

@@ -26,15 +26,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import { LayersTwoTone } from '@mui/icons-material';
 
-
-/*
-        action={
-          <IconButton aria-label="settings" onClick = {moreAction}>
-            <MoreVertIcon />
-          </IconButton>
-        }*/
-
+import { useState} from "react";
 
 
 const ExpandMore = styled((props) => {
@@ -51,11 +45,11 @@ const ExpandMore = styled((props) => {
 const GamesList = (props) => {
 
   const {data, handleOpenEdit, loggedIn, last, handleSwap,
-  handleDelete, loaded} = props;
+  handleDelete, loaded, admin} = props;
 
   const history = useHistory();
 
-  const [expanded, setExpanded] = React.useState([false, false]);
+  const [expanded, setExpanded] = useState(Array.from({ length: last }).fill(false));
 
   const moreAction = () => {
     console.log("Clicked button!");
@@ -123,7 +117,9 @@ const GamesList = (props) => {
 
       <Grid container>
 
-        {data.sort((a, b) => a.id - b.id).map((game, index) => {
+        {data
+        .filter(game => admin || game.live !== false)
+        .sort((a, b) => a.id - b.id).map((game, index) => {
 
 
           return (
@@ -197,10 +193,10 @@ const GamesList = (props) => {
                     <Grid container>
                     {game.imagesArray.map((value, id) => {
                       return (
-                        <Grid item key={"grid"+value[0]}>
+                        <Grid item key={game.id+"grid"+value[0]}>
                           
                           <CardMedia
-                            key={"screenshot"+value[0]}
+                            key={game.id+"screenshot"+value[0]}
                             component="img"
                             width="320"
                             height="200"

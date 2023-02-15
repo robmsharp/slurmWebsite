@@ -116,8 +116,8 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
         var id=1;
 
         const result = Array.from(data).reduce((acc, [key, [fileName, imageURL, include, percent, position, mandatory]]) => {
-            if (include) {
-              acc.push({ id: id++, fileName, position });
+            if ((include) && (!(key==="cover image"))) {
+              acc.push({ id: id++, name: fileName, position: position });
             }
             return acc;
           }, []);

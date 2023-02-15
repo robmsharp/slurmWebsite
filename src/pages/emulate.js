@@ -421,7 +421,7 @@ const Emulate = () => {
         <canvas ref={canvasRef} id="canvas" height="480" width="640" />
         </Box>
         <Keyboard/>
-        <Popper
+        {tip && <Popper
   
   open={open}
   anchorEl={anchorEl}
@@ -444,7 +444,7 @@ transition
     </Fade>
   )}
   
-</Popper>  
+</Popper>}  
       </header>
     </div>
     </>

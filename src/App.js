@@ -14,6 +14,8 @@ import Emulate from './pages/emulate';
 import NotFound from './pages/notFound';
 import Blog from './pages/blog';
 import Messages from './pages/messages';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
 import { useEffect } from "react";
 import Keyboard from './components/keyboard';
 
@@ -91,6 +93,8 @@ function App() {
             <Route path="/keyboard" component={Keyboard} />
             <Route path="/blog" component={Blog} />
             <Route path="/messages" component={Messages} />
+            <Route path="/terms" component={Terms} />
+            <Route path="/privacy" component={Privacy} />
             <Route path="*" component ={NotFound} />
           </Switch>
 

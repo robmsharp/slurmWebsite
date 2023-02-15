@@ -26,21 +26,29 @@ const MainHeader = () => {
 
         <Grid container spacing={2}>
           <Grid item xs={1} md={1}>
-            <Box
-              component="img"
-              sx={{
-                height: 100,
-                width: 184,
-                maxHeight: { xs: 25, md: 50 },
-                maxWidth: { xs: 46, md: 92 },
-                marginTop: { xs: 2, md: 1 },
-                marginLeft: { xs: 1, md: 0 },
-                marginRight: { xs: 5, md: 0 }
-
-              }}
-              alt="Slurm16"
-              src={slurm16Icon}
-            />
+          <Box
+  component={Link}
+  to="/welcome"
+  sx={{
+    height: 100,
+    width: 184,
+    maxHeight: { xs: 25, md: 50 },
+    maxWidth: { xs: 46, md: 92 },
+    marginTop: { xs: 2, md: 1 },
+    marginLeft: { xs: 1, md: 0 },
+    marginRight: { xs: 5, md: 0 },
+    display: 'inline-block',
+    '&:hover': {
+      opacity: 0.8,
+    },
+  }}
+>
+  <img
+    src={slurm16Icon}
+    alt="Slurm16"
+    style={{ height: '100%', width: '100%', objectFit: 'contain' }}
+  />
+</Box>
           </Grid>
 
 
@@ -50,7 +58,7 @@ const MainHeader = () => {
               <Tabs value={location.pathname} sx={{ margin: 1 }} >
                 <Tab to={routes[0]} value={routes[0]} label="Welcome" component={Link} />
                 <Tab sx={{color:'white'}} to={routes[1]} value={routes[1]} label="Games" component={Link} />
-                <Tab to={routes[5]} value={routes[5]} label="Blog" component={Link} />
+                {/*<Tab to={routes[5]} value={routes[5]} label="Blog" component={Link} />*/}
 
                 
                 
@@ -78,7 +86,7 @@ const MainHeader = () => {
               }}>
                 <Tab to={routes[0]} value={routes[0]} label="Welcome" component={Link} />
                 <Tab sx={{color:'white'}} to={routes[1]} value={routes[1]} label="Play Games" component={Link} />
-                <Tab to={routes[5]} value={routes[5]} label="Read Blog" component={Link} />
+                {/*<Tab to={routes[5]} value={routes[5]} label="Read Blog" component={Link} />*/}
                 <Tab to={routes[3]} value={routes[3]} label="Contact" component={Link} />
 
 

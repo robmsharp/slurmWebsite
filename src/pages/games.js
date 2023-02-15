@@ -322,8 +322,8 @@ const Games = () => {
       id: gameKey,
       coverImage: getCover(), 
       name: titleState.value, 
-      live: true, 
-      rom: gameFilename, 
+      live: publish, 
+      rom: gameFilename.replace(".bin", ""), 
       shortDescription: SDState.value, 
       longDescription: LDState.value, 
       tip: tipState.value, 
@@ -413,6 +413,7 @@ const Games = () => {
        last = {gameCtx.maxId}
        handleDelete = {handleDelete}
        loaded = {gameCtx.loaded}
+       admin = {authCtx.isLoggedIn}
        />
        
        }
