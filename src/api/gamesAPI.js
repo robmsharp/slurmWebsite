@@ -73,7 +73,7 @@ export const GameContextProvider = (props) => {
 
         } else {
 
-            directory = "roms";
+            directory = "screenshots";
 
         }
 

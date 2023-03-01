@@ -86,12 +86,12 @@ function App() {
             <Route exact path="/"> {<Redirect to="/welcome" />} </Route>
             <Route path="/welcome" component={Welcome} />
             <Route path="/games" component={Games} />
-            <Route path="/admin" component={Admin} />
-            <Route path="/test" component={Test} />
+            <Route path="/adminSlurm" component={Admin} />
+            
             <Route path="/contact" component={Contact} />
             <Route path="/emulate" component={Emulate} />
             <Route path="/keyboard" component={Keyboard} />
-            <Route path="/blog" component={Blog} />
+            
             <Route path="/messages" component={Messages} />
             <Route path="/terms" component={Terms} />
             <Route path="/privacy" component={Privacy} />

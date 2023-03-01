@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 const AuthContext = React.createContext({
   isLoggedIn: false,
   openLogin: false,
@@ -9,13 +11,30 @@ const AuthContext = React.createContext({
   onLogin: () => {},
   closeLogoutMessage: () => {},
   closeLoginMessage: () => {},
+  checkLoggedin: () => {}
 });
+
+
 
 export const AuthContextProvider = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
     
+
+    //Does not work since doesn't persist
+    const checkLoggedin = () => {
+
+      /*const auth = getAuth();
+      const user = auth.currentUser;
+      console.log("getting user");
+      console.log(user);
+      
+    if (user != null) {
+      loginHandler();
+    }*/
+    }
+
     const logoutHandler = () => {
       
       setIsLoggedIn(false);
@@ -46,7 +65,8 @@ export const AuthContextProvider = (props) => {
           onLogout: logoutHandler,
           onLogin: loginHandler,
           closeLogoutMessage: closeLogoutMessage,
-          closeLoginMessage: closeLoginMessage
+          closeLoginMessage: closeLoginMessage,
+          checkLoggedin: checkLoggedin
         }}
       >
         {props.children}

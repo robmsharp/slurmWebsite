@@ -1,22 +1,23 @@
 import React from 'react';
 
 import { useState, useEffect, useRef } from "react";
-import {Button, Popper, Fade, Typography} from '@mui/material/';
+import { Button, Popper, Fade, Typography } from '@mui/material/';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Stack from '@mui/material/Stack';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { CheckBoxOutlineBlank, ExitToApp } from '@mui/icons-material';
-import Keyboard from '../components/keyboard';
+import KeyboardController from '../components/keyboardcontroller';
 
-import {db, storage} from '../firebaseConfig';
+import { db, storage } from '../firebaseConfig';
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import loadingImage from '../icons/loadingSmall.png';
 
-import {Box
+import {
+  Box
 } from '@mui/material/';
 
 
@@ -45,39 +46,40 @@ const Emulate = () => {
 
   function loadBootloader() {
 
-    
+
 
     const bootRef = ref(storage, 'bin/bootloader.bin');
 
     getDownloadURL(bootRef)
-    .then((url) => {
-  
+      .then((url) => {
 
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'blob';
-    xhr.onload = (event) => {
-      const blob = xhr.response;
-      const reader = new FileReader();
-        reader.onload = file => {
-          console.log("here");
-          const arrayBuf = file.target.result;
-          const src = new Uint8Array(arrayBuf);
-          
-          
-          wasm.loadBin(src);
-          wasm.tryStart();
-        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+          const reader = new FileReader();
+          reader.onload = file => {
+            console.log("here");
+            const arrayBuf = file.target.result;
+            const src = new Uint8Array(arrayBuf);
+
+
+            wasm.loadBin(src);
+            wasm.tryStart();
+          }
 
           reader.readAsArrayBuffer(blob);
-    };
-    xhr.open('GET', url);
-    xhr.send();}).catch((error) => {
-      console.log("Could not download")
-    
-  });
+        };
+        xhr.open('GET', url);
+        xhr.send();
+      }).catch((error) => {
+        console.log("Could not download")
+
+      });
 
 
-}
+  }
 
   function loadRom() {
 
@@ -91,37 +93,38 @@ const Emulate = () => {
 
     console.log(rom);
 
-    const romRef = ref(storage, 'roms/'+rom+'.bin');
+    const romRef = ref(storage, 'roms/' + rom + '.bin');
 
     getDownloadURL(romRef)
-    .then((url) => {
-  
+      .then((url) => {
 
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'blob';
-    xhr.onload = (event) => {
-      const blob = xhr.response;
-      const reader = new FileReader();
-        reader.onload = file => {
-          console.log("here");
-          const arrayBuf = file.target.result;
-          const src = new Uint8Array(arrayBuf);
-          
-          
-          wasm.loadRom(src);
-          wasm.tryStart();
-        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+          const reader = new FileReader();
+          reader.onload = file => {
+            console.log("here");
+            const arrayBuf = file.target.result;
+            const src = new Uint8Array(arrayBuf);
+
+
+            wasm.loadRom(src);
+            wasm.tryStart();
+          }
 
           reader.readAsArrayBuffer(blob);
-    };
-    xhr.open('GET', url);
-    xhr.send();}).catch((error) => {
-      console.log("Could not download")
-    
-  });
+        };
+        xhr.open('GET', url);
+        xhr.send();
+      }).catch((error) => {
+        console.log("Could not download")
+
+      });
 
 
-}
+  }
 
 
   function canvasRender() {
@@ -139,13 +142,13 @@ const Emulate = () => {
 
     const canvasElement = canvasRef.current;
 
-    
+
 
     //This code attempts to remove error when you navigate away from the page
     if (canvasElement == null) {
       return;
     }
-    
+
     // Set up Context and ImageData on the canvas
     const canvasContext = canvasElement.getContext("2d");
     const canvasImageData = canvasContext.createImageData(
@@ -156,22 +159,22 @@ const Emulate = () => {
     // Clear the canvas
     if (wasm.can_draw()) {
       canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
-    
 
-    const outputPointer = wasm.get_output_buffer_pointer();
-    
-    const imageDataArray = myMemory.slice(
-      outputPointer,
-      outputPointer + canvasElement.width * canvasElement.height * 4
-    );
-    
 
-    // Set the values to the canvas image data
-    canvasImageData.data.set(imageDataArray);
 
-    // Place the new generated checkerboard onto the canvas
-    canvasContext.putImageData(canvasImageData, 0, 0);
+      const outputPointer = wasm.get_output_buffer_pointer();
+
+      const imageDataArray = myMemory.slice(
+        outputPointer,
+        outputPointer + canvasElement.width * canvasElement.height * 4
+      );
+
+
+      // Set the values to the canvas image data
+      canvasImageData.data.set(imageDataArray);
+
+      // Place the new generated checkerboard onto the canvas
+      canvasContext.putImageData(canvasImageData, 0, 0);
     }
 
   };
@@ -179,17 +182,18 @@ const Emulate = () => {
   //This is for updating canvas after loaded
   useEffect(() => {
 
-    if (loaded === true) { draw_loop(); 
-      
+    if (loaded === true) {
+      draw_loop();
+
     }
 
     //loaded refers to wasm, romLoaded refers to rom and bootloader initiated downloading
     if ((loaded === true) && (romLoaded === false)) {
 
-    loadRom();
-    loadBootloader();
-    setRomLoaded(true);
-  }
+      loadRom();
+      loadBootloader();
+      setRomLoaded(true);
+    }
 
   }, [loaded]);
 
@@ -197,7 +201,7 @@ const Emulate = () => {
   useEffect(() => {
 
     //Render image to canvas while loading
-    
+
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -206,7 +210,7 @@ const Emulate = () => {
 
     var img = new Image();
     img.src = loadingImage;
-    img.onload = function() {
+    img.onload = function () {
       ctx.drawImage(img, 175, 150);
     }
 
@@ -227,228 +231,217 @@ const Emulate = () => {
 
     //Unmount code
     return () => {
-      document.removeEventListener('keydown', handleKeyPress); 
-      document.removeEventListener('keyup', handleKeyRelease);
+
       setLoaded(false);
       window.location.reload();
-      
-    }  
+
+    }
 
   }, []);
 
-  const handleKeyPress = (event) => {
+  const UPKEY = 38;
+  const DOWNKEY = 40;
+  const LEFTKEY = 37;
+  const RIGHTKEY = 39;
+  const AKEY = 65;
+  const BKEY = 66;
 
-    console.log("Emulator key pressed");
-
-    event.preventDefault();
-
-    if (loaded) {
-    //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
-
-    if (event.key === "ArrowDown") {
-    setDownColor("error");
-    wasm.keyDown(wasm.KeyEvent.DOWN);
-  }
-
-  if (event.key === "ArrowUp") {
-    setUpColor("error");
-    wasm.keyDown(wasm.KeyEvent.UP);
-  }
-
-  if (event.key === "ArrowLeft") {
-    setLeftColor("error");
-    wasm.keyDown(wasm.KeyEvent.LEFT);
-  }
-
-  if (event.key === "ArrowRight") {
-    setRightColor("error");
-    wasm.keyDown(wasm.KeyEvent.RIGHT);
-  }
-
-  if (event.key === "a") {
-    setAColor("error");
-    wasm.keyDown(wasm.KeyEvent.A);
-  }
-
-  if (event.key === "b") {
-    setBColor("error");
-    wasm.keyDown(wasm.KeyEvent.B);
-  }
-}  
-
-  }
-  
-  const handleKeyRelease = (event) => {
-
-    event.preventDefault();
+  const handleKeyRelease = (keycode) => {
 
     if (loaded) {
 
-      //console.log(`Key: ${event.key} with keycode ${event.keyCode} has been pressed`);
-  
-      if (event.key === "ArrowDown") {
-      setDownColor("primary");
-      wasm.keyUp(wasm.KeyEvent.DOWN);
-      
+      switch (keycode) {
+
+        case DOWNKEY:
+          wasm.keyUp(wasm.KeyEvent.DOWN);
+          break;
+        case UPKEY:
+          wasm.keyUp(wasm.KeyEvent.UP);
+          break;
+
+        case LEFTKEY:
+          wasm.keyUp(wasm.KeyEvent.LEFT);
+          break;
+
+        case RIGHTKEY:
+          wasm.keyUp(wasm.KeyEvent.RIGHT);
+          break;
+
+        case AKEY:
+          wasm.keyUp(wasm.KeyEvent.A);
+          break;
+
+        case BKEY:
+          wasm.keyUp(wasm.KeyEvent.B);
+          break;
+
+        default:
+          break;
+      }
     }
-  
-    if (event.key === "ArrowUp") {
-      setUpColor("primary");
-      wasm.keyUp(wasm.KeyEvent.UP);
-    }
-  
-    if (event.key === "ArrowLeft") {
-      setLeftColor("primary");
-      wasm.keyUp(wasm.KeyEvent.LEFT);
-    }
-  
-    if (event.key === "ArrowRight") {
-      setRightColor("primary");
-      wasm.keyUp(wasm.KeyEvent.RIGHT);
-    }
-  
-    if (event.key === "a") {
-      setAColor("primary");
-      wasm.keyUp(wasm.KeyEvent.A);
-    }
-  
-    if (event.key === "b") {
-      setBColor("primary");
-      wasm.keyUp(wasm.KeyEvent.B);
-    }
-  
-  }
 
   }
 
-  useEffect(()=> {
-
-    //Has a key been pressed
-    document.addEventListener('keydown', handleKeyPress);
-  
-    //Has a key been released
-    document.addEventListener('keyup', handleKeyRelease);
-
-    return () => {document.removeEventListener('keydown', handleKeyPress); 
-    document.removeEventListener('keyup', handleKeyRelease);}
-     
-    }, [loaded]
-    );
-
-  function draw_loop() {
-
-    const canvasElement = canvasRef.current;
-
-    //This code attempts to remove update until new rom is loaded
-    if (canvasElement == null) {
-      return;
-    }
+  const handleKeyPress = (keycode) => {
 
     if (loaded) {
-      
-      canvasRender();
 
+      switch (keycode) {
+
+        case DOWNKEY:
+          wasm.keyDown(wasm.KeyEvent.DOWN);
+          break;
+        case UPKEY:
+          wasm.keyDown(wasm.KeyEvent.UP);
+          break;
+
+        case LEFTKEY:
+          wasm.keyDown(wasm.KeyEvent.LEFT);
+          break;
+
+        case RIGHTKEY:
+          wasm.keyDown(wasm.KeyEvent.RIGHT);
+          break;
+
+        case AKEY:
+          wasm.keyDown(wasm.KeyEvent.A);
+          break;
+
+        case BKEY:
+          wasm.keyDown(wasm.KeyEvent.B);
+          break;
+
+        default:
+          break;
+      }
     }
 
-    
-
-    window.requestAnimationFrame(draw_loop);
-  
   }
-
-  const selectRom = (event) => {
-
-    const file = event.target.files[0];
-    console.log(file);
-
-    const reader = new FileReader();
-        reader.onload = file => {
-          console.log("here");
-          const arrayBuf = file.target.result;
-          const src = new Uint8Array(arrayBuf);
-          
-          
-          wasm.loadRom(src);
-          wasm.tryStart();
-        }
-
-          reader.readAsArrayBuffer(file);  
-  }
-
-  const selectBin = (event) => {
-    
-    const file = event.target.files[0];
-    console.log(file);
-
-    const reader = new FileReader();
-        reader.onload = file => {
-          console.log("here");
-          const arrayBuf = file.target.result;
-          const src = new Uint8Array(arrayBuf);
-          
-          wasm.loadBin(src);
-          wasm.tryStart();
-        }
-
-          reader.readAsArrayBuffer(file);  
-  }
-
   
 
-  useEffect(()=> {
-    setAnchorEl(divRef.current);
-  }, []);
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
-  const handleClick = () => {
-    setOpen(false);
-  };
-  
 
-  return (
-    <>
-    
+function draw_loop() {
+
+  const canvasElement = canvasRef.current;
+
+  //This code attempts to remove update until new rom is loaded
+  if (canvasElement == null) {
+    return;
+  }
+
+  if (loaded) {
+
+    canvasRender();
+
+  }
+
+
+
+  window.requestAnimationFrame(draw_loop);
+
+}
+
+const selectRom = (event) => {
+
+  const file = event.target.files[0];
+  console.log(file);
+
+  const reader = new FileReader();
+  reader.onload = file => {
+    console.log("here");
+    const arrayBuf = file.target.result;
+    const src = new Uint8Array(arrayBuf);
+
+
+    wasm.loadRom(src);
+    wasm.tryStart();
+  }
+
+  reader.readAsArrayBuffer(file);
+}
+
+const selectBin = (event) => {
+
+  const file = event.target.files[0];
+  console.log(file);
+
+  const reader = new FileReader();
+  reader.onload = file => {
+    console.log("here");
+    const arrayBuf = file.target.result;
+    const src = new Uint8Array(arrayBuf);
+
+    wasm.loadBin(src);
+    wasm.tryStart();
+  }
+
+  reader.readAsArrayBuffer(file);
+}
+
+
+
+useEffect(() => {
+  setAnchorEl(divRef.current);
+}, []);
+const handleClose = () => {
+  setAnchorEl(null);
+};
+
+const handleClick = () => {
+  setOpen(false);
+};
+
+
+return (
+  <>
+
     <img id="loadingImage" src={loadingImage} hidden></img>
-    
+
     <div className="App">
       <header className="App-header">
-      
+
         {loaded === false && <p>Loading...</p>}
-        <Box ref={divRef}
-          sx={{border:3}}>
-        <canvas ref={canvasRef} id="canvas" height="480" width="640" />
-        </Box>
-        <Keyboard/>
+        
+        <Box 
+          sx={{ border: 3 }}>
+          <canvas ref={canvasRef} id="canvas" height="480" width="640" />
+          
+           </Box>
+           <Box ref={divRef}>
+           <KeyboardController emulateKeyPress={handleKeyPress} emulateKeyRelease={handleKeyRelease} />
+           </Box>
+
         {tip && <Popper
-  
-  open={open}
-  anchorEl={anchorEl}
-  onClose={handleClose}
-  onClick = {handleClick}
-  
 
-  
-transition
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          onClick={handleClick}
 
->
-{({ TransitionProps }) => (
-    <Fade {...TransitionProps} timeout={350}>
-      <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
-      <Typography variant="body1">
-        {tip}
-        </Typography>
-        <Button onClick={handleClick}>Got it!</Button>
-      </Box>
-    </Fade>
-  )}
-  
-</Popper>}  
-      </header>
+
+
+          transition
+
+        >
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={350}>
+              <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+                <Typography variant="body1">
+                  {tip}
+                </Typography>
+                <Button onClick={handleClick}>Got it!</Button>
+              </Box>
+            </Fade>
+          )}
+
+        </Popper>}
+
+        
+        </header>
     </div>
-    </>
-  );
+  </>
+);
 
 };
 

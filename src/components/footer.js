@@ -23,8 +23,11 @@ const Footer = () => {
 
     useEffect(()=> {
 
-        
-        ctx.onLogin();
+      
+
+      ctx.checkLoggedin();  
+
+      //  ctx.onLogin();
          
         }, []
         );

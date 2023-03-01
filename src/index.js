@@ -71,7 +71,7 @@ const myTheme = createTheme({
 });
 
 ReactDOM.render(
-  <React.StrictMode>
+  
     <ThemeProvider theme={myTheme} >
     
     <SnackbarProvider maxSnack={3}>
@@ -94,7 +94,7 @@ ReactDOM.render(
     
     </ThemeProvider>
 
-  </React.StrictMode>,
+  ,
   document.getElementById("root")
 );
 

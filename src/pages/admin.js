@@ -72,14 +72,15 @@ const Admin = () => {
                 }
             });
 
-            if (querySnapshot.docs.length === 0) {
+            //Code for adding new users - only gets uncommented if new admin account needs to be created
+            /*if (querySnapshot.docs.length === 0) {
                 await addDoc(collection(db, "users"), {
                     uid: user.uid,
                     name: user.displayName,
                     authProvider: "google",
                     email: user.email,
                 });
-            }
+            }*/
 
         } catch (err) {
             console.error(err);
@@ -111,13 +112,13 @@ const Admin = () => {
 
     };
 
-    useEffect(()=> {
+    /*useEffect(()=> {
 
         
         ctx.onLogin();
          
         }, []
-        );
+        );*/
    
 
     return (

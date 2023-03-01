@@ -88,6 +88,7 @@ const useImage = (initialLength = 1, generic="image", initialData = new Map([["i
             return [false, "Missing cover image"];
         }
 
+
         //Verify each image has uploaded if it is "included"
         Array.from(data).forEach(([key, image]) => {
 
