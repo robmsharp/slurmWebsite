@@ -7,7 +7,7 @@ import Keyboard from './keyboard';
 
 const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
-  const TIMEOUT = 250;
+  const TIMEOUT = 100;
 
   const keySignal = (keycode) => {
 
@@ -30,22 +30,25 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
           if (state.hasInterval === false) {
 
-            keySignal(action.val);
+            emulateKeyPress(action.val);
 
             const interval = setInterval(() => {
 
-              keySignal(action.val);
+            emulateKeyPress(action.val);
 
             }, TIMEOUT);
 
             return { ...state, pressed: true, hasInterval: true, interval: interval };
           }
+          
           return state;
 
         case 'KEYUP':
           if (state.hasInterval === true) {
             clearInterval(state.interval);
           }
+          emulateKeyRelease(action.val);
+
           return { ...state, pressed: false, hasInterval: false, interval: null };
         default:
           return state;
@@ -197,7 +200,7 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
     if (keycode in reducerMap) {
       const { dispatch } = reducerMap[keycode];
 
-      dispatch({ type: 'KEYUP' });
+      dispatch({ type: 'KEYUP', val: keycode });
     }
 
   }
@@ -212,7 +215,7 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
     if (keycode in reducerMap) {
       const { dispatch } = reducerMap[keycode];
 
-      dispatch({ type: 'KEYUP' });
+      dispatch({ type: 'KEYUP', val: keycode });
     }
 
   }

@@ -127,11 +127,94 @@ const Emulate = () => {
   }
 
 
+  const [upPress, setUpPress] = useState(false);
+  const [upPressLast, setUpPressLast] = useState(false);
+  const [downPress, setDownPress] = useState(false);
+  const [downPressLast, setDownPressLast] = useState(false);
+  const [leftPress, setLeftPress] = useState(false);
+const [leftPressLast, setLeftPressLast] = useState(false);
+const [rightPress, setRightPress] = useState(false);
+const [rightPressLast, setRightPressLast] = useState(false);
+const [aPress, setAPress] = useState(false);
+const [aPressLast, setAPressLast] = useState(false);
+const [bPress, setBPress] = useState(false);
+const [bPressLast, setBPressLast] = useState(false);
+
+
+  function emulateKeys() {
+
+    if ((upPress) && (!upPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.UP);
+    }
+
+    if ((!upPress) && (upPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.UP);
+    }
+
+    setUpPressLast(upPress);
+
+    if ((downPress) && (!downPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.DOWN);
+    }
+
+    if ((!downPress) && (downPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.DOWN);
+    }
+
+    setDownPressLast(downPress);
+
+    if ((leftPress) && (!leftPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.LEFT);
+    }
+    
+    if ((!leftPress) && (leftPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.LEFT);
+    }
+    
+    setLeftPressLast(leftPress);
+    
+    if ((rightPress) && (!rightPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.RIGHT);
+    }
+    
+    if ((!rightPress) && (rightPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.RIGHT);
+    }
+    
+    setRightPressLast(rightPress);
+    
+    if ((aPress) && (!aPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.A);
+    }
+    
+    if ((!aPress) && (aPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.A);
+    }
+    
+    setAPressLast(aPress);
+    
+    if ((bPress) && (!bPressLast)) {
+      wasm.keyDown(wasm.KeyEvent.B);
+    }
+    
+    if ((!bPress) && (bPressLast)) {
+      wasm.keyUp(wasm.KeyEvent.B);
+    }
+    
+    setBPressLast(bPress);
+    
+
+  }
+
   function canvasRender() {
 
     const myMemory = wasm.get_memory()
 
     setWasmByteMemoryArray(myMemory);
+
+
+    //set the keys that have been pressed
+    emulateKeys();
 
     //Put the image data on the buffer  
     //wasm.get_some_image();
@@ -253,26 +336,26 @@ const Emulate = () => {
       switch (keycode) {
 
         case DOWNKEY:
-          wasm.keyUp(wasm.KeyEvent.DOWN);
+          setDownPress(false);
           break;
         case UPKEY:
-          wasm.keyUp(wasm.KeyEvent.UP);
+          setUpPress(false);
           break;
 
         case LEFTKEY:
-          wasm.keyUp(wasm.KeyEvent.LEFT);
+          setLeftPress(false);
           break;
 
         case RIGHTKEY:
-          wasm.keyUp(wasm.KeyEvent.RIGHT);
+          setRightPress(false);
           break;
 
         case AKEY:
-          wasm.keyUp(wasm.KeyEvent.A);
+          setAPress(false);
           break;
 
         case BKEY:
-          wasm.keyUp(wasm.KeyEvent.B);
+          setBPress(false);
           break;
 
         default:
@@ -289,26 +372,26 @@ const Emulate = () => {
       switch (keycode) {
 
         case DOWNKEY:
-          wasm.keyDown(wasm.KeyEvent.DOWN);
+          setDownPress(true);
           break;
         case UPKEY:
-          wasm.keyDown(wasm.KeyEvent.UP);
+          setUpPress(true);
           break;
 
         case LEFTKEY:
-          wasm.keyDown(wasm.KeyEvent.LEFT);
+          setLeftPress(true);
           break;
 
         case RIGHTKEY:
-          wasm.keyDown(wasm.KeyEvent.RIGHT);
+          setRightPress(true);
           break;
 
         case AKEY:
-          wasm.keyDown(wasm.KeyEvent.A);
+          setAPress(true);
           break;
 
         case BKEY:
-          wasm.keyDown(wasm.KeyEvent.B);
+          setBPress(true);
           break;
 
         default:
