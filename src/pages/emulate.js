@@ -24,6 +24,19 @@ import {
 
 import { Prompt } from 'react-router';
 
+var upPress = false;
+var upPressLast = false;
+var downPress = false;
+var downPressLast = false;
+var leftPress = false;
+var leftPressLast = false;
+var rightPress = false;
+var rightPressLast = false;
+var aPress = false;
+var aPressLast = false;
+var bPress = false;
+var bPressLast = false;
+
 const Emulate = () => {
 
   const [wasm, setWasm] = useState();
@@ -43,6 +56,11 @@ const Emulate = () => {
   const divRef = React.useRef();
 
   const canvasRef = React.useRef(null);
+
+  
+
+
+
 
   function loadBootloader() {
 
@@ -127,19 +145,7 @@ const Emulate = () => {
   }
 
 
-  const [upPress, setUpPress] = useState(false);
-  const [upPressLast, setUpPressLast] = useState(false);
-  const [downPress, setDownPress] = useState(false);
-  const [downPressLast, setDownPressLast] = useState(false);
-  const [leftPress, setLeftPress] = useState(false);
-const [leftPressLast, setLeftPressLast] = useState(false);
-const [rightPress, setRightPress] = useState(false);
-const [rightPressLast, setRightPressLast] = useState(false);
-const [aPress, setAPress] = useState(false);
-const [aPressLast, setAPressLast] = useState(false);
-const [bPress, setBPress] = useState(false);
-const [bPressLast, setBPressLast] = useState(false);
-
+  
 
   function emulateKeys() {
 
@@ -151,7 +157,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.UP);
     }
 
-    setUpPressLast(upPress);
+    upPressLast=upPress;
 
     if ((downPress) && (!downPressLast)) {
       wasm.keyDown(wasm.KeyEvent.DOWN);
@@ -161,7 +167,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.DOWN);
     }
 
-    setDownPressLast(downPress);
+    downPressLast=downPress;
 
     if ((leftPress) && (!leftPressLast)) {
       wasm.keyDown(wasm.KeyEvent.LEFT);
@@ -171,7 +177,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.LEFT);
     }
     
-    setLeftPressLast(leftPress);
+    leftPressLast=leftPress;
     
     if ((rightPress) && (!rightPressLast)) {
       wasm.keyDown(wasm.KeyEvent.RIGHT);
@@ -181,7 +187,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.RIGHT);
     }
     
-    setRightPressLast(rightPress);
+    rightPressLast=rightPress;
     
     if ((aPress) && (!aPressLast)) {
       wasm.keyDown(wasm.KeyEvent.A);
@@ -191,7 +197,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.A);
     }
     
-    setAPressLast(aPress);
+    aPressLast=aPress;
     
     if ((bPress) && (!bPressLast)) {
       wasm.keyDown(wasm.KeyEvent.B);
@@ -201,7 +207,7 @@ const [bPressLast, setBPressLast] = useState(false);
       wasm.keyUp(wasm.KeyEvent.B);
     }
     
-    setBPressLast(bPress);
+    bPressLast=bPress;
     
 
   }
@@ -322,84 +328,8 @@ const [bPressLast, setBPressLast] = useState(false);
 
   }, []);
 
-  const UPKEY = 38;
-  const DOWNKEY = 40;
-  const LEFTKEY = 37;
-  const RIGHTKEY = 39;
-  const AKEY = 65;
-  const BKEY = 66;
 
-  const handleKeyRelease = (keycode) => {
-
-    if (loaded) {
-
-      switch (keycode) {
-
-        case DOWNKEY:
-          setDownPress(false);
-          break;
-        case UPKEY:
-          setUpPress(false);
-          break;
-
-        case LEFTKEY:
-          setLeftPress(false);
-          break;
-
-        case RIGHTKEY:
-          setRightPress(false);
-          break;
-
-        case AKEY:
-          setAPress(false);
-          break;
-
-        case BKEY:
-          setBPress(false);
-          break;
-
-        default:
-          break;
-      }
-    }
-
-  }
-
-  const handleKeyPress = (keycode) => {
-
-    if (loaded) {
-
-      switch (keycode) {
-
-        case DOWNKEY:
-          setDownPress(true);
-          break;
-        case UPKEY:
-          setUpPress(true);
-          break;
-
-        case LEFTKEY:
-          setLeftPress(true);
-          break;
-
-        case RIGHTKEY:
-          setRightPress(true);
-          break;
-
-        case AKEY:
-          setAPress(true);
-          break;
-
-        case BKEY:
-          setBPress(true);
-          break;
-
-        default:
-          break;
-      }
-    }
-
-  }
+  
   
 
 
@@ -475,6 +405,88 @@ const handleClick = () => {
   setOpen(false);
 };
 
+const UPKEY = 38;
+  const DOWNKEY = 40;
+  const LEFTKEY = 37;
+  const RIGHTKEY = 39;
+  const AKEY = 65;
+  const BKEY = 66;
+
+const emulateKeyRelease = (keycode) => {
+
+  if (loaded) {
+
+    switch (keycode) {
+
+      case DOWNKEY:
+        downPress = false;
+        break;
+      case UPKEY:
+        upPress=false;
+        break;
+
+      case LEFTKEY:
+        leftPress=false;
+        break;
+
+      case RIGHTKEY:
+        rightPress = false;
+        break;
+
+      case AKEY:
+        aPress = false;
+        break;
+
+      case BKEY:
+        bPress = false;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+}
+
+const emulateKeyPress = (keycode) => {
+
+  console.log("press");
+
+
+  if (loaded) {
+
+    switch (keycode) {
+
+      case DOWNKEY:
+        downPress = true;
+        break;
+      case UPKEY:
+        upPress=true;
+        break;
+
+      case LEFTKEY:
+        leftPress=true;
+        break;
+
+      case RIGHTKEY:
+        rightPress = true;
+        break;
+
+      case AKEY:
+        aPress = true;
+        break;
+
+      case BKEY:
+        bPress = true;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+}
+
 
 return (
   <>
@@ -492,7 +504,7 @@ return (
           
            </Box>
            <Box ref={divRef}>
-           <KeyboardController emulateKeyPress={handleKeyPress} emulateKeyRelease={handleKeyRelease} />
+           <KeyboardController emulateKeyPress={emulateKeyPress} emulateKeyRelease={emulateKeyRelease} />
            </Box>
 
         {tip && <Popper

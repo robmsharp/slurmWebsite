@@ -38,3 +38,9 @@ export * from "./interface.js";
 Deployed version:
 
 https://slurm16-9621b.web.app
+
+Deploy instructions:
+
+npm run build
+
+firebase deploy

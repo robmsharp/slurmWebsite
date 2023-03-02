@@ -5,15 +5,26 @@ import { useReducer, useState, useEffect } from 'react';
 import Keyboard from './keyboard';
 
 
+
+
 const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
-  const TIMEOUT = 100;
+  const TIMEOUT = 250;
+
+  const UPKEY = 38;
+  const DOWNKEY = 40;
+  const LEFTKEY = 37;
+  const RIGHTKEY = 39;
+  const AKEY = 65;
+  const BKEY = 66;
 
   const keySignal = (keycode) => {
 
     console.log(keycode + "pressed");
 
   }
+
+  
 
   //Reducer for field inputs
 
@@ -30,11 +41,11 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
           if (state.hasInterval === false) {
 
-            emulateKeyPress(action.val);
+           emulateKeyPress(action.val);
 
             const interval = setInterval(() => {
 
-            emulateKeyPress(action.val);
+            //emulateKeyPress(action.val);
 
             }, TIMEOUT);
 
@@ -58,12 +69,7 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
   };
 
-  const UPKEY = 38;
-  const DOWNKEY = 40;
-  const LEFTKEY = 37;
-  const RIGHTKEY = 39;
-  const AKEY = 65;
-  const BKEY = 66;
+  
 
   const OFFSET = -2;
 

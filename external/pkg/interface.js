@@ -45,8 +45,8 @@ function emulateStep() {
 
 function keyDown(keyCode) {
 
-  console.log("Sending keycode:");
-  console.log(keyCode);
+  //console.log("Sending keycode:");
+  //console.log(keyCode);
   
   wasm.wasmemulator_update_key(myEmulator, true, keyCode);
 
