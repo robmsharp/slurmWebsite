@@ -1,11 +1,27 @@
 import * as wasm from "./react_wasm_rust_library_bg.wasm";
-export {get_memory, loadRom, loadBin, tryStart, emulateStep, keyUp, keyDown, can_draw, set_draw_false};
+export {clearMemory, get_memory, loadRom, loadBin, tryStart, emulateStep, keyUp, keyDown, can_draw, set_draw_false};
 
 let cachegetUint8Memory = null;
 
 let cachegetUint8Memory3 = null;
 
 let cachegetUint8Memory4 = null;
+
+//Call this function to clear the emulator, reset variables etc.
+function clearMemory() {
+  cachegetUint8Memory = null;
+  cachegetUint8Memory3 = null;
+  cachegetUint8Memory4 = null;
+  wasm.__wbindgen_free(binptr, binLength);
+  wasm.__wbindgen_free(romptr, romLength);
+  //wasm.wasmemulator_delete(myEmulator);
+  myEmulator = null;
+  romLoaded = false;
+  binLoaded = false;
+  rom = null;
+  bin = null;
+  variableStart = false;
+}
 
 function set_draw_false() {
   variableStart = false;

@@ -43,6 +43,8 @@ const Emulate = () => {
 
   const canvasRef = React.useRef(null);
 
+  const wasmRef = useRef(wasm);
+
   
 
   function loadBootloader() {
@@ -292,6 +294,8 @@ const Emulate = () => {
       setWasm(myexternal);
 
       setLoaded(true);
+
+      wasmRef.current = wasm;
     }
 
     loadWasm();
@@ -304,12 +308,22 @@ const Emulate = () => {
     return () => {
 
       setLoaded(false);
-      window.location.reload();
-
+      
     }
 
   }, []);
 
+  
+
+  useEffect(() => {
+    return () => {
+      console.log('Unmounting');
+      console.log(wasmRef.current);
+      if (wasmRef.current) {
+        wasmRef.current.clearMemory();
+      }
+    };
+  }, []);
 
   
   
