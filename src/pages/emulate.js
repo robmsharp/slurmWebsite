@@ -2,17 +2,12 @@ import React from 'react';
 
 import { useState, useEffect, useRef } from "react";
 import { Button, Popper, Fade, Typography } from '@mui/material/';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Stack from '@mui/material/Stack';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { CheckBoxOutlineBlank, ExitToApp } from '@mui/icons-material';
+
 import KeyboardController from '../components/keyboardcontroller';
 
-import { db, storage } from '../firebaseConfig';
+import { storage } from '../firebaseConfig';
 
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { ref, getDownloadURL } from "firebase/storage";
 
 import loadingImage from '../icons/loadingSmall.png';
 
@@ -20,9 +15,6 @@ import {
   Box
 } from '@mui/material/';
 
-
-
-import { Prompt } from 'react-router';
 
 var upPress = false;
 var upPressLast = false;
@@ -43,12 +35,6 @@ const Emulate = () => {
   const [wasmByteMemoryArray, setWasmByteMemoryArray] = useState();
   const [loaded, setLoaded] = useState(false);
   const [romLoaded, setRomLoaded] = useState(false);
-  const [downColor, setDownColor] = useState("primary");
-  const [upColor, setUpColor] = useState("primary");
-  const [leftColor, setLeftColor] = useState("primary");
-  const [rightColor, setRightColor] = useState("primary");
-  const [AColor, setAColor] = useState("primary");
-  const [BColor, setBColor] = useState("primary");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [tip, setTip] = useState("");
@@ -58,9 +44,6 @@ const Emulate = () => {
   const canvasRef = React.useRef(null);
 
   
-
-
-
 
   function loadBootloader() {
 
@@ -158,7 +141,7 @@ const Emulate = () => {
     if ((!upPress) && (upPressLast)) {
       wasm.keyUp(wasm.KeyEvent.UP);
     }
-
+    //ie. update upPresslast to upPress, which can be true or false
     upPressLast=upPress;
 
     if ((downPress) && (!downPressLast)) {
@@ -234,8 +217,6 @@ const Emulate = () => {
 
     const canvasElement = canvasRef.current;
 
-
-
     //This code attempts to remove error when you navigate away from the page
     if (canvasElement == null) {
       return;
@@ -251,8 +232,6 @@ const Emulate = () => {
     // Clear the canvas
     if (wasm.can_draw()) {
       canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-
 
       const outputPointer = wasm.get_output_buffer_pointer();
 
@@ -357,44 +336,6 @@ function draw_loop() {
   window.requestAnimationFrame(draw_loop);
 
 }
-
-const selectRom = (event) => {
-
-  const file = event.target.files[0];
-  console.log(file);
-
-  const reader = new FileReader();
-  reader.onload = file => {
-    console.log("here");
-    const arrayBuf = file.target.result;
-    const src = new Uint8Array(arrayBuf);
-
-
-    wasm.loadRom(src);
-    wasm.tryStart();
-  }
-
-  reader.readAsArrayBuffer(file);
-}
-
-const selectBin = (event) => {
-
-  const file = event.target.files[0];
-  console.log(file);
-
-  const reader = new FileReader();
-  reader.onload = file => {
-    console.log("here");
-    const arrayBuf = file.target.result;
-    const src = new Uint8Array(arrayBuf);
-
-    wasm.loadBin(src);
-    wasm.tryStart();
-  }
-
-  reader.readAsArrayBuffer(file);
-}
-
 
 
 useEffect(() => {
