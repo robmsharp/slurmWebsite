@@ -149,6 +149,8 @@ const Emulate = () => {
 
   function emulateKeys() {
 
+    if (loaded) {
+
     if ((upPress) && (!upPressLast)) {
       wasm.keyDown(wasm.KeyEvent.UP);
     }
@@ -208,6 +210,7 @@ const Emulate = () => {
     }
     
     bPressLast=bPress;
+  }
     
 
   }

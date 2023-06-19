@@ -39,28 +39,19 @@ const KeyboardController = ({emulateKeyPress, emulateKeyRelease}) => {
 
         case 'KEYDOWN':
 
-          if (state.hasInterval === false) {
-
+          
            emulateKeyPress(action.val);
 
-            const interval = setInterval(() => {
+            
 
-            //emulateKeyPress(action.val);
-
-            }, TIMEOUT);
-
-            return { ...state, pressed: true, hasInterval: true, interval: interval };
-          }
+            return { ...state, pressed: true };
           
-          return state;
 
         case 'KEYUP':
-          if (state.hasInterval === true) {
-            clearInterval(state.interval);
-          }
+          
           emulateKeyRelease(action.val);
 
-          return { ...state, pressed: false, hasInterval: false, interval: null };
+          return { ...state, pressed: false };
         default:
           return state;
 

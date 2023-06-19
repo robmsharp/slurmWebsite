@@ -48,13 +48,21 @@ function keyDown(keyCode) {
   //console.log("Sending keycode:");
   //console.log(keyCode);
   
+  if (myEmulator) {
+
   wasm.wasmemulator_update_key(myEmulator, true, keyCode);
+
+  }
 
 }
 
 function keyUp(keyCode) {
 
+  if (myEmulator) {
+
   wasm.wasmemulator_update_key(myEmulator, false, keyCode);
+
+  }
 
 }
 
@@ -82,9 +90,6 @@ function tryStart() {
       cachegetUint8Memory4 = new Uint8Array(wasm.memory.buffer);
       cachegetUint8Memory4.set(rom, romptr);
       romLength = rom.length;
-
-      console.log("what's in wasm?");
-      console.log(wasm);
 
       myEmulator = wasm.wasmemulator_new();
 
